@@ -1,0 +1,19 @@
+[package]
+name = "grapho-core"
+version = "0.0.1"
+description = "Platform-independent ink engine for Grapho"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+i_overlay = "9.1.0"
+lopdf = { version = "0.46.0", default-features = false }
+png = { version = "0.18.1", default-features = false }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+uuid = { version = "1.29.0", features = ["v4", "serde"] }
+zip = { version = "9.0.5", default-features = false, features = ["deflate"] }

@@ -1,0 +1,19 @@
+[package]
+name = "grapho-android"
+version = "0.0.1"
+description = "JNI bindings from the Grapho Android app to grapho-core"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+name = "grapho_android"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+grapho-core = { path = "../core" }
+jni = { version = "0.21.1", default-features = false }
+serde_json = "1.0.154"
