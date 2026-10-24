@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/onemnemo/grapho/security/advisories/new
+    about: Send a private report to the maintainers. Do not open a public issue.
