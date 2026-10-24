@@ -1,0 +1,130 @@
+name: Bug report
+description: Report something broken, confusing, or inconsistent in Grapho.
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve Grapho. Search the existing issues before filing a new one.
+
+        Do not attach private notebooks or other sensitive data. Report security vulnerabilities through private vulnerability reporting instead.
+
+  - type: input
+    id: version
+    attributes:
+      label: Grapho version or build
+      description: The version number, or the CI build or commit if you installed a pull request build.
+      placeholder: 0.0.1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Android
+        - Windows
+        - iPad
+        - macOS
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: The device model.
+      placeholder: Samsung Galaxy Tab S9, Surface Pro 9, iPad Pro 11-inch
+    validations:
+      required: true
+
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version
+      description: Include the One UI version on a Samsung device when you know it.
+      placeholder: Android 14 (One UI 6.1), Windows 11 23H2, iPadOS 17
+    validations:
+      required: true
+
+  - type: input
+    id: stylus
+    attributes:
+      label: Stylus
+      description: The pen you used, or "none" if the problem happens with a finger.
+      placeholder: S Pen, Surface Pen, Apple Pencil
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Give the smallest reliable sequence that shows the problem.
+      placeholder: |
+        1. Open ...
+        2. Draw ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: How often does it happen?
+      options:
+        - Every time
+        - Often
+        - Sometimes
+        - Once
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: data-impact
+    attributes:
+      label: Did this affect a saved notebook?
+      description: Stop editing the affected notebook and keep a copy of its .grapho file if data may have been lost or changed.
+      # Quoted: YAML reads a bare No as false, and GitHub then drops the option.
+      options:
+        - "No"
+        - Notebook may have changed
+        - Notebook was lost or will not open
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs, screenshots, or recordings
+      description: Attach only what is safe to share publicly.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Include anything else that may help reproduce or understand the problem.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues for this problem.
+          required: true
+        - label: I removed private notebooks and other sensitive information.
+          required: true
+        - label: I agree to follow the Code of Conduct.
+          required: true
