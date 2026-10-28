@@ -1,0 +1,30 @@
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  height: var(--hit); padding: 0 var(--sp-5);
+  border: 0; border-radius: var(--r-full);
+  font: var(--t-label); white-space: nowrap; cursor: pointer;
+  background: var(--hover); color: var(--fg);
+  transition: background var(--d-fast), color var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.button:hover { background: var(--press); }
+.button:active { transform: scale(.97); background: var(--line2); }
+.button:disabled { background: var(--hover); color: var(--off); pointer-events: none; }
+
+.primary { background: var(--fg); color: var(--on-fg); }
+.primary:hover { background: var(--solid-hover); }
+.primary:active { background: var(--solid-press); }
+.primary:disabled { background: var(--solid-off); color: var(--on-solid-off); }
+
+.secondary { }
+.text { background: transparent; padding: 0 var(--sp-3); }
+.text:hover { background: var(--hover); }
+
+.danger { background: var(--danger-bg); color: var(--danger); }
+.danger:hover { background: var(--danger-bg-hover); }
+
+.xs { height: var(--ctl-xs); padding: 0 14px; font: var(--t-label-sm); }
+.sm { height: var(--ctl); padding: 0 14px; font: var(--t-label-sm); }
+.md { }
+.lg { height: var(--ctl-lg); padding: 0 26px; font: var(--t-label-lg); }
+.bar { height: var(--bar); padding: 0 20px 0 16px; gap: 9px; }
+.block { display: flex; width: 100%; }
