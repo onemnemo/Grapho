@@ -1,0 +1,10 @@
+export { CoverArt } from './CoverArt';
+export type { CoverArtProps } from './CoverArt';
+export { FolderArt, FOLDER_COLOURS } from './FolderArt';
+export type { FolderArtProps, FolderColour, FolderPaper } from './FolderArt';
+export { DocArt, CanvasArt } from './ThumbArt';
+export type { DocArtProps, DocKind } from './ThumbArt';
+export { COVER_PRESETS, COVER_COLOURS } from './coverPresets';
+export type { CoverPreset } from './coverPresets';
+export { COVER_PATTERNS, COVER_TEXTURES } from './coverFinish';
+export type { CoverPattern, CoverTexture } from './coverFinish';

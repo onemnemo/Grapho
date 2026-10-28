@@ -1,0 +1,16 @@
+/* The canvas drawn from its settings. */
+.cvt {
+  position: relative; flex: none; overflow: hidden; border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1), 0 4px 14px rgba(0, 0, 0, .35);
+  transition: width .3s var(--ease), height .3s var(--ease), background-color .2s;
+}
+.cvt:not(.dk) { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12), 0 4px 14px rgba(0, 0, 0, .35); }
+.sketch { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .9; }
+.mark {
+  position: absolute; right: 6px; bottom: 6px; width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center; background: rgba(10, 10, 11, .62); color: #fff; backdrop-filter: blur(4px);
+}
+.inf::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 24px rgba(0, 0, 0, .18); pointer-events: none; }
+.fixed { }
+.flat { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
+.flat:not(.dk) { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); }

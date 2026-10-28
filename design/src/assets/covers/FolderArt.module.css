@@ -1,0 +1,58 @@
+/* 3D folder: tab, back panel, three papers peeking, front with a colour gradient.
+   Colours come from the --f-* tokens. Sizes scale with the folder's own width. */
+.folder {
+  position: relative; display: block; width: 100%; aspect-ratio: 228 / 140; container-type: inline-size;
+  --fb: var(--f-indigo-b); --f1: var(--f-indigo-1); --f2: var(--f-indigo-2);
+}
+.indigo { --fb: var(--f-indigo-b); --f1: var(--f-indigo-1); --f2: var(--f-indigo-2); }
+.rose { --fb: var(--f-rose-b); --f1: var(--f-rose-1); --f2: var(--f-rose-2); }
+.ember { --fb: var(--f-ember-b); --f1: var(--f-ember-1); --f2: var(--f-ember-2); }
+.forest { --fb: var(--f-forest-b); --f1: var(--f-forest-1); --f2: var(--f-forest-2); }
+.sea { --fb: var(--f-sea-b); --f1: var(--f-sea-1); --f2: var(--f-sea-2); }
+.gold { --fb: var(--f-gold-b); --f1: var(--f-gold-1); --f2: var(--f-gold-2); }
+.sky { --fb: var(--f-sky-b); --f1: var(--f-sky-1); --f2: var(--f-sky-2); }
+.slate { --fb: var(--f-slate-b); --f1: var(--f-slate-1); --f2: var(--f-slate-2); }
+
+.back { position: absolute; inset: 9% 0 0 0; border-radius: 6.5cqw; background: var(--fb); }
+.back::before {
+  content: ""; position: absolute; left: 0; top: -7.4%; width: 38%; height: 14%;
+  background: var(--fb); border-radius: 4cqw 4cqw 0 0; clip-path: polygon(0 0, 78% 0, 100% 100%, 0 100%);
+}
+.papers { position: absolute; left: 7%; right: 7%; top: 7%; height: 50%; display: flex; gap: 2.5%; align-items: flex-end; }
+.paper {
+  flex: 1; height: 100%; border-radius: 1.6cqw; background: #F2F1EC;
+  transform: translateY(var(--dy, 0%)) rotate(var(--rot, 0deg));
+  box-shadow: 0 -1px 6px rgba(0, 0, 0, .25);
+  transition: transform .38s var(--spring);
+}
+.front {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 62%; border-radius: 6.5cqw;
+  background: linear-gradient(180deg, var(--f1), var(--f2));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 -2px 10px rgba(0, 0, 0, .18);
+  transform-origin: 50% 100%;
+  transition: transform .38s var(--spring);
+}
+.text { position: absolute; left: 14px; right: 14px; bottom: 12px; text-align: left; }
+.name {
+  font: 500 clamp(11px, 7cqw, 15px)/1.2 var(--sans); letter-spacing: -.01em; color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .25); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.meta { font: 400 clamp(10px, 5.6cqw, 12px)/1.3 var(--sans); color: rgba(255, 255, 255, .78); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mark { position: absolute; right: 12px; bottom: 10px; color: rgba(255, 255, 255, .85); display: grid; place-items: center; }
+.icon { position: absolute; right: 6cqw; top: 5cqw; color: rgba(255, 255, 255, .85); opacity: .9; }
+
+/* Hover: the front drops a little and the papers rise, one after the other. */
+.interactive:hover .front, .hover .front { transform: translateY(3%); }
+.interactive:hover .paper, .hover .paper { transform: translateY(calc(var(--dy, 0%) - 14%)) rotate(var(--rot, 0deg)); }
+.interactive:hover .paper:nth-child(2), .hover .paper:nth-child(2) { transition-delay: 30ms; }
+.interactive:hover .paper:nth-child(3), .hover .paper:nth-child(3) { transition-delay: 60ms; }
+
+/* Drop target: the papers wave while something is held over the folder. */
+.over .front { transform: translateY(7%); }
+.over .paper { animation: wave .42s ease-in-out infinite alternate; }
+.over .paper:nth-child(2) { animation-delay: -.14s; }
+.over .paper:nth-child(3) { animation-delay: -.28s; }
+@keyframes wave {
+  from { transform: translateY(calc(var(--dy, 0%) - 26%)) rotate(calc(var(--rot, 0deg) - 4deg)); }
+  to { transform: translateY(calc(var(--dy, 0%) - 30%)) rotate(calc(var(--rot, 0deg) + 4deg)); }
+}
