@@ -1,0 +1,18 @@
+.tabs { display: flex; gap: var(--sp-1); max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  position: relative; flex: 1; height: var(--ctl); padding: 0 var(--sp-2);
+  border: 0; border-radius: var(--r-full); background: none; color: var(--mute); font: var(--t-label); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); white-space: nowrap;
+  transition: color var(--d-fast), background var(--d-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+/* the chosen tab holds a soft white fill with its label at full opacity; hover shows the fill, nothing is drawn at rest */
+.tab:hover { color: var(--fg); background: var(--hover-fill); }
+.tab[aria-selected="true"] { color: var(--fg); background: var(--sel-fill); }
+.tab:focus-visible { outline: var(--focus); outline-offset: var(--focus-in); }
+.tab:disabled { color: var(--off); pointer-events: none; }
+.count { font: var(--t-micro); color: var(--dim); font-feature-settings: "tnum"; }
+
+.hug { display: inline-flex; }
+.hug .tab { flex: none; padding: 0 var(--sp-4); }
