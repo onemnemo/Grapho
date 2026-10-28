@@ -1,0 +1,12 @@
+/* Layout of the studio: a top bar over four columns. Placement only. */
+.grid {
+  flex: 1; min-height: 0; display: grid; outline: 0;
+  grid-template-columns: var(--st-rail-w) var(--st-panel-w) minmax(0, 1fr) var(--st-insp-w);
+  grid-template-rows: var(--st-top-h) minmax(0, 1fr);
+}
+.top { grid-column: 1 / -1; }
+.rail, .panel, .main, .side { min-height: 0; min-width: 0; }
+.rail, .side { transition: opacity var(--d-base); }
+/* while a tile is carried, the rest steps back */
+.grid[data-carrying="true"] .rail, .grid[data-carrying="true"] .side { opacity: .7; }
+.root { width: var(--st-stage-w); height: var(--st-stage-h); max-width: 100%; max-height: 100%; }
