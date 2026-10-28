@@ -1,0 +1,46 @@
+/* Cover tile: art in a 3:4 frame with the title and a meta line below. Width comes from the parent. */
+.tile { position: relative; cursor: pointer; touch-action: pan-y; -webkit-tap-highlight-color: transparent; outline: 0; --badge-left: 10px; --badge-top: 10px; }
+.art {
+  --rx: 0deg; --ry: 0deg; --ly: 0px; --sc: 1;
+  position: relative; aspect-ratio: 3 / 4; width: 100%; overflow: hidden; container-type: inline-size;
+  border-radius: var(--r-xs) var(--r-sm) var(--r-sm) var(--r-xs);
+  transform: perspective(720px) translateY(var(--ly)) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--sc));
+  transition: transform .3s var(--spring), box-shadow var(--d-base) var(--ease), opacity var(--d-base), filter var(--d-base);
+  box-shadow: var(--tile-shadow);
+}
+.art::after {
+  content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0; transition: opacity var(--d-base);
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 30%), var(--tile-sheen), transparent 55%);
+}
+.more { top: auto; bottom: 8px; right: 8px; }
+.star { position: absolute; right: 8px; top: 8px; z-index: 4; color: var(--gold); display: grid; filter: drop-shadow(var(--star-shadow)); }
+.name {
+  font: var(--t-label); letter-spacing: -.01em; text-align: center; margin-top: 13px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color var(--d-base);
+}
+.meta { font: var(--t-caption); color: var(--dim); text-align: center; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.warn { color: var(--danger); }
+
+/* the pointer is over it, or a story pins that pose */
+.tile:hover .art, .tile[data-state="hover"] .art { --ly: -5px; box-shadow: var(--tile-shadow-lift); }
+.tile:hover .art::after, .tile[data-state="hover"] .art::after { opacity: 1; }
+.tile:active .art, .tile[data-state="press"] .art { --sc: .965; --ly: -1px; transition-duration: var(--d-press); }
+.tile[data-state="hold"] .art { --sc: .93; transition: transform .45s linear; }
+.tile:focus-visible .art { outline: var(--focus); outline-offset: var(--focus-out); }
+
+/* choosing: the others step back */
+.tile[data-dim="true"] .art { opacity: .55; filter: saturate(.55) brightness(.92); }
+.tile[data-dim="true"]:hover .art { opacity: .85; filter: none; }
+.tile[data-dim="true"] .name { color: var(--dim); }
+.tile[data-lifted="true"] .art { opacity: .25; filter: saturate(.5); }
+
+/* picked: shrink, ring with a gap, the badge fills */
+.tile[data-selected="true"] .art {
+  --sc: .94; --ly: 0px;
+  box-shadow: 0 0 0 3px var(--ring-gap), 0 0 0 6px var(--fg), var(--tile-shadow-sel);
+}
+.tile[data-selected="true"]:hover .art { --ly: -2px; }
+.tile[data-selected="true"] .art::after { opacity: 0; }
+.tile[data-selected="true"] .name { color: var(--white); }
+
+@media (prefers-reduced-motion: reduce) { .art { transform: none; } }

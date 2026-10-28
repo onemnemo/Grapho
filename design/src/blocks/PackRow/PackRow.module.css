@@ -1,0 +1,15 @@
+/* no box at rest; a fill under the pointer */
+.row { display: flex; align-items: center; gap: var(--sp-2); padding-right: var(--sp-2); border-radius: var(--r-md); min-width: 0; transition: background var(--d-fast); }
+.row:hover { background: var(--hover); }
+.main {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2) var(--sp-2); border: 0; background: none; color: inherit;
+  font: inherit; text-align: left; cursor: pointer; border-radius: var(--r-md);
+}
+.main:focus-visible { outline: var(--focus); outline-offset: var(--focus-in); }
+.art { transition: opacity var(--d-base); }
+.off .art, .off .text { opacity: .45; }
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; transition: opacity var(--d-base); }
+.text b { font: var(--t-label-lg); font-weight: 500; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text small { font: var(--t-caption); line-height: 1.3; color: var(--dim); }
+.acts { display: flex; align-items: center; gap: var(--sp-2); flex: none; }
+.more { display: inline-flex; }

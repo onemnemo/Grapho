@@ -1,0 +1,18 @@
+/* Floating bar at the bottom while choosing: one solid action, quiet icons, a red Delete. */
+.wrap { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; justify-content: center; pointer-events: none; z-index: var(--z-bar); }
+.fixed { position: fixed; }
+.bar {
+  display: flex; align-items: center; gap: var(--sp-1); height: 64px; padding: 0 10px; border-radius: var(--r-full);
+  background: var(--overlay); box-shadow: var(--e2), inset 0 1px 0 var(--hl); pointer-events: auto;
+  transform: translateY(120px); opacity: 0;
+  transition: transform .34s var(--spring), opacity var(--d-fast);
+}
+.bar[data-visible="true"] { transform: none; opacity: 1; }
+.count { font: var(--t-label); padding: 0 12px 0 4px; color: var(--mute); white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
+.count b { color: var(--fg); font-weight: 500; }
+.main { margin-right: 6px; }
+.bar .icon { color: var(--mute); }
+.bar .icon:hover { color: var(--fg); }
+.bar button { transition: background var(--d-fast), color var(--d-fast), transform var(--d-fast) var(--spring), opacity var(--d-base); }
+.sep { width: 1px; height: 26px; background: var(--line2); margin: 0 var(--sp-1); }
+.idle button, .idle .icon { opacity: .35; pointer-events: none; }

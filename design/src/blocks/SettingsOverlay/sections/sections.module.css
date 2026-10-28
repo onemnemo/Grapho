@@ -1,0 +1,10 @@
+/* the heading of a group of settings: above the setting names in weight, so a page reads as sections */
+.sh { display: flex; align-items: center; justify-content: space-between; margin: var(--sp-8) 0 var(--sp-3); min-height: var(--sp-6); }
+.sh:first-child { margin-top: 0; }
+.sh h3 { margin: 0; font: var(--t-heading); letter-spacing: var(--track-heading); color: var(--fg); }
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--sp-2); }
+.about { display: grid; place-items: center; padding: var(--sp-4) 0 var(--sp-6); }
+.rows { margin: 0 calc(var(--sp-3) * -1); }
+.below { margin-top: var(--sp-6); }
+.rows > * { padding-left: var(--sp-3); padding-right: var(--sp-3); }
+.languages { height: 560px; }

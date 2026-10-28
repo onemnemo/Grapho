@@ -1,0 +1,21 @@
+.main { width: 100%; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--s1); }
+.stage {
+  flex: 1; position: relative; display: grid; place-items: center; min-height: 0; overflow: hidden;
+  background: var(--bg) radial-gradient(var(--st-dot) 1px, transparent 1.4px) 0 0 / 22px 22px;
+}
+.canvas { position: relative; touch-action: none; }
+.canvas::after { content: ""; position: absolute; inset: -10px; border: 1.5px dashed transparent; border-radius: 18px; pointer-events: none; transition: border-color var(--d-base); }
+.canvas[data-over="true"]::after { border-color: var(--st-drop-ring); }
+.host { filter: var(--st-canvas-shadow); }
+.swap { animation: swapin .32s var(--ease); }
+@keyframes swapin { from { scale: .965; opacity: .55; } to { scale: 1; opacity: 1; } }
+.safe { position: absolute; left: 3%; bottom: 3%; width: 58%; height: 24%; border: 1px dashed var(--st-name-edge); border-radius: 12px; pointer-events: none; z-index: 1; }
+.safe[data-centre="true"] { left: 21%; }
+.safe span { position: absolute; right: 10px; top: -8px; padding: 3px 6px; border-radius: var(--r-full); background: var(--st-name-tag); color: var(--mute); font: 500 10px/1 var(--sans); }
+.veil {
+  position: absolute; inset: 14px; z-index: 9; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border: 1.5px dashed var(--fg); border-radius: 20px; background: var(--st-veil); font: 500 15px var(--sans); color: var(--fg);
+}
+.stage[data-file="true"] .veil { display: flex; }
+.dock { height: var(--st-dock-h); flex: none; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--bg); }
+@media (prefers-reduced-motion: reduce) { .swap { animation: none; } }

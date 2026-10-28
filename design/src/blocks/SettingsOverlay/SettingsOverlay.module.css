@@ -1,0 +1,5 @@
+.sheet { height: min(680px, calc(100% - 48px)); width: min(1000px, calc(100% - 48px)); }
+.sheet > header { min-height: 64px; }
+.full { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--overlay); animation: up var(--d-sheet) var(--spring) both; }
+@keyframes up { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) { .full { animation: none; } }
