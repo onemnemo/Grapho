@@ -1,0 +1,17 @@
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.fo { width: 96px; }
+.cv { width: 56px; }
+.pvF { width: 214px; }
+.pvC { width: 150px; }
+.bump { animation: bump .4s var(--spring); }
+@keyframes bump { 0% { transform: scale(.94); } 60% { transform: scale(1.03); } 100% { transform: none; } }
+.fin { display: grid; gap: 10px; }
+.fin3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > span { font: var(--t-caption); color: var(--dim); }
+.paper { display: flex; flex-direction: column; gap: var(--sp-4); }
+.tplGroup h4 { margin: 0 0 var(--sp-2); font: var(--t-group); color: var(--group-fg); }
+.tpl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.page { display: block; width: 52px; height: 70px; }
+.paperLine { margin: 0; font: var(--t-caption); color: var(--mute); }
+@media (prefers-reduced-motion: reduce) { .bump { animation: none; } }

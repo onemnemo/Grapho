@@ -1,0 +1,5 @@
+.frame { position: relative; width: var(--fw); max-width: 100%; height: var(--fh); overflow: hidden; box-shadow: 0 0 0 1px var(--line2); }
+.tablet { border-radius: var(--r-lg); }
+.phone { border-radius: 36px; box-shadow: 0 0 0 1px var(--line2), var(--e2); }
+.stage { background: var(--stage); }
+.screen { background: var(--bg); }
