@@ -1,0 +1,13 @@
+/* A row of drawings. Nothing at rest, a soft fill under the pointer, the chosen one on a 12% fill with its glyph at full opacity. */
+.glyphs { display: flex; gap: var(--sp-1); width: 100%; }
+.opt {
+  flex: 1 1 0; min-width: 0; height: var(--ctl); display: grid; place-items: center; padding: 0; border: 0; cursor: pointer;
+  border-radius: var(--r-sm); background: none; color: var(--mute);
+  transition: background var(--d-fast), color var(--d-fast), transform var(--d-press);
+  -webkit-tap-highlight-color: transparent;
+}
+.opt:hover { background: var(--hover-fill); color: var(--fg); }
+.opt:active { transform: scale(.96); }
+.opt[aria-checked="true"] { background: var(--sel-fill); color: var(--fg); }
+.opt:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.opt svg { overflow: visible; }
