@@ -1,0 +1,2 @@
+.root { position: relative; width: fit-content; max-width: 100%; }
+.pad { position: absolute; inset: var(--sp-6); }
