@@ -1,0 +1,33 @@
+/* colours */
+.dots { display: grid; gap: 10px 8px; align-items: center; justify-items: center; padding: 6px 2px 4px; }
+.custom {
+  position: relative; width: 44px; height: 100%; padding: 0; border: 0; border-radius: var(--r-md);
+  background: var(--rainbow); color: var(--fg); display: grid; place-items: center; cursor: pointer;
+  transition: transform var(--d-fast) var(--spring), box-shadow var(--d-fast);
+}
+.custom[data-has] { background: var(--c); }
+.custom span { width: 26px; height: 26px; border-radius: 50%; background: var(--overlay); display: grid; place-items: center; }
+.custom:hover { transform: scale(1.06); }
+.custom:active { transform: scale(.95); }
+.custom[data-selected] { box-shadow: 0 0 0 2.5px var(--overlay), 0 0 0 4.5px var(--fg); }
+.custom:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.picker { display: flex; flex-direction: column; align-items: flex-start; }
+.back {
+  display: inline-flex; align-items: center; gap: 4px; height: 30px; margin-bottom: 12px; padding: 0 12px 0 6px; border: 0; border-radius: var(--r-full);
+  background: var(--s2); color: var(--mute); font: var(--t-label); cursor: pointer;
+}
+.back:hover { color: var(--fg); background: var(--s3); }
+.back:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+
+/* icons */
+.search { margin-bottom: 10px; }
+.icons { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; max-height: 216px; overflow-y: auto; padding: 2px; margin: -2px; scrollbar-width: thin; scrollbar-color: var(--line2) transparent; }
+.ico {
+  height: 42px; padding: 0; border: 0; border-radius: var(--r-sm); background: var(--s2); color: var(--mute); display: grid; place-items: center; cursor: pointer;
+  transition: background var(--d-fast), color var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.ico:hover { background: var(--s3); color: var(--fg); }
+.ico:active { transform: scale(.94); }
+.ico[aria-checked="true"] { background: var(--fg); color: var(--on-fg); }
+.ico:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.add { background: none; box-shadow: inset 0 0 0 1px var(--line2); }
