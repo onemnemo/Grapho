@@ -1,0 +1,7 @@
+.stage { width: 340px; padding: var(--sp-3); background: var(--overlay); border-radius: var(--r-lg); box-shadow: var(--e2); color: var(--fg); font: var(--t-label); }
+.row { display: flex; align-items: center; gap: var(--sp-1); height: var(--row); padding: 0 var(--sp-3) 0 var(--sp-1); border-radius: var(--r-md); margin-bottom: 6px; background: var(--s3); }
+.row b { flex: 1; font-weight: 500; min-width: 0; }
+.row[data-off] b { color: var(--mute); }
+.title { font: var(--t-micro); color: var(--dim); margin: var(--sp-3) 0 var(--sp-2) var(--sp-1); }
+.title:first-child { margin-top: 0; }
+.empty { height: var(--row); display: grid; place-items: center; border-radius: var(--r-md); color: var(--dim); font: var(--t-caption); }
