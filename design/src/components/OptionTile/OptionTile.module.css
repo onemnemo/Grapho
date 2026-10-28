@@ -1,0 +1,31 @@
+.group { display: grid; gap: var(--sp-3); }
+.c1 { grid-template-columns: 1fr; }
+.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.opt {
+  position: relative; display: flex; flex-direction: column; gap: var(--sp-3); text-align: left; min-width: 0;
+  padding: var(--sp-3); border: 0; border-radius: var(--r-md); background: none; color: var(--mute); cursor: pointer;
+  transition: background var(--d-fast), color var(--d-fast), transform var(--d-base) var(--spring);
+}
+/* no border at rest: the fill appears under the pointer, and the chosen one holds a soft white fill */
+.opt:hover { background: var(--hover-fill); color: var(--fg); }
+.opt:active { transform: scale(.985); }
+.opt[aria-checked="true"] { background: var(--sel-fill); color: var(--fg); }
+.opt[aria-checked="true"]:hover { background: var(--sel-fill-hover); }
+.opt:focus-visible { outline-offset: var(--focus-out); }
+
+.text b { display: block; font: 600 15px/1.2 var(--sans); color: inherit; }
+.text small { display: block; margin-top: var(--sp-1); font: var(--t-caption); line-height: 1.45; color: var(--mute); }
+
+.tile { padding: var(--sp-2) var(--sp-2) var(--sp-3); }
+.tile .text { text-align: center; }
+.tile .ico { align-self: center; }
+.row { flex-direction: row; align-items: center; padding: var(--sp-4); }
+
+.ico {
+  width: 48px; height: 48px; flex: none; border-radius: var(--r-md); background: var(--s3);
+  display: grid; place-items: center; color: inherit;
+}
+.opt[aria-checked="true"] .ico { background: var(--sel-fill); }

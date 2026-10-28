@@ -1,0 +1,50 @@
+.tile {
+  position: relative; display: grid; justify-items: center; align-content: start; gap: var(--sp-2); min-width: 0;
+  padding: 14px 6px 10px; border: 0; border-radius: var(--r-md); background: var(--s2); color: var(--mute);
+  font: inherit; cursor: pointer;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring), box-shadow var(--d-fast), color var(--d-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.slot { display: grid; place-items: center; width: 100%; height: 78px; }
+.slot > * { transition: transform var(--d-base) var(--spring); }
+.name { font: 500 12px/16px var(--sans); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.caption { font: var(--t-caption); color: var(--dim); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: -4px; }
+
+.tile:hover, .tile[data-state="hover"] { background: var(--s3); color: var(--fg); }
+.tile:hover .slot > *, .tile[data-state="hover"] .slot > * { transform: translateY(-3px); }
+.tile:active, .tile[data-state="press"] { transform: scale(.97); background: var(--press); }
+.tile[aria-pressed="true"] { background: linear-gradient(var(--sel-fill), var(--sel-fill)), var(--s2); color: var(--fg); }
+.tile[aria-pressed="true"]:hover { background: linear-gradient(var(--sel-fill-hover), var(--sel-fill-hover)), var(--s2); }
+.tile:focus-visible, .tile[data-state="focus"] { outline: var(--focus); outline-offset: var(--focus-out); }
+.tile:disabled { opacity: .38; pointer-events: none; }
+
+.check {
+  position: absolute; top: 7px; right: 7px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--fg); color: var(--on-fg); display: grid; place-items: center;
+  scale: 0; transition: scale var(--d-slow) var(--spring);
+}
+.tile[aria-pressed="true"] .check { scale: 1; }
+
+/* canvas presets sit in a slightly shorter slot */
+.canvas .slot { height: 72px; }
+
+/* picker: the big tile of Presets and library, no card at rest */
+.picker { gap: 2px; padding: 12px 6px 10px; border-radius: 16px; background: none; align-content: start; justify-items: center; color: var(--fg); }
+.picker .slot { height: 132px; }
+.picker.folder .slot { height: 100px; margin-top: 16px; }
+.picker .name { font: 500 13px/18px var(--sans); margin-top: var(--sp-2); }
+.picker:hover, .picker[data-state="hover"] { background: var(--s2); }
+.picker:hover .slot > *, .picker[data-state="hover"] .slot > * { transform: translateY(-3px); }
+.picker:active, .picker[data-state="press"] { transform: none; background: var(--s2); }
+.picker[aria-pressed="true"], .picker[aria-pressed="true"]:hover { background: var(--sel-fill); }
+.picker .caption { margin-top: 0; }
+.picker .check { top: var(--sp-2); right: var(--sp-2); width: 22px; height: 22px; }
+.picker[data-selecting] .check { scale: 1; background: var(--st-select-ring); box-shadow: inset 0 0 0 2px var(--box-edge-hover); color: transparent; }
+.picker[data-selecting][aria-pressed="true"] .check { background: var(--fg); box-shadow: none; color: var(--on-fg); }
+
+/* swatch: a texture, pattern or finish. The picture fills a rounded well; it does not lift. */
+.swatch { width: 100%; gap: 7px; padding: 8px 8px 9px; justify-items: stretch; }
+.swatch .slot { position: relative; height: var(--slot-h, 62px); border-radius: 9px; overflow: hidden; isolation: isolate; background: var(--s3); }
+.swatch:hover .slot > *, .swatch[data-state="hover"] .slot > * { transform: none; }
+.swatch .name { text-align: center; justify-self: center; }
+.swatch.bare .slot { background: none; overflow: visible; }
