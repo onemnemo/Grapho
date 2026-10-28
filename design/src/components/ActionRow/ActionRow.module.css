@@ -1,0 +1,13 @@
+.row {
+  display: flex; align-items: center; gap: var(--sp-3); width: 100%; min-height: var(--hit); padding: 0 var(--sp-3); border: 0; border-radius: var(--r-md);
+  background: none; color: var(--fg); font: var(--t-label); text-align: left; cursor: pointer; transition: background var(--d-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.row:hover { background: var(--hover); }
+.row:active { background: var(--press); }
+.row:focus-visible { outline: var(--focus); outline-offset: var(--focus-in); }
+.row:disabled { color: var(--off); pointer-events: none; }
+.row > svg { flex: none; color: var(--mute); }
+.label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.value { flex: none; color: var(--dim); font: var(--t-caption); }
+.danger, .danger > svg { color: var(--danger); }
