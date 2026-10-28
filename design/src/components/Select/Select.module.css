@@ -1,0 +1,11 @@
+.select { position: relative; flex: 1; display: block; min-width: 0; }
+.select select {
+  -webkit-appearance: none; appearance: none; width: 100%; height: var(--ctl);
+  padding: 0 30px 0 var(--sp-3); border-radius: var(--r-sm);
+  border: 1px solid var(--line); background: var(--s2); color: var(--fg);
+  font: var(--t-label-sm); cursor: pointer; transition: border-color var(--d-fast);
+}
+.select select:hover { border-color: var(--line2); }
+.select select:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.select option { background: var(--overlay); }
+.chev { position: absolute; right: 9px; top: 8px; color: var(--dim); pointer-events: none; }

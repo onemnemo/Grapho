@@ -1,0 +1,26 @@
+.cp { width: 100%; }
+.disc {
+  position: relative; border-radius: 50%; margin: 0 auto; touch-action: none; cursor: crosshair;
+  background: var(--hue-disc); box-shadow: inset 0 0 0 1px var(--line2);
+}
+.dim { position: absolute; inset: 0; border-radius: 50%; background: var(--pick-floor); pointer-events: none; }
+.knob {
+  position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -11px; border-radius: 50%;
+  border: 3px solid var(--white); box-shadow: var(--knob-shadow); pointer-events: none;
+  transition: scale var(--d-fast) var(--spring);
+}
+.drag .knob { scale: 1.18; }
+.bar { position: relative; height: 20px; border-radius: var(--r-full); margin: var(--sp-4) 0 var(--sp-3); box-shadow: inset 0 0 0 1px var(--line2); touch-action: none; cursor: pointer; }
+.barKnob { position: absolute; top: 50%; width: 22px; height: 22px; margin: -11px; border-radius: 50%; border: 3px solid var(--white); box-shadow: var(--knob-shadow); pointer-events: none; }
+.foot { display: flex; gap: var(--sp-2); }
+.hex {
+  flex: 1; display: flex; align-items: center; gap: var(--sp-1); height: 34px; padding: 0 var(--sp-3);
+  border-radius: var(--r-sm); background: var(--s2); color: var(--dim); font: var(--t-label-sm); transition: box-shadow var(--d-fast);
+}
+.hex:focus-within { box-shadow: 0 0 0 1px var(--fg); }
+.hex input { flex: 1; min-width: 0; width: 100%; background: none; border: 0; outline: 0; color: var(--fg); font: var(--t-label-sm); text-transform: uppercase; letter-spacing: .04em; }
+.drop { width: 34px; height: 34px; border-radius: var(--r-sm); border: 0; background: var(--s2); color: var(--mute); display: grid; place-items: center; cursor: pointer; transition: background var(--d-fast), color var(--d-fast); }
+.drop:hover { background: var(--s3); color: var(--fg); }
+.saved { display: flex; gap: var(--sp-2); margin-top: var(--sp-3); flex-wrap: wrap; }
+.saved button { width: 22px; height: 22px; border-radius: 50%; border: 0; padding: 0; background: var(--c); box-shadow: inset 0 0 0 1px var(--dot-edge); cursor: pointer; transition: transform var(--d-fast) var(--spring); }
+.saved button:hover { transform: scale(1.15); }

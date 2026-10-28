@@ -1,0 +1,17 @@
+.panel {
+  display: flex; flex-direction: column; min-width: 0; min-height: 0; max-width: 100%; overflow: hidden;
+  background: var(--overlay); border-radius: var(--r-lg); color: var(--fg);
+  box-shadow: var(--e2), inset 0 1px 0 var(--hl);
+}
+.panel > * { min-width: 0; }
+.head {
+  flex: none; position: relative; z-index: 3; display: flex; align-items: center; gap: var(--sp-3);
+  min-height: var(--bar); padding: var(--sp-2) var(--sp-4); background: var(--overlay); box-shadow: 0 1px 0 var(--line);
+}
+.head > svg { color: var(--mute); flex: none; }
+.head h3 { margin: 0; font: var(--t-heading); letter-spacing: var(--track-heading); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.body {
+  flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: var(--sp-2) var(--sp-4) var(--sp-4);
+  scrollbar-width: thin; scrollbar-color: var(--s3) transparent; overscroll-behavior: contain;
+}
+.docked { border-radius: 0; box-shadow: var(--e2); }
