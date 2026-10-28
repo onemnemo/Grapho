@@ -1,0 +1,6 @@
+.hint {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2); height: var(--ctl); padding: 0 var(--sp-4);
+  border-radius: var(--r-full); background: var(--overlay); box-shadow: var(--e1);
+  font: var(--t-label-sm); line-height: 1; font-feature-settings: "tnum"; color: var(--mute); pointer-events: none; white-space: nowrap;
+}
+.hint svg { flex: none; }

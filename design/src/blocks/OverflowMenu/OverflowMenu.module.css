@@ -1,0 +1,11 @@
+.quick { display: flex; gap: 2px; padding: 0 0 2px; }
+.q {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--sp-1); padding: 10px 0 var(--sp-2);
+  border-radius: var(--r-sm); border: 0; background: none; color: var(--fg); font: var(--t-micro); font-size: 12px; line-height: 16px; cursor: pointer;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.q svg { color: var(--mute); }
+.q:hover { background: var(--hover); }
+.q:active { transform: scale(.94); }
+.q:focus-visible { outline: var(--focus); outline-offset: var(--focus-in); }
+.group { margin-top: var(--sp-1); }

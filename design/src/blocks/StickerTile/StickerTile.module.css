@@ -1,0 +1,33 @@
+.tile {
+  position: relative; aspect-ratio: 1; display: grid; place-items: center; padding: 10px; min-width: 0;
+  border: 0; border-radius: var(--st-r-tile); background: var(--tile-bg, var(--s2)); color: var(--fg); cursor: grab;
+  overflow: hidden; user-select: none; touch-action: pan-y; -webkit-tap-highlight-color: transparent;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+}
+/* built-in shapes rest in the quieter text colour and come up to full strength under the pointer, so a grid of them does not glare */
+.tile { --shape-ink: var(--mute); }
+.tile:hover, .tile[data-state="hover"] { --shape-ink: var(--fg); background: var(--s3); transform: translateY(-2px); }
+.tile:active { transform: scale(.96); }
+.tile:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.tile[data-carried] { opacity: .45; }
+.sm { --shape-inset: 22%; padding: 9px; border-radius: var(--r-sm); }
+.wide { padding: 4px; }
+.swatch { aspect-ratio: 16 / 10; padding: 0; }
+.framed { aspect-ratio: 4 / 3; padding: 0; }
+
+.video::after {
+  content: ""; position: absolute; left: 6px; bottom: 6px; width: 0; height: 0;
+  border-left: 7px solid var(--white); border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent;
+  opacity: .9; transition: opacity var(--d-fast);
+}
+.video:hover::after, .video[data-state="hover"]::after { opacity: 0; }
+.dur {
+  position: absolute; right: 6px; bottom: 6px; padding: 3px 6px; border-radius: var(--r-full);
+  background: var(--st-badge); color: var(--white); font: 500 10px/1 var(--sans); font-style: normal;
+}
+
+.add { border: 1.5px dashed var(--line2); background: none; color: var(--mute); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font: var(--t-micro); cursor: pointer; }
+.add:hover, .add[data-state="hover"] { color: var(--fg); border-color: var(--mute); background: var(--hover); transform: none; }
+
+.cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cell > span { font: var(--t-caption); color: var(--mute); }

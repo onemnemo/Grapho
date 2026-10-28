@@ -1,0 +1,15 @@
+.stage { display: grid; place-items: center; height: 304px; margin: 12px 0 14px; border-radius: var(--r-md); background: var(--bg); }
+.frame { position: relative; overflow: hidden; border-radius: 6px; background: var(--st-name-tag); box-shadow: var(--st-crop-edge); cursor: grab; touch-action: none; }
+.frame[data-drag] { cursor: grabbing; }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: 50% 50%; }
+.frame::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent calc(33.33% - .5px), var(--st-crop-grid) 0 calc(33.33% + .5px), transparent 0 calc(66.66% - .5px), var(--st-crop-grid) 0 calc(66.66% + .5px), transparent 0),
+    linear-gradient(transparent calc(33.33% - .5px), var(--st-crop-grid) 0 calc(33.33% + .5px), transparent 0 calc(66.66% - .5px), var(--st-crop-grid) 0 calc(66.66% + .5px), transparent 0);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.row { display: flex; align-items: center; gap: 8px; min-height: 32px; margin-top: 6px; }
+.label { width: 58px; flex: none; font: var(--t-caption); color: var(--mute); }
+.zoom { flex: 1; min-width: 0; }
+.value { width: 40px; flex: none; text-align: right; font: 500 12px/1 var(--sans); font-feature-settings: "tnum"; color: var(--mute); }

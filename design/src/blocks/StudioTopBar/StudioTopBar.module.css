@@ -1,0 +1,11 @@
+.bar { display: flex; align-items: center; gap: var(--sp-2); height: var(--st-top-h); padding: 0 12px 0 8px; border-bottom: 1px solid var(--line); background: var(--s1); color: var(--fg); }
+.title { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.kind { color: var(--dim); font: var(--t-label); white-space: nowrap; }
+.name {
+  width: 200px; padding: 6px 10px; border: 0; border-radius: 10px; outline: 0; background: none; color: var(--fg);
+  font: 500 15px/20px var(--sans); letter-spacing: -.01em; transition: background var(--d-fast), box-shadow var(--d-fast);
+}
+.name:hover { background: var(--hover); }
+.name:focus { background: var(--s2); box-shadow: 0 0 0 1px var(--fg); }
+.right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.sep { width: 1px; height: 22px; background: var(--line2); margin: 0 4px; }

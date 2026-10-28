@@ -1,0 +1,22 @@
+/* The ••• button on a folder and its menu. */
+.more {
+  position: absolute; right: 10px; top: calc(38% + 9px); z-index: 4;
+  width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--on-media); color: var(--white); display: grid; place-items: center; cursor: pointer;
+  opacity: 0; transform: scale(.82);
+  transition: opacity var(--d-fast), transform var(--d-base) var(--spring), background var(--d-fast);
+}
+.more:hover { background: var(--on-media-hover); }
+.more:active { transform: scale(.92); }
+.more:focus-visible, .more[aria-expanded="true"], .more[data-show="true"], :hover > .more { opacity: 1; transform: none; }
+@media (hover: none) { .more { opacity: .92; transform: none; } }
+.small { width: 30px; height: 30px; right: 8px; }
+
+/* in a list row the button sits in the grid and shows with the row */
+.row { position: static; width: 32px; height: 32px; opacity: var(--more-o, 0); transform: none; background: var(--hover); color: var(--fg); }
+.row:hover { background: var(--press); }
+.row:focus-visible, .row[aria-expanded="true"] { opacity: 1; }
+@media (hover: none) { .row { opacity: 1; } }
+
+.target { display: flex; align-items: center; gap: var(--sp-3); }
+.art { width: 38px; flex: none; pointer-events: none; }

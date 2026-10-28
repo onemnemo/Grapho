@@ -1,0 +1,25 @@
+.chip {
+  position: absolute; z-index: var(--z-bar); display: flex; align-items: center; gap: var(--sp-1); height: var(--pill-h);
+  padding: 0 var(--sp-1) 0 var(--sp-4); background: var(--overlay); border-radius: var(--r-full);
+  box-shadow: var(--e1), inset 0 0 0 1px var(--line); translate: -50% 0; width: max-content; max-width: calc(100% - 16px); overflow: hidden;
+  animation: chipIn var(--d-base) var(--spring) both;
+}
+.q { color: var(--mute); font: var(--t-label-sm); line-height: 1; margin-right: var(--sp-1); white-space: nowrap; }
+.opt {
+  display: inline-flex; align-items: center; gap: 6px; height: var(--ctl); padding: 0 12px; border: 0; cursor: pointer;
+  border-radius: var(--r-full); font: var(--t-label-sm); font-weight: 600; line-height: 1; white-space: nowrap;
+  background: none; color: var(--fg);
+}
+.opt svg { color: var(--mute); }
+.opt:hover { background: var(--hover); }
+.best, .best:hover { background: var(--fg); color: var(--on-fg); box-shadow: none; }
+.opt svg { width: 16px; height: 16px; }
+.best svg { color: inherit; }
+.time {
+  position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--fg); opacity: .35; transform-origin: left;
+  animation: countdown var(--suggest-ms, 5000ms) linear forwards;
+}
+.chip:hover .time { animation-play-state: paused; }
+@keyframes countdown { to { transform: scaleX(0); } }
+@keyframes chipIn { from { opacity: 0; transform: translateY(6px) scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .time { animation: none; opacity: 0; } .chip { animation: none; } }

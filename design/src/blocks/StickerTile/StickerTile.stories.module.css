@@ -1,0 +1,7 @@
+.panel { width: 208px; padding: 14px; background: var(--s1); border-radius: var(--r-md); }
+.g2, .g3, .g4, .g5 { display: grid; gap: 8px; }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+.g5 { grid-template-columns: repeat(5, 1fr); }
+.wide { width: 420px; }

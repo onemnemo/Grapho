@@ -1,0 +1,31 @@
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.cap { margin: 12px 0 0; color: var(--dim); font-size: 13px; line-height: 18px; }
+.cap:empty { display: none; }
+.label { margin: 16px 0 10px; font: var(--t-caption); color: var(--dim); }
+.label:first-child { margin-top: 0; }
+.pats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.off { opacity: .4; pointer-events: none; }
+.sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fixed { margin-top: 2px; }
+.fixed .label { margin-top: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.orient { margin-top: 12px; }
+.line { height: 40px; display: flex; align-items: center; padding: 0 14px; border-radius: var(--r-md); background: var(--s2); color: var(--mute); font: var(--t-body); }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field > span { font: var(--t-caption); color: var(--dim); }
+.bump { animation: bump .4s var(--spring); display: grid; place-items: center; }
+@keyframes bump { 0% { transform: scale(.94); } 60% { transform: scale(1.03); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .bump { animation: none; } }
+
+/* the pictures on the two size cards */
+.inf {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle, var(--st-inf-dot) 0 1.1px, transparent 1.7px) 0 0 / 14px 14px, var(--s1);
+  -webkit-mask-image: radial-gradient(ellipse at center, var(--bg) 40%, transparent 92%);
+  mask-image: radial-gradient(ellipse at center, var(--bg) 40%, transparent 92%);
+  display: grid; place-items: center;
+}
+.inf b { width: 34px; height: 34px; border-radius: 50%; background: var(--fg); color: var(--on-fg); display: grid; place-items: center; }
+.fix { position: absolute; inset: 0; }
+.fix::before { content: ""; position: absolute; left: 50%; top: 50%; width: 84px; height: 58px; translate: -50% -50%; border-radius: 5px; background: var(--st-paper); box-shadow: var(--st-paper-shadow); }
+.fix::after { content: ""; position: absolute; left: calc(50% - 30px); top: calc(50% - 16px); width: 60px; height: 30px; background: linear-gradient(var(--st-paper-line) 1.5px, transparent 1.5px) 0 0 / 100% 10px; }
