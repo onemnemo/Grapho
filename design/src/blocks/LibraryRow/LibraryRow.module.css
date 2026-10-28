@@ -1,0 +1,45 @@
+/* A row in list view: thumbnail, name with its path, type, size, date. Folders end with the ••• button. */
+.row {
+  --badge-left: 16px; --badge-top: 18px; --more-o: 0;
+  position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr) 150px 90px 100px; align-items: center; gap: var(--sp-4);
+  height: 64px; padding: 0 var(--sp-3); border-radius: var(--r-md); cursor: pointer; outline: 0;
+  transition: background var(--d-fast), padding var(--d-slow) var(--ease), box-shadow var(--d-base), opacity var(--d-base), transform var(--d-fast) var(--spring);
+}
+.folder { grid-template-columns: 44px minmax(0, 1fr) 120px 100px 100px 40px; }
+.compact { grid-template-columns: 44px minmax(0, 1fr); }
+.aside { grid-template-columns: 44px minmax(0, 1fr) 90px; }
+.row:hover, .row[data-state="hover"] { background: var(--s2); --more-o: 1; }
+.row:active { transform: scale(.995); background: var(--s3); }
+.row:focus-visible { box-shadow: inset 0 0 0 2px var(--fg); }
+.row[data-selecting="true"] { padding-left: 56px; }
+.row[data-selecting="true"]:not([data-selected="true"]) { opacity: .6; }
+.row[data-selecting="true"]:not([data-selected="true"]):hover { opacity: .9; }
+.row[data-selected="true"] { background: var(--sel-row); }
+.row[data-selected="true"] .name { color: var(--white); }
+.row[data-lifted="true"] { opacity: .25; filter: saturate(.5); }
+
+.thumb {
+  position: relative; width: 36px; height: 44px; border-radius: 3px 5px 5px 3px; overflow: hidden;
+  transition: transform var(--d-slow) var(--spring);
+}
+.row:hover .thumb { transform: scale(1.06) rotate(-2deg); }
+.tab {
+  position: relative; width: 44px; height: 34px; border-radius: 7px;
+  background: linear-gradient(var(--f1), var(--f2)); box-shadow: inset 0 1px 0 var(--folder-hl);
+}
+.tab::before { content: ""; position: absolute; left: 0; top: -4px; width: 18px; height: 6px; border-radius: 4px 4px 0 0; background: var(--f1); }
+.text { min-width: 0; font: var(--t-label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color var(--d-base); }
+.name { display: block; overflow: hidden; text-overflow: ellipsis; }
+.sub { display: block; font: var(--t-caption); color: var(--dim); overflow: hidden; text-overflow: ellipsis; }
+.type { display: flex; align-items: center; gap: var(--sp-2); font: var(--t-caption); color: var(--mute); }
+.type svg { color: var(--dim); }
+.cell { font: var(--t-caption); color: var(--mute); font-feature-settings: "tnum"; white-space: nowrap; }
+
+.indigo { --f1: var(--f-indigo-1); --f2: var(--f-indigo-2); }
+.rose { --f1: var(--f-rose-1); --f2: var(--f-rose-2); }
+.ember { --f1: var(--f-ember-1); --f2: var(--f-ember-2); }
+.forest { --f1: var(--f-forest-1); --f2: var(--f-forest-2); }
+.sea { --f1: var(--f-sea-1); --f2: var(--f-sea-2); }
+.gold { --f1: var(--f-gold-1); --f2: var(--f-gold-2); }
+.sky { --f1: var(--f-sky-1); --f2: var(--f-sky-2); }
+.slate { --f1: var(--f-slate-1); --f2: var(--f-slate-2); }

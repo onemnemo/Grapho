@@ -1,0 +1,43 @@
+.cap { font: var(--t-group); color: var(--group-fg); padding-left: 2px; }
+.square { position: relative; border-radius: var(--r-sm); overflow: hidden; cursor: crosshair; touch-action: none; flex: none; }
+.square canvas { display: block; }
+.squareThumb {
+  position: absolute; left: 0; top: 0; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%;
+  border: 2.5px solid var(--white); background: var(--c, var(--white)); box-shadow: var(--wh-sv-thumb-shadow);
+  will-change: transform; pointer-events: none; transition: scale var(--d-fast) var(--spring);
+}
+.square[data-drag] .squareThumb { scale: 1.15; }
+.bar { position: relative; height: 32px; border-radius: 16px; cursor: pointer; touch-action: none; flex: none; --f: 0; }
+.hue { background: var(--wh-hue); }
+.opacity { background: var(--g, none), repeating-conic-gradient(var(--wh-checker-a) 0 25%, var(--wh-checker-b) 0 50%) 0 0 / 14px 14px; }
+.barThumb {
+  position: absolute; top: 50%; left: calc(12px + (100% - 24px) * var(--f, 0)); width: 24px; height: 24px; margin: -12px 0 0 -12px;
+  border-radius: 50%; border: 3px solid var(--white); box-shadow: var(--wh-thumb-shadow); transition: transform var(--d-fast) var(--spring); pointer-events: none;
+}
+.bar[data-drag] .barThumb { transform: scale(1.14); }
+.hexRow { display: flex; align-items: center; gap: 10px; }
+.preview { width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--wh-swatch-edge); flex: none; }
+.hash { color: var(--dim); }
+.field { flex: 1; width: auto; }
+.recentGroup { display: flex; flex-direction: column; gap: 2px; }
+.recent { display: flex; gap: 2px; margin: 0 0 0 -6px; }
+.rc { width: 40px; height: 40px; display: grid; place-items: center; }
+
+/* the add action: a pill with the colour wheel and the set's name, and a chevron that picks another set */
+.split { display: flex; gap: 2px; align-self: flex-start; max-width: 100%; }
+.splitMain, .splitMore {
+  height: var(--ctl); border: 0; background: var(--hover); color: var(--fg); font: var(--t-label-sm); cursor: pointer;
+  display: inline-flex; align-items: center; gap: var(--sp-2); min-width: 0;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.splitMain { padding: 0 14px 0 12px; border-radius: var(--r-full) var(--r-xs) var(--r-xs) var(--r-full); }
+.splitMain span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.splitMore { width: 34px; justify-content: center; padding: 0; border-radius: var(--r-xs) var(--r-full) var(--r-full) var(--r-xs); color: var(--mute); }
+.split:only-child .splitMain, .splitMain:last-child { border-radius: var(--r-full); }
+.splitMain:hover, .splitMore:hover, .splitMore[aria-expanded="true"] { background: var(--press); }
+.splitMain:active { transform: scale(.98); }
+.splitMain:focus-visible, .splitMore:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.wheelDot { flex: none; width: 16px; height: 16px; border-radius: 50%; background: var(--wh-rainbow); box-shadow: var(--wh-rainbow-edge); }
+
+.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-top: var(--sp-1); }
+.done { min-width: 120px; }

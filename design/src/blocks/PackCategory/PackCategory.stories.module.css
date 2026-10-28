@@ -1,0 +1,3 @@
+.panel { width: 208px; padding: 14px; background: var(--s1); border-radius: var(--r-md); }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }

@@ -1,0 +1,3 @@
+.shape { stroke: var(--paper-ink); stroke-linejoin: round; stroke-linecap: round; }
+.open { fill: none; }
+.filled { fill: var(--paper-ink-fill); }

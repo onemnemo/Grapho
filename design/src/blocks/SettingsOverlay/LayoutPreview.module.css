@@ -1,0 +1,20 @@
+.mini {
+  position: relative; display: block; aspect-ratio: 10 / 7; border-radius: var(--r-md); background-color: var(--paper); overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--line2); pointer-events: none;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 17%, var(--paper-rule) 17% calc(17% + 1px));
+}
+.md { aspect-ratio: 16 / 9; }
+.lg { aspect-ratio: 21 / 9; }
+.bar { position: absolute; background: var(--s1); box-shadow: 0 0 0 1px var(--line2); }
+.bar.pill { background: var(--overlay); border-radius: var(--r-full); }
+.bar[data-pos="top"] { left: 0; right: 0; top: 0; height: 10%; }
+.bar[data-pos="bottom"] { left: 0; right: 0; bottom: 0; height: 10%; }
+.bar[data-pos="left"] { top: 0; bottom: 0; left: 0; width: 8%; }
+.bar[data-pos="right"] { top: 0; bottom: 0; right: 0; width: 8%; }
+.pill[data-pos="top"] { left: 22%; right: 22%; top: 8%; height: 12%; }
+.pill[data-pos="bottom"] { left: 22%; right: 22%; bottom: 8%; height: 12%; }
+.pill[data-pos="left"] { top: 22%; bottom: 22%; left: 5%; width: 9%; }
+.pill[data-pos="right"] { top: 22%; bottom: 22%; right: 5%; width: 9%; }
+.mini b { position: absolute; width: 20%; aspect-ratio: 1; border-radius: 50%; background: var(--wheel); right: -9%; top: 56%; }
+.mini[data-w="left"] b { left: -8%; right: auto; }
+.mini[data-w="bottom"] b { right: auto; left: 62%; top: auto; bottom: -14%; }

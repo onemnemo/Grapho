@@ -1,0 +1,29 @@
+.panel { overflow: hidden; }
+.head { display: flex; align-items: center; height: 34px; padding: 0 4px 0 10px; flex: none; }
+.head b { flex: 1; font-weight: 500; }
+.cards { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; scrollbar-width: none; flex: 1 1 auto; }
+.card {
+  position: relative; flex: none; height: 56px; border-radius: var(--r-md); background: var(--s3);
+  display: flex; align-items: center; gap: var(--sp-2); padding: 0 10px; cursor: pointer;
+  transition: background var(--d-fast), transform var(--d-press) var(--ease);
+  animation: rise 300ms var(--ease) both; animation-delay: calc(var(--n) * 30ms);
+}
+.card:hover { background: var(--wh-grip); }
+.card:active { transform: scale(.985); }
+.card[aria-current="true"] { background: var(--sel-fill); }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.glyph { display: block; width: var(--glyph-w, 46px); flex: none; }
+.glyph svg { display: block; width: 100%; height: auto; overflow: visible; filter: var(--wh-glyph-shadow); }
+.body { flex: 1; min-width: 0; transition: opacity var(--d-base); }
+.body b { display: block; font: var(--t-label-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 22px; }
+.strip { height: 22px; border-radius: var(--r-xs); background: var(--wh-paper); overflow: hidden; }
+.strip svg { display: block; }
+.check {
+  position: absolute; right: 10px; top: 9px; width: 20px; height: 20px; color: var(--fg);
+  display: grid; place-items: center; transform: scale(0); transition: transform .32s var(--spring);
+}
+.card[aria-current="true"] .check { transform: scale(1); }
+.del { position: absolute; right: 8px; top: 11px; opacity: 0; transform: scale(.9); pointer-events: none; transition: opacity var(--d-fast), transform var(--d-base) var(--spring); }
+.card[data-deleting] .del { opacity: 1; transform: none; pointer-events: auto; }
+.card[data-deleting] .body { opacity: .25; }
+@media (prefers-reduced-motion: reduce) { .card { animation: none; } }

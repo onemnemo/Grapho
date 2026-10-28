@@ -1,0 +1,13 @@
+.summary { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: var(--r-md); background: var(--s2); }
+.thumbs { display: flex; gap: 6px; flex: 1; min-width: 0; }
+.thumb { display: grid; place-items: center; min-width: 44px; height: 44px; padding: 0 6px; border-radius: 10px; background: var(--s1); overflow: hidden; }
+.thumb > div { pointer-events: none; }
+.more { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; background: var(--s3); font: 500 13px/1 var(--sans); color: var(--mute); }
+.count { margin: 0; color: var(--mute); white-space: nowrap; }
+.count b { color: var(--fg); font-weight: 500; }
+.name { margin-top: 16px; }
+.opts { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.opt { padding: 12px; border-radius: var(--r-md); background: var(--s2); transition: background var(--d-fast); }
+.opt:hover { background: var(--s3); }
+.foot { margin: 14px 0 0; color: var(--dim); font-size: 13px; line-height: 18px; }
+.foot b { color: var(--mute); font-weight: 500; }

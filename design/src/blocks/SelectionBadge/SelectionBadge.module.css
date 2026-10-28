@@ -1,0 +1,25 @@
+/* Round selection badge. The parent places it with --badge-left, --badge-top or --badge-right. */
+.badge {
+  position: absolute; z-index: 6;
+  left: var(--badge-left, auto); top: var(--badge-top, auto); right: var(--badge-right, auto);
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--badge-edge); background: var(--badge-bg); box-shadow: var(--badge-shadow);
+  color: var(--on-fg); display: grid; place-items: center; pointer-events: none;
+  opacity: 0; transform: scale(.5);
+  transition: opacity var(--d-base) var(--ease), transform var(--d-base) var(--spring), background var(--d-fast), border-color var(--d-fast);
+}
+.sm { width: 26px; height: 26px; }
+.badge svg { width: 16px; height: 16px; opacity: 0; transform: scale(.4); transition: opacity var(--d-fast), transform var(--d-base) var(--spring); }
+.badge[data-visible="true"] { opacity: 1; transform: none; }
+.badge[data-selected="true"] {
+  background: var(--white); border-color: var(--white); box-shadow: var(--badge-shadow-on);
+  animation: pop .44s var(--spring);
+}
+.badge[data-selected="true"] svg { opacity: 1; transform: none; }
+.badge[data-selected="true"]::after {
+  content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid var(--white);
+  animation: ripple .55s var(--ease) both; pointer-events: none;
+}
+@keyframes pop { 0% { transform: scale(.3); } 55% { transform: scale(1.28); } 100% { transform: scale(1); } }
+@keyframes ripple { from { transform: scale(1); opacity: .9; } to { transform: scale(2.1); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .badge[data-selected="true"], .badge[data-selected="true"]::after { animation: none; } }

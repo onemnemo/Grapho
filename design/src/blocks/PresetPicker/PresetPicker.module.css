@@ -1,0 +1,23 @@
+.count { margin-left: 10px; color: var(--dim); font: var(--t-caption); }
+.tools { display: flex; align-items: center; gap: 10px; }
+.search { flex: 1; min-width: 0; display: flex; }
+.sortWrap { flex: none; }
+.sort {
+  height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px 0 16px; border: 0; border-radius: var(--r-full);
+  background: var(--s2); color: var(--dim); font: 500 13px/1 var(--sans); cursor: pointer; transition: background var(--d-fast);
+}
+.sort b { color: var(--fg); font-weight: 500; }
+.sort:hover { background: var(--s3); }
+.sort:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.chips { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.chipRow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.chipRow > span { width: 52px; color: var(--dim); font: var(--t-caption); }
+.scroll {
+  height: 430px; margin: 14px -8px 0; padding: 6px 8px 10px; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--line2) transparent;
+}
+.grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px 14px; }
+.art { pointer-events: none; }
+.empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--dim); }
+.empty b { color: var(--fg); font: var(--t-heading); }
+.note { flex: 1; min-width: 0; font: var(--t-caption); color: var(--dim); }

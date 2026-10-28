@@ -1,0 +1,33 @@
+/* Folder tile: the 3D folder, its ••• menu, the selection ring and the drop hint. */
+.tile {
+  position: relative; flex: none; width: var(--w, 250px); aspect-ratio: 228 / 140; cursor: pointer; touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent; outline: 0; --badge-right: 12px; --badge-top: calc(38% + 11px);
+}
+.inner { position: absolute; inset: 0; transition: transform .34s var(--spring), opacity var(--d-base), filter var(--d-base); }
+.tile:hover .inner, .tile[data-state="hover"] .inner { transform: translateY(-5px); }
+.tile:active .inner { transform: translateY(-1px) scale(.975); transition-duration: var(--d-press); }
+.tile:focus-visible .inner { outline: var(--focus); outline-offset: 4px; border-radius: var(--r-md); }
+.ring {
+  position: absolute; inset: -8px -8px -6px; border-radius: 20px; border: 3px solid transparent; pointer-events: none;
+  opacity: 0; transform: scale(.96);
+  transition: border-color var(--d-base), opacity var(--d-base), transform var(--d-slow) var(--spring);
+}
+
+/* choosing */
+.tile[data-dim="true"] .inner { opacity: .55; filter: saturate(.55) brightness(.92); }
+.tile[data-dim="true"]:hover .inner { opacity: .85; filter: none; }
+.tile[data-selected="true"] .inner, .tile[data-selected="true"]:hover .inner { transform: scale(.94); }
+.tile[data-selected="true"] .ring { opacity: 1; border-color: var(--fg); transform: none; }
+.tile[data-lifted="true"] .inner { opacity: .25; filter: saturate(.5); }
+
+/* something is held over it */
+.tile[data-over="true"] .inner { transform: translateY(-5px) scale(1.06); }
+.tile[data-over="true"] .ring { opacity: 1; border-color: var(--white); transform: none; }
+.hint {
+  position: absolute; left: 50%; top: -30px; z-index: 8; transform: translate(-50%, 6px) scale(.9);
+  background: var(--tip); color: var(--on-fg); font: var(--t-label-sm); padding: 5px 10px; border-radius: var(--r-full);
+  white-space: nowrap; opacity: 0; pointer-events: none;
+  transition: opacity var(--d-fast), transform var(--d-base) var(--spring);
+}
+.tile[data-over="true"] .hint { opacity: 1; transform: translate(-50%, 0) scale(1); }
+

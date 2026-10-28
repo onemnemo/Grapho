@@ -1,0 +1,23 @@
+.bar {
+  position: absolute; z-index: var(--z-bar); display: flex; align-items: center; gap: 2px; height: var(--pill-h); padding: 0 var(--sp-1);
+  background: var(--overlay); border-radius: var(--r-full); box-shadow: var(--e1), inset 0 0 0 1px var(--line);
+  translate: -50% 0; width: max-content; max-width: calc(100% - 16px); overflow-x: auto; scrollbar-width: none;
+  animation: barIn var(--d-base) var(--spring) both;
+}
+.bar::-webkit-scrollbar { display: none; }
+/* Space, not a rule, sets Delete apart. */
+.gap { width: var(--sel-bar-gap); flex: none; }
+.act {
+  display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 var(--sp-3) 0 10px; border: 0; border-radius: var(--r-full);
+  background: none; color: var(--fg); font: var(--t-label-sm); white-space: nowrap; cursor: pointer; flex: none;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.act svg { color: var(--mute); transition: color var(--d-fast); }
+.act:hover { background: var(--hover); }
+.act:hover svg { color: var(--fg); }
+.act:active { background: var(--press); transform: scale(.96); }
+.act:focus-visible { outline: var(--focus); outline-offset: var(--focus-in); }
+.act[data-on] { background: var(--sel); }
+.bar .danger, .bar .danger svg { color: var(--danger); }
+@keyframes barIn { from { opacity: 0; transform: translateY(6px) scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .bar { animation: none; } }

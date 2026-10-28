@@ -1,0 +1,9 @@
+.browse { display: flex; flex-direction: column; gap: var(--sp-4); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--sp-4) var(--sp-3); }
+.item { display: flex; flex-direction: column; gap: 2px; min-width: 0; align-items: stretch; }
+.art { margin-bottom: 6px; }
+.name { font: var(--t-label); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta { font: var(--t-caption); color: var(--mute); }
+.by { font: var(--t-caption); color: var(--dim); margin-bottom: var(--sp-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.submit { margin: var(--sp-2) 0 0; padding-top: var(--sp-4); border-top: 1px solid var(--line); font: var(--t-caption); color: var(--mute); }
+.none { margin: var(--sp-8) 0; color: var(--dim); font: var(--t-body); }
