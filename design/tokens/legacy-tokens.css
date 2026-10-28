@@ -1,0 +1,388 @@
+/* Grapho design tokens. 1px = 1dp.
+   The single source of every colour, size, radius, shadow and timing. Components read these
+   variables and never raw values; scripts/check-design.mjs enforces it.
+
+   Themes. Three layers, read top to bottom:
+   1. PALETTE  --p-*  raw values. The only place a built-in theme's colours are written.
+   2. THEMES   one block per theme sets the base semantic tokens (surfaces, text, tint, accent).
+               Ink is the default and lives on :root. Others are [data-theme="graphite"] and so on.
+               "custom" derives every base token from four user inputs with color-mix.
+   3. DERIVED  lines, hover, press and selection fills are mixed from --tint, so they follow any theme.
+   Everything else (radii, type, motion, brand colours, pen wheel, studio) is shared by all themes. */
+
+/* ---- 1. palette ---- */
+:root {
+  /* Ink: near-black, OLED friendly. The default look. */
+  --p-ink-bg: #08080A; --p-ink-s1: #111114; --p-ink-s2: #18181C; --p-ink-s3: #212127; --p-ink-overlay: #1C1C21;
+  --p-ink-s2-hover: #1D1D22; --p-ink-fg: #F5F5F4; --p-ink-mute: #A6A6AE; --p-ink-dim: #8B8B94;
+  --p-ink-on-fg: #0A0A0B; --p-ink-press: #DADAD8; --p-ink-tint: #FFFFFF; --p-ink-stage: #000000; --p-ink-paper: #F3F1EC;
+
+  /* Graphite: a softer dark, lifted blacks, a little blue. */
+  --p-graphite-bg: #131418; --p-graphite-s1: #1A1B20; --p-graphite-s2: #23242A; --p-graphite-s3: #2D2E36;
+  --p-graphite-overlay: #272830; --p-graphite-s2-hover: #292A31; --p-graphite-fg: #ECECEA; --p-graphite-mute: #B1B1BA;
+  --p-graphite-dim: #9696A1; --p-graphite-on-fg: #131418; --p-graphite-press: #CFCFCD; --p-graphite-tint: #FFFFFF;
+  --p-graphite-stage: #0C0D10; --p-graphite-paper: #EFEDE8;
+
+  /* Paper: warm light. */
+  --p-paper-bg: #FBFAF7; --p-paper-s1: #F5F3EE; --p-paper-s2: #EBE8E1; --p-paper-s3: #DFDCD3;
+  --p-paper-overlay: #FFFFFF; --p-paper-s2-hover: #E4E1D9; --p-paper-fg: #17171A; --p-paper-mute: #53535C;
+  --p-paper-dim: #64646E; --p-paper-on-fg: #FBFAF7; --p-paper-press: #3A3A40; --p-paper-tint: #14141A;
+  --p-paper-stage: #D8D5CC; --p-paper-page: #FFFFFF;
+
+  /* status colours that need a second value on light surfaces */
+  --p-danger-light: #C4372A; --p-ok-light: #1F7A4F;
+}
+
+/* ---- 2. themes: base semantic tokens ---- */
+:root, [data-theme="ink"] {
+  color-scheme: dark;
+  --bg: var(--p-ink-bg);                /* page, behind everything */
+  --s1: var(--p-ink-s1);                /* app screens (library, settings) */
+  --s2: var(--p-ink-s2);                /* cards, fields, controls at rest */
+  --s3: var(--p-ink-s3);                /* raised: hover, inner wells */
+  --overlay: var(--p-ink-overlay);      /* menus, popovers, dialogs, sheets (opaque) */
+  --s2-hover: var(--p-ink-s2-hover);    /* search field under the pointer */
+  --scrim: rgba(4,4,6,.62);
+  --fg: var(--p-ink-fg);                /* text and the solid button */
+  --mute: var(--p-ink-mute);            /* secondary text */
+  --dim: var(--p-ink-dim);              /* labels, placeholders (AA on s1/s2) */
+  --on-fg: var(--p-ink-on-fg);          /* text on the solid button */
+  --solid-press: var(--p-ink-press);
+  --tint: var(--p-ink-tint);            /* the colour of every hairline, hover and selection fill */
+  --stage: var(--p-ink-stage);          /* behind the note page in a frame */
+  --paper: var(--p-ink-paper);          /* the note page */
+  --accent: var(--p-ink-fg);            /* focus ring and the on state of switches and sliders */
+  --danger: #FF7A6B; --danger-bg: rgba(224,64,46,.16); --danger-bg-hover: rgba(224,64,46,.26);
+  --ok-fg: #7BE0AE; --ok-bg: rgba(63,178,122,.2);
+  --tip: #FFFFFF;                       /* tooltip surface (text on it is --on-fg) */
+  --checker-a: #3A3A40; --checker-b: #1C1C21;   /* "no colour" swatch */
+}
+[data-theme="graphite"] {
+  color-scheme: dark;
+  --bg: var(--p-graphite-bg); --s1: var(--p-graphite-s1); --s2: var(--p-graphite-s2); --s3: var(--p-graphite-s3);
+  --overlay: var(--p-graphite-overlay); --s2-hover: var(--p-graphite-s2-hover);
+  --scrim: rgba(8,9,12,.58);
+  --fg: var(--p-graphite-fg); --mute: var(--p-graphite-mute); --dim: var(--p-graphite-dim);
+  --on-fg: var(--p-graphite-on-fg); --solid-press: var(--p-graphite-press); --tint: var(--p-graphite-tint);
+  --tip: #FFFFFF; --stage: var(--p-graphite-stage); --paper: var(--p-graphite-paper); --accent: var(--p-graphite-fg);
+  --danger: #FF8577; --danger-bg: rgba(224,64,46,.18); --danger-bg-hover: rgba(224,64,46,.28);
+  --ok-fg: #7BE0AE; --ok-bg: rgba(63,178,122,.2);
+  --checker-a: #43444C; --checker-b: #26272E;
+}
+[data-theme="paper"] {
+  color-scheme: light;
+  --bg: var(--p-paper-bg); --s1: var(--p-paper-s1); --s2: var(--p-paper-s2); --s3: var(--p-paper-s3);
+  --overlay: var(--p-paper-overlay); --s2-hover: var(--p-paper-s2-hover);
+  --scrim: rgba(28,26,22,.36);
+  --fg: var(--p-paper-fg); --mute: var(--p-paper-mute); --dim: var(--p-paper-dim);
+  --on-fg: var(--p-paper-on-fg); --solid-press: var(--p-paper-press); --tint: var(--p-paper-tint);
+  --tip: var(--p-paper-fg); --stage: var(--p-paper-stage); --paper: var(--p-paper-page); --accent: var(--p-paper-fg);
+  --danger: var(--p-danger-light); --danger-bg: rgba(196,55,42,.1); --danger-bg-hover: rgba(196,55,42,.18);
+  --ok-fg: var(--p-ok-light); --ok-bg: rgba(31,122,79,.14);
+  --checker-a: #D4D1C9; --checker-b: #EFEDE7;
+}
+/* custom: four inputs, everything else derived. ThemeEditor sets --th-* on the element that carries data-theme.
+   --tint flips to black or white from the lightness of the background (relative colour, no script). */
+[data-theme="custom"] {
+  --th-accent: var(--p-ink-fg); --th-bg: var(--p-ink-bg); --th-surface: var(--p-ink-s2); --th-paper: var(--p-ink-paper);
+  --tint: oklch(from var(--th-bg) clamp(0, calc((0.6 - l) * 1000), 1) 0 0);
+  --bg: var(--th-bg);
+  --s1: color-mix(in srgb, var(--th-bg) 55%, var(--th-surface));
+  --s2: var(--th-surface);
+  --s3: color-mix(in srgb, var(--th-surface) 91%, var(--tint));
+  --overlay: color-mix(in srgb, var(--th-surface) 94%, var(--tint));
+  --s2-hover: color-mix(in srgb, var(--th-surface) 95%, var(--tint));
+  --scrim: color-mix(in srgb, var(--th-bg) 62%, transparent);
+  --fg: color-mix(in srgb, var(--tint) 96%, var(--th-bg));
+  --mute: color-mix(in srgb, var(--tint) 62%, var(--th-bg));
+  --dim: color-mix(in srgb, var(--tint) 52%, var(--th-bg));
+  --on-fg: var(--th-bg);
+  --solid-press: color-mix(in srgb, var(--fg) 86%, var(--th-bg));
+  --tip: var(--fg);
+  --stage: color-mix(in srgb, var(--th-bg) 70%, black);
+  --paper: var(--th-paper);
+  --accent: var(--th-accent);
+  --danger: oklch(from var(--th-bg) calc(0.55 + (1 - l) * 0.25) 0.17 29);
+  --danger-bg: color-mix(in srgb, var(--danger) 16%, transparent);
+  --danger-bg-hover: color-mix(in srgb, var(--danger) 26%, transparent);
+  --ok-fg: oklch(from var(--th-bg) calc(0.5 + (1 - l) * 0.35) 0.13 155);
+  --ok-bg: color-mix(in srgb, var(--ok-fg) 20%, transparent);
+  --checker-a: color-mix(in srgb, var(--th-surface) 85%, var(--tint));
+  --checker-b: var(--th-surface);
+  color-scheme: dark light;
+}
+
+/* ---- 3. derived: mixed from the base, so they follow every theme. Declared on every themed element so a
+   preview inside the page (ThemeTile) gets its own values. ---- */
+:root, [data-theme] {
+  --line: color-mix(in srgb, var(--tint) 8%, transparent);
+  --line2: color-mix(in srgb, var(--tint) 14%, transparent);
+  --hl: color-mix(in srgb, var(--tint) 6%, transparent);        /* 1px inner top highlight on raised things */
+  --off: color-mix(in srgb, var(--fg) 34%, transparent);        /* disabled */
+
+  /* state layers over any surface */
+  --hover: color-mix(in srgb, var(--tint) 7%, transparent);
+  --press: color-mix(in srgb, var(--tint) 12%, transparent);
+  --sel: color-mix(in srgb, var(--tint) 10%, transparent);
+  --hover-fill: var(--hover);                                    /* a tile, row or segment under the pointer */
+  --sel-fill: color-mix(in srgb, var(--tint) 12%, transparent);  /* the chosen one: fill only, label and glyph stay at full opacity */
+  --sel-fill-hover: color-mix(in srgb, var(--tint) 15%, transparent);
+  --solid-hover: var(--tint);          /* the solid button under the pointer */
+  --press2: color-mix(in srgb, var(--tint) 18%, transparent);    /* pressed state of a tinted control */
+  --box-edge: color-mix(in srgb, var(--tint) 40%, transparent);  /* outline of an unchecked checkbox or radio */
+  --box-edge-hover: color-mix(in srgb, var(--tint) 70%, transparent);
+  --dot-edge: color-mix(in srgb, var(--tint) 18%, transparent);  /* inset edge on a colour swatch so dark colours read */
+  --knob-halo: color-mix(in srgb, var(--fg) 12%, transparent);   /* slider knob hover halo */
+  --knob-halo-drag: color-mix(in srgb, var(--fg) 16%, transparent);
+  --sel-row: color-mix(in srgb, var(--tint) 11%, transparent);   /* selected list row */
+  --on-fg-mute: color-mix(in srgb, var(--on-fg) 55%, transparent);  /* counts on a selected chip */
+  --solid-off: color-mix(in srgb, var(--fg) 22%, transparent);
+  --on-solid-off: color-mix(in srgb, var(--on-fg) 50%, transparent);
+}
+
+/* ---- shared by every theme ---- */
+:root {
+  --pick-floor: #08080A;  /* brightness zero in the colour pickers: a picker's scale does not follow the theme */
+
+  /* brand: colour lives in content and in the tail gradient, never in chrome */
+  --ink: #0E0F12;
+  --pink: #D9487A; --red: #E0402E; --orange: #F28A2E;
+  --navy: #3E3A6D; --gold: #F6C453; --blue: #5C8DF0; --green: #3FB27A; --lilac: #B9A6F0;
+  --tail: linear-gradient(90deg, #D9487A, #E0402E 55%, #F28A2E);
+  --ok: #3FB27A;
+
+  /* type: Geist everywhere, Caveat only as ink on covers and canvases. Noto Sans Devanagari
+     carries Hindi, Geist has no Devanagari. */
+  --sans: 'Geist', 'Inter', 'Segoe UI', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --hand: 'Caveat', 'Bradley Hand', 'Segoe Print', cursive;
+  --t-display: 500 34px/38px var(--sans);   /* screen title: Library */
+  --t-title:   500 22px/28px var(--sans);   /* sheet and dialog titles */
+  --t-heading: 500 17px/22px var(--sans);   /* section heads: Folders, Recent */
+  --t-body:    400 15px/22px var(--sans);
+  --t-label:   500 14px/20px var(--sans);   /* buttons, menu items, tiles */
+  --t-label-sm: 500 13px/18px var(--sans);  /* small buttons and chips */
+  --t-label-lg: 500 15px/20px var(--sans);  /* large buttons */
+  --t-caption: 400 13px/18px var(--sans);   /* meta lines */
+  --t-micro:   500 11px/14px var(--sans);   /* counts, badges */
+  --track-display: -0.04em; --track-title: -0.03em; --track-heading: -0.02em;
+
+  /* spacing, 4pt grid */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
+  --sp-6: 24px; --sp-8: 32px; --sp-12: 48px; --sp-16: 64px;
+  --gutter: 32px;         /* screen side padding on tablet, 16px on phone */
+
+  /* radius: five steps, never anything else */
+  --r-xs: 6px;            /* tiny: key caps, page chips */
+  --r-sm: 10px;           /* swatch squares, menu items, covers' outer corner */
+  --r-md: 14px;           /* fields, tiles, thumbnails, popovers */
+  --r-lg: 24px;           /* sheets, dialogs, big panels (the site radius) */
+  --r-full: 999px;        /* buttons, pills, toggles, dots */
+
+  /* sizes */
+  --hit: 44px;            /* minimum touch target */
+  --ctl: 36px;            /* compact control face */
+  --bar: 48px;            /* top bar and tool row */
+  --icon-sm: 14px; --icon: 21px; --icon-lg: 28px;   /* 7x7 grid: 2, 3, 4px per cell */
+
+  /* elevation: flat by default, depth only where something floats */
+  --e1: 0 8px 24px -10px rgba(0,0,0,.7);
+  --e2: 0 0 0 1px var(--line2), 0 16px 40px -10px rgba(0,0,0,.75);
+  --e3: 0 0 0 1px var(--line2), 0 28px 80px -12px rgba(0,0,0,.85);
+
+  /* motion */
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --spring: cubic-bezier(.3,1.4,.5,1);
+  --d-press: 90ms; --d-fast: 140ms; --d-base: 220ms; --d-slow: 340ms;
+
+  /* folder colours: back panel, front top, front bottom */
+  --f-indigo-b:#3B3470; --f-indigo-1:#6A61B4; --f-indigo-2:#51489A;
+  --f-rose-b:#7A2E50;   --f-rose-1:#B04D76;   --f-rose-2:#93395F;
+  --f-ember-b:#8A4A16;  --f-ember-1:#CC7330;  --f-ember-2:#B35F22;
+  --f-forest-b:#25604A; --f-forest-1:#3F9A74; --f-forest-2:#2F7F5E;
+  --f-sea-b:#1F5A66;    --f-sea-1:#3A97A8;    --f-sea-2:#2B7B8B;
+  --f-gold-b:#8A6A1A;   --f-gold-1:#D9A933;   --f-gold-2:#BC8F25;
+  --f-sky-b:#2B4E8F;    --f-sky-1:#5588D6;    --f-sky-2:#406CB5;
+  --f-slate-b:#3A3C46;  --f-slate-1:#6A6D7B;  --f-slate-2:#52545F;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --d-press:.01ms; --d-fast:.01ms; --d-base:.01ms; --d-slow:.01ms; }
+}
+
+/* ---- surfaces and overlays (sheets, dialogs, menus, toasts, tooltips, empty states) ---- */
+:root {
+  --danger-line: rgba(255,122,107,.22); --warn-line: rgba(246,196,83,.22); --ok-line: rgba(63,178,122,.22);  /* banner kinds */
+  --ease-in: cubic-bezier(.4,0,1,1);
+  --d-exit: 160ms;                /* leaving is quicker than entering */
+  --d-sheet: 340ms;               /* sheets and dialogs coming in */
+  --d-toast: 6000ms;              /* an Undo toast drains over this long */
+  --d-toast-plain: 2200ms;        /* a toast without Undo */
+  --row: 52px;                    /* list rows, inspector and settings rows */
+  --row-menu: 44px;               /* menu items */
+  --toast-min: 372px; --toast-max: 560px;
+  --toast-above-bar: 108px;       /* toast offset when a selection bar is showing */
+  --toast-pill-bottom: 28px;      /* distance from the bottom edge of the one-line pill toast */
+  --d-pop: 260ms;                 /* popovers and menus opening */
+  --z-sheet: 30; --z-dialog: 34; --z-menu: 40; --z-toast: 60; --z-tip: 80;
+
+  /* controls: IconButton, SegmentedControl, Toggle, Checkbox, Radio, Chip, Slider, Swatch, SearchField, HoldButton */
+  --white: #FFFFFF;                      /* value bubble, hold label over the red fill */
+  --knob-shadow: 0 2px 8px rgba(0,0,0,.5);
+  --thumb-shadow: 0 2px 8px rgba(0,0,0,.35);  /* sliding thumb of the segmented control */
+  --hold-fill: linear-gradient(90deg, #C9371F, #E0402E 88%, #F26A52);  /* hold-to-confirm danger fill */
+  --hold-pulse: rgba(255,122,107,.55);
+  --check-glow: 0 0 2px rgba(0,0,0,.5);          /* tick on a colour swatch */
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --d-exit:.01ms; --d-sheet:.01ms; }
+}
+
+/* ---- note screen and settings (chrome) ---- */
+:root {
+  --paper-ink: #1B1D24;                   /* handwriting and drawn shapes on the page */
+  --paper-ink-fill: rgba(27,29,36,.18);   /* shape fill on the page */
+  --paper-rule: rgba(60,80,140,.12);      /* ruled lines, also in the layout tiles */
+  --paper-sel: rgba(14,15,18,.05);        /* selection rectangle fill on the page */
+  --bar-h: 40px;                          /* full line note bar, the page gives this up when it shows */
+  --bar-h-phone: 44px;
+  --pill-h: 44px;                         /* floating note bar and floating selection bar */
+  --z-bar: 10;
+  --suggest-ms: 5000ms;                   /* "Did you mean" countdown */
+  --wheel: #202025; --wheel-well: #131316; --wheel-hub: #2A2A31;  /* pen wheel ring, well and hub */
+  --on-art: rgba(255,255,255,.92);        /* pixel glyph on a pack cover */
+  --art-edge: rgba(255,255,255,.12);      /* inner edge on a pack cover */
+}
+
+/* ---- library: tiles, folders, selection, bar, header ---- */
+:root {
+  --tile-shadow: 0 6px 18px -8px rgba(0,0,0,.8);            /* cover at rest */
+  --tile-shadow-lift: 0 20px 30px -12px rgba(0,0,0,.95);    /* cover under the pointer */
+  --tile-shadow-sel: 0 18px 30px -12px rgba(0,0,0,.9);      /* selected cover */
+  --tile-sheen: rgba(255,255,255,.2);                       /* light that follows the pointer over a cover */
+  --ring-gap: var(--s1);                                    /* gap between a selected cover and its white ring */
+  --badge-edge: rgba(255,255,255,.9);                       /* selection badge outline */
+  --badge-bg: rgba(8,8,10,.5);
+  --badge-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.35);
+  --badge-shadow-on: 0 2px 8px rgba(0,0,0,.45);
+  --star-shadow: 0 1px 2px rgba(0,0,0,.5);                  /* drop shadow under the star on a cover */
+  --on-media: rgba(0,0,0,.28);                              /* round button over artwork: folder dots */
+  --on-media-hover: rgba(0,0,0,.45);
+  --mark: rgba(246,196,83,.3);                              /* search match highlight */
+  --folder-hl: rgba(255,255,255,.22);                       /* top highlight on a folder's front, row and tile */
+  --fade: #000;                                             /* mask colour for the fading edge of a scrolling row */
+}
+
+/* ---- pen wheel: flat solid bands, rings, handle, tab, panels (blocks/PenWheel and its panels) ---- */
+:root {
+  --wh-ring: #3A3A43;                /* outer edge of the body, edge of the tool well */
+  --wh-well: #0D0D10;                /* tools band, recessed; also dark fields inside panels */
+  --wh-hub: #34343C;                 /* pens hub in the middle */
+  --wh-hub-edge: #4A4A54;            /* ring round the hub, gap marks on the colour ring */
+  --wh-plate: #3E3E47;               /* raised plate under the chosen tool, grown capsule, chosen eraser mode */
+  --wh-grip: #2A2A31;                /* handle, closed tab, card under the pointer */
+  --wh-dot: #8C8C96;                 /* size dots, tool band position marker */
+  --wh-glyph-ring: #5A5A64;          /* hairline ring on the size button */
+  --wh-scroll-track: #2E2E35;
+  --wh-paper: #0B0B0E;               /* note paper, sample stroke strip */
+  --wh-checker-dark: #2A2A31; --wh-checker-light: #3A3A43;   /* under the opacity arc */
+  --wh-checker-a: #3A3A43; --wh-checker-b: #26262C;          /* under the opacity bar */
+  --wh-band-edge: rgba(255,255,255,.16);
+  --wh-icon: rgba(245,245,244,.86);  /* tool icons at rest */
+  --wh-icon-soft: rgba(245,245,244,.78);
+  --wh-icon-handle: rgba(245,245,244,.8);
+  --wh-divider: rgba(255,255,255,.18);
+  --wh-swatch-edge: rgba(255,255,255,.22);
+  --wh-hint-edge: rgba(255,255,255,.2);
+  --wh-rainbow: conic-gradient(from 0deg, #EF4444, #F59E0B, #22C55E, #06B6D4, #3B82F6, #D946EF, #EF4444);
+  --wh-rainbow-edge: 0 0 0 1.5px rgba(255,255,255,.25);
+  --wh-plus-edge: 0 0 0 1px rgba(0,0,0,.45);   /* plus on the rainbow */
+  --wh-hue: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+  --wh-shadow-rest: 0 10px 24px -6px rgba(0,0,0,.6);
+  --wh-shadow-lift: 0 30px 50px -10px rgba(0,0,0,.75);
+  --wh-nib-shadow: drop-shadow(0 3px 3px rgba(0,0,0,.5));
+  --wh-glyph-shadow: drop-shadow(0 2px 2px rgba(0,0,0,.5));
+  --wh-tab-dot-edge: inset 0 1px 1px rgba(255,255,255,.35), 0 0 0 2px rgba(255,255,255,.1);
+  --wh-tip-shadow: 0 0 0 1px var(--line2), 0 8px 16px -4px rgba(0,0,0,.7);
+  --wh-thumb-shadow: 0 0 0 1px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.55);   /* ring on a bar */
+  --wh-sv-thumb-shadow: 0 0 0 1px rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.5);  /* ring on the square */
+  --wh-field: rgba(255,255,255,.08); --wh-field-hover: rgba(255,255,255,.1); --wh-field-focus: rgba(255,255,255,.4);
+  --wh-open-row: rgba(255,255,255,.075);
+  --wh-t-readout: 600 15px/18px var(--sans);   /* size number on the grown plate */
+  --wh-t-marker: 600 11px/27px var(--sans);    /* percent inside the opacity marker */
+  --wh-drain-track: rgba(255,255,255,.14);
+  --wh-dot-grid: rgba(255,255,255,.085);          /* dots on the note paper */
+  --wh-cursor: rgba(255,255,255,.8); --wh-cursor-edge: rgba(0,0,0,.4);   /* eraser outline */
+  --wh-bar: rgba(11,11,14,.9);                    /* note top bar over the paper */
+}
+
+/* ---- studio: covers, folders, canvases, packs (the Studio screen, its sheets and panels) ---- */
+:root {
+  --rainbow: conic-gradient(from 90deg, #E0402E, #F6C453, #3FB27A, #5C8DF0, #B9A6F0, #D9487A, #E0402E);  /* "custom colour" ring */
+  --hue-disc: radial-gradient(circle, #fff 0, rgba(255,255,255,0) 70%), conic-gradient(from 90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);  /* colour picker disc */
+  --knob-shadow-sm: 0 1px 4px rgba(0,0,0,.5);         /* the 16px knob of a dense slider */
+  --st-guide: #F4A9C6;                                /* alignment guides, and the selection box while a rotation snaps */
+  --st-handle-edge: rgba(8,8,10,.6);                  /* dark hairline round a white selection handle */
+  --st-handle-shadow: 0 2px 6px rgba(0,0,0,.4);
+  --st-box-edge: rgba(8,8,10,.5);                     /* hairline outside the selection box */
+  --st-box-inner: rgba(8,8,10,.25);
+  --st-hover-edge: rgba(255,255,255,.6);              /* outline of the layer under the pointer */
+  --st-hover-halo: rgba(8,8,10,.35);
+  --st-dot: rgba(255,255,255,.07);                    /* dot grid behind the canvas */
+  --st-drop-ring: rgba(255,255,255,.6);               /* dashed ring while dragging in */
+  --st-veil: rgba(8,8,10,.78);                        /* "Drop to add" veil */
+  --st-glass: rgba(8,8,10,.62);                       /* play glyph and infinity mark on art */
+  --st-glass-hover: rgba(8,8,10,.8);
+  --st-select-ring: rgba(8,8,10,.45);                  /* the empty check ring on a tile while choosing several */
+  --st-badge: rgba(8,8,10,.7);                        /* duration badge on a clip tile */
+  --st-name-tag: #26262D;                             /* "Name area" tag on the canvas */
+  --st-name-edge: rgba(255,255,255,.45);
+  --st-canvas-shadow: drop-shadow(0 28px 36px rgba(0,0,0,.55));
+  --st-more: rgba(24,24,28,.9);                       /* the three-dot button on a tile in the library backdrop */
+  --st-well: #121215;                                 /* behind the picture in the background remover */
+  --st-cut-a: #3A3A41; --st-cut-b: #2A2A30;           /* checkerboard that shows what was removed */
+  --st-scan: 0 0 18px 4px rgba(255,255,255,.55);      /* the line that sweeps down while the background is removed */
+  --st-crop-edge: 0 0 0 1px rgba(255,255,255,.45), 0 12px 30px rgba(0,0,0,.5);
+  --st-crop-grid: rgba(255,255,255,.34);
+  --st-image-edge: 0 0 0 1px rgba(255,255,255,.5), 0 8px 16px rgba(0,0,0,.4);   /* the framed picture in the Image card */
+  --st-surf-a: #2C2A66; --st-surf-b: #1D1B45;         /* the indigo surface behind the preview in the Sticker and Image cards */
+  --st-paper: #F7F6F2; --st-paper-line: #C9C6BE;      /* the sheet drawn on the Fixed size card */
+  --st-paper-shadow: 0 6px 16px rgba(0,0,0,.45);
+  --st-pk-dim: .5;                                     /* a pack row that is not ticked */
+  --st-ghost-tilt: -4deg;                              /* the tile that follows the pointer while dragging in */
+  --st-top-h: 56px; --st-rail-w: 64px; --st-panel-w: 236px; --st-insp-w: 300px; --st-dock-h: 68px;
+  --st-stage-w: 1280px; --st-stage-h: 800px;           /* the design size of the studio */
+}
+
+/* ---- studio: panel and tiles (second batch) ---- */
+:root {
+  --st-r-tile: 12px;                                  /* panel tiles, pack tiles and category headers */
+}
+
+/* ---- studio: pictures ---- */
+:root {
+  --st-sticker-shadow: rgba(0,0,0,.5);                /* soft shadow under a cut-out sticker in the remover */
+}
+
+/* ---- studio: library backdrop behind sheets ---- */
+:root {
+  --st-shadow-folder: rgba(0,0,0,.4);                 /* resting shadow of a folder; also the shadow of the three-dot button */
+  --st-shadow-cover: rgba(0,0,0,.5);                  /* resting shadow of a cover */
+  --st-shadow-cover-lift: rgba(0,0,0,.65);            /* a cover lifted by the pointer */
+  --st-inf-dot: rgba(255,255,255,.2);                 /* dots on the Infinite size card */
+}
+
+/* ---- editor actions: selection bar, crop, guides, page colours ---- */
+:root {
+  --sel-bar-gap: 10px;                                 /* space that sets Delete apart in the floating selection bar */
+  --crop-dim: rgba(8,8,10,.55);                        /* the part of the picture outside the crop frame */
+  --crop-handle: var(--white);                         /* corner and edge handles of the crop frame */
+  --crop-handle-edge: rgba(8,8,10,.55);
+  --work-veil: rgba(8,8,10,.38);                       /* over a picture while its background or ink is being worked on */
+  --guide-fill: rgba(92,141,240,.16);                  /* ruler band and protractor face on the page */
+  --guide-edge: rgba(92,141,240,.7);
+  --guide-tick: rgba(27,29,36,.7);                     /* tick marks and numbers on a guide */
+  --guide-line: var(--blue);                           /* the angle the protractor reads out */
+  --page-white: #FFFFFF; --page-cream: #F6F0E1;        /* the five paper colours, as in the app */
+  --page-slate: #3A3B40; --page-dark: #1C1D21; --page-black: #000000;
+  --paper-ink-light: #F2F2F0;                          /* handwriting on a dark paper colour */
+  --page-pattern: rgba(108,118,142,.55);               /* lines, grid and dots in the page background tiles */
+}
