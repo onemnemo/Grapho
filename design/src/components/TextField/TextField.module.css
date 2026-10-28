@@ -1,0 +1,66 @@
+/* ---- floating label, as in the sheets ---- */
+.field { position: relative; display: block; width: 100%; }
+.box {
+  position: relative; height: 56px; border-radius: var(--r-md);
+  background: var(--s2); box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow var(--d-fast), background var(--d-fast);
+}
+.box:hover { box-shadow: inset 0 0 0 1px var(--line2); }
+.box:focus-within { background: var(--s1); box-shadow: inset 0 0 0 1.5px var(--fg); }
+.field input {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  padding: 22px 44px 6px 16px; background: none; border: 0; outline: 0;
+  color: var(--fg); font: var(--t-body); border-radius: inherit;
+}
+.field label {
+  position: absolute; left: 16px; top: 18px; transform-origin: left top; pointer-events: none;
+  font: var(--t-body); font-size: 15px; line-height: 20px; color: var(--dim);
+  transition: transform var(--d-base) var(--ease), color var(--d-fast);
+}
+.box:focus-within label, .field input:not(:placeholder-shown) ~ label { transform: translateY(-10px) scale(.8); }
+.box:focus-within label { color: var(--mute); }
+
+/* status mark: tick when fine, cross when not */
+.st {
+  position: absolute; right: 14px; top: 16px; width: 24px; height: 24px; display: grid; place-items: center;
+  border-radius: 50%; transform: scale(0); transition: transform var(--d-base) var(--spring);
+}
+.ok .st { transform: scale(1); color: var(--ok-fg); background: var(--ok-bg); }
+.field.err .st { transform: scale(1); color: var(--danger); background: var(--danger-bg); }
+.field.err .box { box-shadow: inset 0 0 0 1.5px var(--danger); }
+
+.help { margin: 6px 4px 0; min-height: 18px; font: var(--t-caption); color: var(--dim); transition: color var(--d-fast); }
+.err .help { color: var(--danger); }
+.ok .help { color: var(--ok-fg); }
+.dis { opacity: .45; pointer-events: none; }
+
+/* ---- stacked: caption above a 44px field ---- */
+.stack { display: block; width: 100%; min-width: 0; }
+.cap { display: block; margin-bottom: 6px; font: var(--t-caption); color: var(--dim); }
+.line {
+  display: flex; align-items: center; gap: 10px; height: var(--hit); padding: 0 14px;
+  background: var(--s2); border: 1px solid var(--line); border-radius: var(--r-md); color: var(--mute);
+  transition: border-color var(--d-fast), background var(--d-fast), color var(--d-fast);
+}
+.line:hover { border-color: var(--line2); }
+.line:focus-within { border-color: var(--fg); background: var(--s1); color: var(--fg); }
+.line input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--fg); font: var(--t-body); padding: 0; }
+.line input::placeholder { color: var(--dim); }
+.line > svg { flex: none; }
+.trail { display: inline-flex; align-items: center; color: var(--dim); flex: none; }
+.stack.err .line { border-color: var(--danger); }
+.stack .help { margin: 6px 0 0; min-height: 0; }
+.stack .help:empty { display: none; }
+
+/* ---- inline: a bare field for renaming inside a panel ---- */
+.inline {
+  height: var(--hit); padding: 0 12px; border: 0; border-radius: var(--r-sm); outline: 0;
+  background: var(--wh-field); color: var(--fg); font: var(--t-label);
+  transition: box-shadow var(--d-fast), background var(--d-fast);
+}
+:where(.inline) { width: 100%; min-width: 0; }
+.inline:hover { background: var(--wh-field-hover); }
+.inline:focus { box-shadow: 0 0 0 2px var(--wh-field-focus); }
+.inline[data-size="sm"] { height: var(--ctl); background: var(--wh-well); }
+.inline[data-size="sm"]:hover { background: var(--wh-well); box-shadow: 0 0 0 1px var(--line2); }
+.inline[data-size="sm"]:focus { box-shadow: 0 0 0 2px var(--wh-field-focus); }

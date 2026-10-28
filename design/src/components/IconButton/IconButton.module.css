@@ -1,0 +1,48 @@
+/* hit area 36 / 44 / 52; the visible disc is inset 2 or 4px from it (quiet) or fills it (solid, ghost) */
+.btn {
+  --h: var(--hit);
+  position: relative; flex: none;
+  width: var(--h); height: var(--h);
+  display: inline-grid; place-items: center;
+  padding: 0; border: 0; border-radius: var(--r-full);
+  background: none; color: var(--fg); cursor: pointer;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.sm { --h: var(--ctl); }
+.md { }
+.lg { --h: var(--ctl-lg); }
+.bar { --h: var(--bar); }
+.btn > svg { position: relative; }
+
+/* quiet: the disc is a pseudo element so it can scale on press without moving the icon */
+.quiet::before {
+  content: ""; position: absolute; inset: var(--sp-1); border-radius: var(--r-full);
+  background: transparent;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.quiet.sm::before { inset: 2px; }
+.quiet:hover::before { background: var(--hover); }
+.quiet:active::before { background: var(--press); transform: scale(.92); transition-duration: var(--d-press); }
+
+/* solid: resting disc, as in the library header */
+.solid { background: var(--s2); transition: background var(--d-fast), transform var(--d-fast) var(--spring); }
+.solid:hover { background: var(--s3); }
+.solid:active { background: var(--press); transform: scale(.92); transition-duration: var(--d-press); }
+
+/* ghost: bare until the pointer arrives */
+.ghost { transition: background var(--d-fast), transform var(--d-fast) var(--spring); }
+.ghost:hover { background: var(--hover); }
+.ghost:active { background: var(--press); transform: scale(.92); transition-duration: var(--d-press); }
+
+/* active tool: a subtle fill, the glyph stays at full strength (solid white is for primary buttons only) */
+.btn[data-active] { color: var(--fg); }
+.quiet[data-active]::before, .quiet[data-active]:hover::before { background: var(--sel); }
+.solid[data-active], .solid[data-active]:hover, .ghost[data-active], .ghost[data-active]:hover { background: var(--sel); }
+
+.btn:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.btn:disabled { color: var(--off); pointer-events: none; }
+
+.dot {
+  position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--orange); box-shadow: 0 0 0 2px var(--s1); z-index: 2;
+}

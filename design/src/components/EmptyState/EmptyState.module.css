@@ -1,0 +1,11 @@
+.empty { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 36px var(--sp-6); margin: 0 auto; max-width: 100%; }
+.bubble { position: relative; max-width: 100%; margin-bottom: var(--sp-3); padding: var(--sp-2) var(--sp-3); border-radius: var(--r-sm); background: var(--white); color: var(--ink); font: 500 13px/1 var(--sans); animation: bob 2.4s ease-in-out infinite; }
+.bubble::after { content: ""; position: absolute; left: 50%; bottom: -6px; margin-left: -6px; width: 12px; height: 12px; background: var(--white); transform: rotate(45deg); border-radius: 2px; }
+.empty canvas { display: block; image-rendering: pixelated; }
+.title { margin: 22px 0 6px; font: var(--t-title); letter-spacing: var(--track-title); }
+.text { margin: 0; max-width: 36ch; font: var(--t-body); color: var(--mute); }
+.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
+.sm .title { font: var(--t-heading); letter-spacing: var(--track-heading); margin-top: var(--sp-4); }
+.sm .text { font: var(--t-label); font-weight: 400; }
+@keyframes bob { 50% { transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .bubble { animation: none; } }

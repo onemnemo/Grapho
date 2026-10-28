@@ -1,0 +1,40 @@
+/* 44 hit, 4 track, 22 knob */
+.slider {
+  position: relative; height: var(--hit); min-width: 120px; flex: 1;
+  display: flex; align-items: center; cursor: pointer; touch-action: none;
+  margin: 0 11px; /* the knob overhangs the track by half its width */
+  -webkit-tap-highlight-color: transparent;
+}
+.track { position: relative; width: 100%; height: 4px; border-radius: 2px; background: var(--s3); }
+.fill { position: absolute; inset: 0 auto 0 0; width: var(--pct); border-radius: 2px; background: var(--accent); }
+.knob {
+  position: absolute; top: 50%; left: var(--pct); width: 22px; height: 22px; margin: -11px 0 0 -11px;
+  border-radius: 50%; background: var(--fg);
+  box-shadow: var(--knob-shadow), 0 0 0 0 var(--knob-halo);
+  transition: box-shadow var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.slider:hover .knob { box-shadow: var(--knob-shadow), 0 0 0 7px var(--knob-halo); }
+.drag .knob { transform: scale(1.08); box-shadow: var(--knob-shadow), 0 0 0 9px var(--knob-halo-drag); }
+.slider:focus-visible { outline: none; }
+.slider:focus-visible .knob { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--fg); }
+
+.bubble {
+  position: absolute; bottom: calc(100% + 10px); left: 50%; min-width: 34px; padding: 5px 9px;
+  border-radius: var(--r-sm); background: var(--white); color: var(--on-fg); text-align: center;
+  font: var(--t-micro); font-size: 12px; line-height: 16px; font-feature-settings: "tnum";
+  transform: translate(-50%, 6px) scale(.8); opacity: 0; pointer-events: none;
+  transition: opacity var(--d-fast), transform var(--d-base) var(--spring);
+}
+.bubble::after {
+  content: ""; position: absolute; left: 50%; bottom: -3px; width: 8px; height: 8px; margin-left: -4px;
+  background: var(--white); transform: rotate(45deg); border-radius: 2px;
+}
+.drag .bubble { opacity: 1; transform: translate(-50%, 0) scale(1); }
+
+.disabled { opacity: .4; pointer-events: none; }
+
+/* sm: 24 high, 16 knob, for rows in the studio inspector */
+.sm { height: 24px; min-width: 0; margin: 0 8px; --k: 16px; }
+.sm .knob { width: 16px; height: 16px; margin: -8px 0 0 -8px; box-shadow: var(--knob-shadow-sm), 0 0 0 0 var(--knob-halo); }
+.sm:hover .knob { box-shadow: var(--knob-shadow-sm), 0 0 0 6px var(--knob-halo); }
+.sm.drag .knob { transform: none; box-shadow: var(--knob-shadow-sm), 0 0 0 6px var(--knob-halo); }

@@ -1,0 +1,16 @@
+.popover {
+  position: fixed; z-index: var(--z-menu);
+  background: var(--overlay); border-radius: var(--r-md); color: var(--fg);
+  box-shadow: var(--e2), inset 0 1px 0 var(--hl);
+  max-width: calc(100vw - 16px); max-height: calc(100vh - 16px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+  animation: popIn var(--d-pop) var(--spring) both;
+}
+.popover[data-boundary="container"] { position: absolute; max-width: calc(100% - 16px); max-height: calc(100% - 16px); }
+.popover::-webkit-scrollbar { display: none; }
+.popover[data-state="leave"] { animation: popOut var(--d-exit) var(--ease) both; pointer-events: none; }
+.popover[data-ready="false"] { visibility: hidden; }
+.menu { padding: 6px; }
+.content { width: min(320px, calc(100vw - 16px)); padding: var(--sp-4); }
+.compact { width: min(240px, calc(100vw - 16px)); padding: var(--sp-3); }
+@keyframes popIn { from { opacity: 0; transform: translateY(8px) scale(.94); } }
+@keyframes popOut { to { opacity: 0; transform: translateY(6px) scale(.97); } }

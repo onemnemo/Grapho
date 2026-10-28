@@ -1,0 +1,23 @@
+.check {
+  position: relative; flex: none; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 7px;
+  display: grid; place-items: center; cursor: pointer;
+  background: transparent; color: var(--on-fg);
+  box-shadow: inset 0 0 0 1.75px var(--box-edge);
+  transition: background var(--d-fast), box-shadow var(--d-fast), transform var(--d-fast) var(--spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.check:hover { box-shadow: inset 0 0 0 1.75px var(--box-edge-hover); }
+.check:active { transform: scale(.9); }
+.check[aria-checked="true"], .check[aria-checked="mixed"] { background: var(--fg); box-shadow: none; }
+.check svg { width: 14px; height: 14px; }
+/* the tick and the dash draw themselves in */
+.check path { stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset var(--d-base) var(--ease); }
+.check[aria-checked="true"] .ck { stroke-dashoffset: 0; }
+.check[aria-checked="mixed"] .mx { stroke-dashoffset: 0; }
+.check:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.check:disabled { opacity: .4; pointer-events: none; }
+
+.opt { display: flex; align-items: center; gap: var(--sp-3); min-height: var(--hit); cursor: pointer; font: var(--t-body); user-select: none; min-width: 0; }
+.text { min-width: 0; flex: 1; }
+.text small { display: block; color: var(--dim); font: var(--t-caption); }
+.disabled { opacity: .4; pointer-events: none; }

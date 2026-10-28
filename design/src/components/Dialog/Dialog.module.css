@@ -1,0 +1,21 @@
+.dialog {
+  width: min(var(--dialog-w, 440px), calc(100% - 32px)); max-height: calc(100% - 32px); overflow-y: auto;
+  padding: var(--sp-8); border-radius: var(--r-lg);
+  background: var(--overlay); box-shadow: var(--e3), inset 0 1px 0 var(--hl); color: var(--fg);
+  animation: dlgIn var(--d-sheet) var(--spring) both;
+}
+@keyframes dlgIn { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+@keyframes dlgOut { to { opacity: 0; transform: translateY(8px) scale(.98); } }
+[data-state="leave"] > .dialog { animation: dlgOut var(--d-exit) var(--ease-in) both; }
+.title { margin: 0 0 10px; font: var(--t-title); letter-spacing: var(--track-title); }
+.body { margin: 0 0 26px; font: var(--t-body); color: var(--mute); }
+.body > :last-child { margin-bottom: 0; }
+.actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--sp-2); }
+
+.dialog:focus { outline: 0; }
+
+/* compact: a picture and some controls inside */
+.compact { padding: var(--sp-6); }
+.compact .title { margin-bottom: var(--sp-3); }
+.compact .body { margin-bottom: 0; }
+.compact .actions { margin-top: var(--sp-5); }

@@ -1,0 +1,33 @@
+.swatch {
+  --sw: 28px; 
+  position: relative; flex: none; width: var(--sw); height: var(--sw);
+  display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%;
+  background: var(--c); color: var(--fg); cursor: pointer;
+  box-shadow: inset 0 0 0 1px var(--dot-edge);
+  transition: transform var(--d-fast) var(--spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.sm { --sw: 22px; }
+.md { }
+.lg { --sw: 36px; }
+.square { border-radius: var(--r-sm); }
+.swatch:hover { transform: scale(1.1); }
+.swatch:active { transform: scale(.9); }
+
+.swatch[data-ring="own"] { transition: transform var(--d-fast) var(--spring), box-shadow var(--d-base) var(--ease); }
+/* the selection halo: a soft white fill 5px out from the colour, drawn as a shadow so it never covers the colour; no ring */
+.swatch[data-ring="own"][aria-checked="true"] { box-shadow: inset 0 0 0 1px var(--dot-edge), 0 0 0 5px var(--sel-fill); }
+.swatch:focus-visible { outline: var(--focus); outline-offset: 6px; }
+.swatch:disabled { opacity: .35; pointer-events: none; }
+
+.tick { color: var(--white); filter: drop-shadow(var(--check-glow)); scale: 0; transition: scale var(--d-base) var(--spring); }
+.swatch[aria-checked="true"] .tick { scale: 1; }
+
+.none { background: repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 10px 10px; overflow: hidden; }
+.slash { position: absolute; left: 50%; top: -1px; bottom: -1px; width: 1.5px; background: var(--red); rotate: 45deg; }
+
+.add { background: var(--s2); color: var(--mute); box-shadow: inset 0 0 0 1px var(--line2); }
+
+/* rainbow ring with a hole: opens the colour picker */
+.custom { background: var(--rainbow); box-shadow: none; }
+.custom::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--c, var(--s1)); z-index: 1; }
