@@ -1,0 +1,10 @@
+.wrap { display: inline-flex; }
+.tip {
+  position: fixed; z-index: var(--z-tip); display: flex; align-items: center; gap: 10px; padding: 6px 10px; max-width: 240px;
+  background: var(--tip); color: var(--on-fg); border-radius: var(--r-sm);
+  font: 500 12px/16px var(--sans); white-space: nowrap; pointer-events: none; box-shadow: var(--e1);
+  animation: tipIn var(--d-base) var(--ease) both;
+}
+.tip[data-ready="false"] { visibility: hidden; }
+.keys { color: var(--dim); font: inherit; }
+@keyframes tipIn { from { opacity: 0; transform: translateY(4px) scale(.96); } }

@@ -1,0 +1,13 @@
+.banner { display: flex; align-items: center; gap: 14px; padding: var(--sp-3) var(--sp-3) var(--sp-3) 14px; border-radius: var(--r-md); background: var(--s2); border: 1px solid var(--line); color: var(--fg); }
+.icon { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: var(--r-sm); background: var(--s3); color: var(--mute); }
+.danger { border-color: var(--danger-line); }
+.warn { border-color: var(--warn-line); }
+.ok { border-color: var(--ok-line); }
+.danger .icon { background: var(--danger-bg); color: var(--danger); }
+.warn .icon { color: var(--gold); }
+.ok .icon { color: var(--ok); }
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.title { font: var(--t-label); }
+.body { font: var(--t-caption); color: var(--mute); }
+.banner > button { flex: none; }
+@media (max-width: 520px) { .banner { flex-wrap: wrap; } .text { flex-basis: calc(100% - 100px); } }

@@ -1,0 +1,37 @@
+.hold {
+  --p: 0; --h: var(--hit);
+  position: relative; flex: none; isolation: isolate; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: var(--h); padding: 0 22px; border: 0; border-radius: var(--r-full);
+  background: var(--danger-bg); color: var(--danger);
+  font: var(--t-label); line-height: 1; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none;
+  transition: transform var(--d-fast) var(--spring), width var(--d-slow) var(--spring), padding var(--d-slow) var(--spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.hold:hover { background: var(--danger-bg-hover); }
+.sm { --h: var(--ctl); padding: 0 16px; font: var(--t-label-sm); line-height: 1; }
+.lg { --h: 52px; padding: 0 28px; font: var(--t-label-lg); line-height: 1; }
+
+.fill { position: absolute; inset: 0; z-index: -1; background: var(--hold-fill); transform: scaleX(var(--p)); transform-origin: left center; will-change: transform; }
+.lab { display: inline-flex; align-items: center; gap: var(--sp-2); white-space: nowrap; transition: opacity var(--d-fast), transform var(--d-base) var(--ease); }
+.on { position: absolute; inset: 0; justify-content: center; color: var(--white); clip-path: inset(0 calc((1 - var(--p)) * 100%) 0 0); }
+.holding { transform: scale(.97); }
+.hold:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.hold:disabled { opacity: .4; pointer-events: none; }
+
+/* a soft pulse the moment the press begins */
+.tick[data-pulse="0"] { animation: pulse-a .34s var(--ease); }
+.tick[data-pulse="1"] { animation: pulse-b .34s var(--ease); }
+@keyframes pulse-a { from { box-shadow: 0 0 0 0 var(--hold-pulse); } to { box-shadow: 0 0 0 12px transparent; } }
+@keyframes pulse-b { from { box-shadow: 0 0 0 0 var(--hold-pulse); } to { box-shadow: 0 0 0 12px transparent; } }
+
+.ok {
+  position: absolute; inset: 0; display: grid; place-items: center; color: var(--white);
+  opacity: 0; transform: scale(.6); transition: opacity var(--d-fast), transform var(--d-base) var(--spring);
+}
+.ok path { stroke-dasharray: 26; stroke-dashoffset: 26; }
+.hold[data-state="done"] { pointer-events: none; }
+.hold[data-state="done"] .lab { opacity: 0; transform: translateY(-8px); }
+.hold[data-state="done"] .ok { opacity: 1; transform: none; }
+.hold[data-state="done"] .ok path { animation: draw .38s .1s var(--ease) forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
