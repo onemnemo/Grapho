@@ -1,0 +1,27 @@
+/* fills the height it is given; only the list scrolls */
+.picker { display: flex; flex-direction: column; gap: var(--sp-3); height: 100%; min-height: 0; width: 100%; }
+.search { flex: none; }
+.search > :first-child:first-child { width: 100%; }
+.list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-5); scrollbar-width: thin; }
+.group { display: flex; flex-direction: column; gap: 2px; }
+.label { margin: 0; padding: 0 var(--sp-3) var(--sp-2); font: var(--t-group); color: var(--group-fg); }
+
+.row {
+  display: flex; align-items: center; gap: var(--sp-3); flex: none; width: 100%; min-height: 56px; padding: var(--sp-2) var(--sp-3);
+  border: 0; border-radius: var(--r-md); background: none; color: var(--fg); text-align: start; cursor: pointer;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.row:hover { background: var(--hover-fill); }
+.row:active { transform: scale(.995); }
+.row[aria-checked="true"] { background: var(--sel-fill); }
+.row[aria-checked="true"]:hover { background: var(--sel-fill-hover); }
+.row:focus-visible { outline: var(--focus); outline-offset: var(--focus-in); }
+
+.names { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.native { font: var(--t-label-lg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.english { font: var(--t-caption); color: var(--mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tick { flex: none; color: var(--fg); opacity: 0; transform: scale(.4); transition: opacity var(--d-fast), transform var(--d-base) var(--spring); }
+.row[aria-checked="true"] .tick { opacity: 1; transform: none; }
+
+.none { margin: var(--sp-8) var(--sp-3); font: var(--t-body); color: var(--dim); text-align: center; }

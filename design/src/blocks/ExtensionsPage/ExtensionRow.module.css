@@ -1,0 +1,10 @@
+.row { display: flex; align-items: center; gap: var(--sp-2); padding-right: var(--sp-3); border-radius: var(--r-md); min-width: 0; transition: background var(--d-fast); }
+.row:hover { background: var(--hover); }
+.main { flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2); border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: var(--r-md); }
+.main:focus-visible { outline: var(--focus); outline-offset: var(--focus-in); }
+.plate { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--r-full); background: var(--s3); color: var(--fg); transition: opacity var(--d-base); }
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; transition: opacity var(--d-base); }
+.text b { font: var(--t-label-lg); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text small { font: var(--t-caption); color: var(--dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.off .plate, .off .text { opacity: .45; }
+.toggle { flex: none; }

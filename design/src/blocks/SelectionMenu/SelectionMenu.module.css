@@ -1,0 +1,2 @@
+/* Space separates the groups; only Delete gets a rule. */
+.group + .group { margin-top: var(--sp-2); }

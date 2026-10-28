@@ -1,0 +1,6 @@
+/* Every row has the same height, plate and label, so the two groups line up. Create plates are tinted; import plates are bare. */
+.row.row { height: 40px; gap: var(--sp-3); padding: 0 var(--sp-3) 0 var(--sp-2); font: var(--t-label); }
+.plate, .plateQuiet { width: 28px; height: 28px; flex: none; display: grid; place-items: center; border-radius: var(--r-sm); }
+.plate { background: var(--sel); color: var(--fg); }
+.plateQuiet { color: var(--mute); }
+.line { display: flex; align-items: center; gap: var(--sp-3); }
