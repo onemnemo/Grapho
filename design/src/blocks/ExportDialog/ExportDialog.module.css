@@ -1,0 +1,7 @@
+.body { display: flex; flex-direction: column; gap: var(--sp-5); margin-top: var(--sp-2); }
+.glyph { display: grid; place-items: center; height: 40px; color: inherit; }
+.group { display: flex; flex-direction: column; gap: var(--sp-2); }
+.label { font: var(--t-group); color: var(--group-fg); }
+.single { font: var(--t-label); color: var(--fg); }
+.body[data-busy] { opacity: .6; pointer-events: none; transition: opacity var(--d-base); }
+.error { font: var(--t-caption); color: var(--danger); }

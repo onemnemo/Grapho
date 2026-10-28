@@ -1,0 +1,32 @@
+.tile {
+  position: relative; display: flex; min-width: 0; border: 0; background: none; color: var(--fg); font: inherit; text-align: left;
+  border-radius: var(--r-md); -webkit-tap-highlight-color: transparent; transition: background var(--d-fast);
+}
+.tile:hover { background: var(--hover); }
+.tile:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.tile[data-selected] { background: var(--sel); }
+.name { font: var(--t-label-sm); color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* grid */
+.cell { flex-direction: column; gap: var(--sp-2); padding: var(--sp-2) var(--sp-2) var(--sp-3); }
+.cell .art { display: block; width: 100%; height: 96px; }
+.cell[data-shape="tall"] .art, .cell[data-shape="page"] .art { height: 148px; }
+.cell[data-shape="wide"] .art { height: 84px; }
+.cell[data-shape="stroke"] .art { height: 52px; }
+.cell .name { padding: 0 var(--sp-1); }
+
+/* list */
+.row { align-items: center; gap: var(--sp-3); min-height: 56px; padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-2); }
+.row .art { display: block; flex: none; width: 52px; height: 44px; }
+.row[data-shape="tall"] .art, .row[data-shape="page"] .art { width: 36px; }
+.row .name { flex: 1; font: var(--t-label); }
+.src { flex: none; font: var(--t-caption); color: var(--dim); }
+
+/* select mode ring and tick: the tick shows full white on the tinted fill, never a white tile */
+.check {
+  position: absolute; top: var(--sp-2); left: var(--sp-2); width: 22px; height: 22px; display: grid; place-items: center; border-radius: var(--r-full);
+  box-shadow: inset 0 0 0 1.5px var(--box-edge); background: var(--st-select-ring); color: transparent; transition: background var(--d-fast), color var(--d-fast), box-shadow var(--d-fast);
+}
+.row .check { position: static; flex: none; order: -1; }
+.tile[data-selected] .check { background: var(--press2); color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--fg); }
+button.tile { cursor: pointer; }

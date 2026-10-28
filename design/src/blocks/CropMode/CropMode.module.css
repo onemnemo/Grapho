@@ -1,0 +1,34 @@
+.root { position: absolute; z-index: var(--z-bar); touch-action: none; }
+.dim { position: absolute; background: var(--crop-dim); pointer-events: none; }
+.frame { position: absolute; box-shadow: inset 0 0 0 1.5px var(--fg), var(--st-crop-edge); cursor: move; }
+.grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(var(--st-crop-grid), var(--st-crop-grid)) 33.333% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--st-crop-grid), var(--st-crop-grid)) 66.666% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--st-crop-grid), var(--st-crop-grid)) 0 33.333% / 100% 1px no-repeat,
+    linear-gradient(var(--st-crop-grid), var(--st-crop-grid)) 0 66.666% / 100% 1px no-repeat;
+}
+.handle { position: absolute; width: 44px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; touch-action: none; translate: -50% -50%; }
+.handle::after { content: ""; position: absolute; left: 50%; top: 50%; translate: -50% -50%; background: var(--crop-handle); box-shadow: 0 0 0 1px var(--crop-handle-edge), var(--thumb-shadow); border-radius: 3px; transition: transform var(--d-fast) var(--spring); }
+.handle[data-h="nw"]::after, .handle[data-h="ne"]::after, .handle[data-h="se"]::after, .handle[data-h="sw"]::after { width: 14px; height: 14px; border-radius: 50%; }
+.handle[data-h="n"]::after, .handle[data-h="s"]::after { width: 22px; height: 5px; }
+.handle[data-h="e"]::after, .handle[data-h="w"]::after { width: 5px; height: 22px; }
+.handle:hover::after, .handle:active::after { transform: translate(-50%, -50%) scale(1.2); }
+.handle[data-h="nw"] { left: 0; top: 0; cursor: nwse-resize; }
+.handle[data-h="n"] { left: 50%; top: 0; cursor: ns-resize; }
+.handle[data-h="ne"] { left: 100%; top: 0; cursor: nesw-resize; }
+.handle[data-h="e"] { left: 100%; top: 50%; cursor: ew-resize; }
+.handle[data-h="se"] { left: 100%; top: 100%; cursor: nwse-resize; }
+.handle[data-h="s"] { left: 50%; top: 100%; cursor: ns-resize; }
+.handle[data-h="sw"] { left: 0; top: 100%; cursor: nesw-resize; }
+.handle[data-h="w"] { left: 0; top: 50%; cursor: ew-resize; }
+
+.bar {
+  position: absolute; z-index: var(--z-bar); display: flex; align-items: center; gap: 2px; height: var(--pill-h); padding: 0 var(--sp-1) 0 var(--sp-2); translate: -50% 0;
+  background: var(--overlay); border-radius: var(--r-full); box-shadow: var(--e1), inset 0 0 0 1px var(--line); width: max-content;
+  animation: barIn var(--d-base) var(--spring) both;
+}
+.bar > :last-child { margin-left: var(--sp-2); }
+@keyframes barIn { from { opacity: 0; transform: translateY(6px) scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .bar { animation: none; } .handle::after { transition: none; } }

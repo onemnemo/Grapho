@@ -1,0 +1,16 @@
+.picker { display: flex; flex-direction: column; gap: var(--sp-5); width: 288px; }
+.sec { display: flex; flex-direction: column; gap: var(--sp-2); }
+.label { margin: 0; font: var(--t-group); color: var(--group-fg); }
+
+.mini {
+  --pl: var(--page-pattern);
+  display: block; width: 100%; height: 56px; border-radius: var(--r-sm); background-color: var(--pp);
+  box-shadow: inset 0 0 0 1px var(--line2);
+}
+.mini[data-tone="dark"] { --pl: var(--dot-edge); }
+.mini[data-pattern="lined"] { background-image: repeating-linear-gradient(to bottom, transparent 0 11px, var(--pl) 11px 12px); background-position: 0 4px; }
+.mini[data-pattern="grid"] {
+  background-image: linear-gradient(var(--pl) 1px, transparent 1px), linear-gradient(90deg, var(--pl) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+.mini[data-pattern="dotted"] { background-image: radial-gradient(circle, var(--pl) 1.2px, transparent 1.6px); background-size: 12px 12px; background-position: 6px 6px; }

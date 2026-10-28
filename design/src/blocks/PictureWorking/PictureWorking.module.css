@@ -1,0 +1,19 @@
+.root { position: absolute; z-index: var(--z-bar); pointer-events: none; }
+.veil { position: absolute; inset: 0; overflow: hidden; border-radius: 4px; background: var(--work-veil); box-shadow: inset 0 0 0 1px var(--line2); animation: veilIn var(--d-base) var(--ease) both; }
+.scan { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--fg); box-shadow: var(--st-scan); animation: sweep 1.6s var(--ease) infinite; }
+.root[data-job="converting"] .scan { left: 0; right: auto; top: 0; bottom: 0; width: 2px; height: auto; background: var(--fg); animation-name: sweepX; }
+.pill {
+  position: absolute; left: 50%; top: calc(100% + var(--sp-3)); translate: -50% 0; display: inline-flex; align-items: center; gap: var(--sp-2); height: 40px; padding: 0 var(--sp-4) 0 var(--sp-3);
+  border-radius: var(--r-full); background: var(--overlay); color: var(--fg); font: var(--t-label-sm); white-space: nowrap; pointer-events: auto;
+  box-shadow: var(--e1), inset 0 0 0 1px var(--line); animation: pillIn var(--d-base) var(--spring) both;
+}
+.icon { display: grid; color: var(--mute); animation: pulse 1.4s var(--ease) infinite; }
+.cancel { margin-left: var(--sp-2); padding: 0; border: 0; background: none; color: var(--mute); font: inherit; cursor: pointer; border-radius: var(--r-xs); }
+.cancel:hover { color: var(--fg); }
+.cancel:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+@keyframes sweep { 0% { top: 0; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { top: calc(100% - 2px); opacity: 0; } }
+@keyframes sweepX { 0% { left: 0; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { left: calc(100% - 2px); opacity: 0; } }
+@keyframes pulse { 50% { opacity: .45; } }
+@keyframes veilIn { from { opacity: 0; } }
+@keyframes pillIn { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .scan, .icon, .veil, .pill { animation: none; } .scan { top: 50%; opacity: .6; } }
