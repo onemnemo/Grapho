@@ -1,0 +1,4 @@
+.row { display: flex; flex-wrap: wrap; gap: var(--sp-6); align-items: flex-start; }
+.cell { margin: 0; display: grid; gap: var(--sp-2); justify-items: center; font: var(--t-caption); color: var(--dim); }
+.cover { position: relative; width: 150px; aspect-ratio: 3 / 4; border-radius: var(--r-xs) var(--r-sm) var(--r-sm) var(--r-xs); overflow: hidden; box-shadow: 0 6px 18px -8px rgba(0, 0, 0, .8); }
+.folder { width: 230px; }

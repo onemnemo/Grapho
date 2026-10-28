@@ -1,0 +1,28 @@
+/* video clips: a paused frame is the poster */
+.vid { position: absolute; inset: 0; overflow: hidden; }
+.vid * { animation-play-state: paused !important; }
+.vid[data-playing] * { animation-play-state: running !important; }
+.vid i { position: absolute; display: block; }
+.clouds { background: linear-gradient(#5A8CF0, #cfe0ff) !important; }
+.vb { border-radius: 50%; filter: blur(34px); animation: drift 8s ease-in-out infinite alternate; animation-delay: calc(var(--po, 0s) + var(--d, 0s)); }
+.vb1 { left: -20%; top: 5%; width: 80%; height: 60%; background: #3FB27A; opacity: .85; }
+.vb2 { right: -25%; top: 30%; width: 80%; height: 56%; background: #5C8DF0; --d: -2s; opacity: .9; animation-duration: 9s; }
+.vb3 { left: 10%; bottom: -20%; width: 70%; height: 60%; background: #B9A6F0; --d: -4s; opacity: .8; animation-duration: 7s; }
+@keyframes drift { 0% { transform: translate(-10%, 6%) scale(1); } 100% { transform: translate(16%, -12%) scale(1.3); } }
+.em { left: var(--x); top: 110%; width: var(--s); height: var(--s); border-radius: 50%; background: #F6C453; box-shadow: 0 0 10px #F28A2E; animation: rise var(--t) linear infinite; animation-delay: calc(var(--po, 0s) + var(--d, 0s)); }
+@keyframes rise { 0% { top: 110%; opacity: 0; } 15% { opacity: 1; } 100% { top: -10%; opacity: 0; transform: translateX(18px); } }
+.rn { left: var(--x); top: -20%; width: 1.5px; height: 14%; background: linear-gradient(transparent, rgba(190, 215, 255, .85)); animation: fall var(--t) linear infinite; animation-delay: calc(var(--po, 0s) + var(--d, 0s)); }
+@keyframes fall { to { top: 110%; } }
+.wv { position: absolute; left: 0; bottom: 0; width: 200%; animation: slide 6s linear infinite; animation-delay: var(--po, 0s); }
+.wv1 { height: 66%; fill: #1F5A66; }
+.wv2 { height: 52%; fill: #2B7B8B; animation-duration: 8s; opacity: .95; }
+.wv3 { height: 38%; fill: #3A97A8; animation-duration: 5s; }
+@keyframes slide { to { transform: translateX(-50%); } }
+.cl { border-radius: 50%; background: #fff; filter: blur(16px); opacity: .9; animation: cloud 10s linear infinite; animation-delay: calc(var(--po, 0s) + var(--d, 0s)); }
+.cl1 { left: 0; top: 18%; width: 60%; height: 22%; }
+.cl2 { left: 0; top: 48%; width: 80%; height: 26%; --d: -3.5s; animation-duration: 12s; }
+.cl3 { left: 0; top: 72%; width: 50%; height: 20%; --d: -6s; animation-duration: 9s; }
+@keyframes cloud { from { transform: translateX(-70%); } to { transform: translateX(150%); } }
+.swl { inset: -30%; background: conic-gradient(from 0deg, #D9487A, #5C8DF0, #B9A6F0, #F28A2E, #D9487A); filter: blur(36px); opacity: .85; animation: spin 8s linear infinite; animation-delay: var(--po, 0s); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .vid[data-playing] * { animation-play-state: paused !important; } }

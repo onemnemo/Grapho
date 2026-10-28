@@ -1,0 +1,16 @@
+/* PDF page and canvas thumbnails. Both fill their parent like CoverArt. */
+.doc { position: absolute; inset: 0; background: #F4F3EF; overflow: hidden; }
+.doc::after {
+  content: ""; position: absolute; top: 0; right: 0; width: 18%; aspect-ratio: 1;
+  background: linear-gradient(225deg, #17181C 50%, #D5D3CC 50%);
+}
+.line { position: absolute; left: 12%; height: 3.4%; background: #C9C7BF; border-radius: 1px; }
+.bar { background: #23242A; height: 5%; }
+.hl { background: #F6C453; opacity: .8; height: 5%; }
+.chart { position: absolute; left: 12%; right: 12%; top: 46%; width: 76%; }
+.canvas {
+  position: absolute; inset: 0;
+  background: #131316 radial-gradient(rgba(255, 255, 255, .14) 1px, transparent 1.5px) 0 0 / 12px 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+}
+.canvas svg { position: absolute; inset: 0; width: 100%; height: 100%; }
