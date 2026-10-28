@@ -1,0 +1,10 @@
+.row { position: relative; display: flex; flex-wrap: wrap; align-items: center; }
+/* the single shared halo: a soft white fill behind the chosen swatch, moved with a transform so choosing a colour never re-renders it */
+.ring {
+  position: absolute; left: 0; top: 0; pointer-events: none; z-index: 0;
+  border-radius: 50%; background: var(--sel-fill);
+  transition: transform var(--d-slow) var(--spring), width var(--d-slow) var(--spring), height var(--d-slow) var(--spring), opacity var(--d-fast);
+}
+.row > button { z-index: 1; }
+.ring[data-hidden] { opacity: 0; }
+.square .ring { border-radius: var(--r-md); }

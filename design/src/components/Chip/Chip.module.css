@@ -1,0 +1,46 @@
+/* library filter chip: s2 pill, no border; selected holds a soft white fill and the label stays at full opacity */
+.chip {
+  display: inline-flex; align-items: center; gap: 7px; flex: none;
+  height: var(--ctl); padding: 0 14px; border-radius: var(--r-full);
+  background: var(--s2); border: 0; color: var(--mute);
+  font: var(--t-label-sm); line-height: 1; white-space: nowrap; cursor: pointer;
+  transition: background var(--d-fast), color var(--d-fast), transform var(--d-fast) var(--spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.chip:hover { background: var(--s3); color: var(--fg); }
+.chip:active { transform: scale(.95); }
+.chip[aria-pressed="true"] { background: linear-gradient(var(--sel-fill), var(--sel-fill)), var(--s2); color: var(--fg); }
+.chip[aria-pressed="true"]:hover { background: linear-gradient(var(--sel-fill-hover), var(--sel-fill-hover)), var(--s2); }
+.chip:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.chip:disabled { color: var(--off); pointer-events: none; }
+
+/* the tick opens up to the left of the label when selected */
+.tick { display: inline-grid; place-items: center; margin-left: -4px; width: 0; overflow: hidden; opacity: 0; transition: width var(--d-base) var(--ease), opacity var(--d-fast); }
+.chip[aria-pressed="true"] .tick { width: 16px; opacity: 1; }
+
+.count { font-style: normal; color: var(--dim); font-feature-settings: "tnum"; }
+.chip[aria-pressed="true"] .count { color: var(--mute); }
+
+/* small: the studio's overlay filters */
+.sm { height: 28px; padding: 0 12px; gap: 6px; color: var(--mute); font: var(--t-micro); font-size: 12px; line-height: 1; }
+.sm:hover { color: var(--fg); }
+.sm[aria-pressed="true"] { color: var(--fg); }
+.sm .tick { margin-left: -3px; }
+.sm[aria-pressed="true"] .tick { width: 14px; }
+
+/* removable chip (token) */
+.token {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  height: 30px; padding: 0 8px 0 12px; border-radius: var(--r-full);
+  background: var(--s2); border: 0; color: var(--fg);
+  font: var(--t-label-sm); white-space: nowrap;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; margin-right: -2px; }
+.x {
+  width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--hover); color: var(--mute);
+  transition: background var(--d-fast), color var(--d-fast);
+}
+.x:hover { background: var(--press); color: var(--fg); }
+.x:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }

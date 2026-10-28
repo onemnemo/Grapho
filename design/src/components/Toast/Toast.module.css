@@ -1,0 +1,49 @@
+.region { position: fixed; left: 0; right: 0; bottom: var(--sp-6); display: flex; justify-content: center; z-index: var(--z-toast); pointer-events: none; padding: 0 var(--sp-4); }
+.region[data-placement="container"] { position: absolute; }
+.region[data-variant="pill"] { bottom: var(--toast-pill-bottom); }
+.region[data-offset="above-bar"] { bottom: var(--toast-above-bar); }
+
+.toast {
+  position: relative; display: flex; align-items: center; gap: var(--sp-3); pointer-events: auto;
+  min-width: min(var(--toast-min), 100%); max-width: min(var(--toast-max), 100%); padding: 10px;
+  background: var(--overlay); color: var(--fg); border-radius: var(--r-md);
+  box-shadow: var(--e2), inset 0 1px 0 var(--hl);
+  animation: toastIn var(--d-base) var(--ease) both;
+}
+.toast[data-state="leave"] { animation: toastOut var(--d-exit) var(--ease-in) both; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(8px); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(8px) scale(.98); } }
+
+.tile { position: relative; width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: var(--r-sm); background: var(--s3); color: var(--fg); }
+.ok .tile { background: var(--ok-bg); color: var(--ok); }
+.error .tile { background: var(--danger-bg); color: var(--danger); }
+
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.title { font: var(--t-label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.detail { font: var(--t-caption); color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toast > button { flex: none; }
+
+.ring { position: absolute; inset: -3px; width: 42px; height: 42px; transform: rotate(-90deg); pointer-events: none; }
+.ring circle { fill: none; stroke-width: 2; }
+.track { stroke: var(--line2); }
+.drain { stroke: var(--fg); stroke-linecap: round; stroke-dasharray: 119.4; stroke-dashoffset: 0; animation: drain var(--dur, var(--d-toast)) linear forwards; }
+.toast[data-paused="true"] .drain { animation-play-state: paused; }
+@keyframes drain { to { stroke-dashoffset: 119.4; } }
+@media (prefers-reduced-motion: reduce) { .drain { animation: none; } }
+
+/* pill: one line with a quiet Undo and a small ring, for toasts that sit on a canvas */
+.pill {
+  gap: 6px; padding: 5px 12px 5px 18px; min-width: 0; max-width: none; border-radius: var(--r-full);
+  box-shadow: var(--e2); font: var(--t-label); white-space: nowrap;
+  animation: pillIn var(--d-sheet) var(--spring) both;
+}
+.pill[data-state="leave"] { animation: pillOut var(--d-exit) ease both; }
+@keyframes pillIn { from { opacity: 0; transform: translateY(12px); } }
+@keyframes pillOut { to { opacity: 0; transform: translateY(12px); } }
+.pillRing { margin-left: 2px; flex: none; }
+.pillTrack, .pillDrain { fill: none; stroke-width: 2; }
+.pillTrack { stroke: var(--wh-drain-track); }
+.pillDrain { stroke: var(--fg); stroke-linecap: round; stroke-dasharray: 53.4; stroke-dashoffset: 0; animation: pillDrain var(--dur, var(--d-toast)) linear forwards; }
+.pill[data-paused="true"] .pillDrain { animation-play-state: paused; }
+@keyframes pillDrain { to { stroke-dashoffset: 53.4; } }
+@media (prefers-reduced-motion: reduce) { .pill { animation-duration: .01ms; } }

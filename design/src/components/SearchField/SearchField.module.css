@@ -1,0 +1,40 @@
+.search {
+  position: relative; display: flex; align-items: center; gap: 10px;
+  height: var(--hit); width: var(--w); max-width: 100%; padding: 0 8px 0 16px;
+  border-radius: var(--r-full); background: var(--s2); color: var(--dim);
+  overflow: hidden; cursor: text;
+  transition: width var(--d-slow) var(--ease), background var(--d-base) var(--ease), color var(--d-base), box-shadow var(--d-base);
+}
+.search:hover { background: var(--s2-hover); }
+.search:focus-within { width: var(--wf); background: var(--s3); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line2); }
+.icon { flex: none; transition: transform var(--d-base) var(--spring); }
+.search:focus-within .icon { transform: scale(1.06); }
+
+.search input {
+  flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: none;
+  color: var(--fg); font: var(--t-body);
+}
+.search input::placeholder { color: var(--dim); }
+.search input::-webkit-search-cancel-button { display: none; }
+
+.clear {
+  flex: none; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--press); color: var(--fg);
+  transform: scale(0); opacity: 0; pointer-events: none;
+  transition: transform var(--d-base) var(--spring), opacity var(--d-fast), background var(--d-fast);
+}
+.clear:hover { background: var(--press2); }
+.has .clear { transform: scale(1); opacity: 1; pointer-events: auto; }
+.clear:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+
+/* the tail gradient draws along the bottom edge while the field has focus */
+.search::after {
+  content: ""; position: absolute; left: 22px; right: 22px; bottom: 0; height: 2px; border-radius: 2px;
+  background: var(--tail); transform: scaleX(0); transform-origin: left center; opacity: 0;
+  transition: transform var(--d-slow) var(--ease), opacity var(--d-base);
+}
+.search:focus-within::after { transform: scaleX(1); opacity: .9; }
+
+.sm { height: var(--ctl); }
+.sm input { font: var(--t-label); font-weight: 400; }
