@@ -1,0 +1,8 @@
+.steps { list-style: none; margin: 0 0 var(--sp-5); padding: 0; display: flex; gap: var(--sp-5); }
+.steps li { display: inline-flex; align-items: center; gap: var(--sp-1); font: var(--t-micro); font-size: 12px; color: var(--dim); letter-spacing: .02em; }
+.steps .past { color: var(--mute); }
+.steps .now { color: var(--fg); }
+.done { display: grid; justify-items: center; gap: var(--sp-2); padding: var(--sp-12) 0; text-align: center; }
+.tick { width: 56px; height: 56px; display: grid; place-items: center; border-radius: var(--r-full); background: var(--sel); margin-bottom: var(--sp-2); }
+.done h3 { margin: 0; font: var(--t-heading); letter-spacing: var(--track-heading); }
+.done p { margin: 0; color: var(--dim); font: var(--t-caption); }

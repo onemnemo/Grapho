@@ -1,0 +1,10 @@
+.btn {
+  display: inline-flex; align-items: center; gap: var(--sp-2); height: var(--ctl); padding: 0 var(--sp-3) 0 var(--sp-3); border: 0; border-radius: var(--r-full);
+  background: none; color: var(--fg); font: var(--t-label-sm); cursor: pointer; flex: none; transition: background var(--d-fast);
+}
+.btn:hover, .btn[aria-expanded="true"] { background: var(--hover); }
+.btn:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.btn span { color: var(--dim); font-weight: 500; }
+.btn b { font-weight: 500; }
+.btn svg { color: var(--dim); }
+.menu { max-height: 360px; overflow-y: auto; min-width: 220px; }

@@ -1,0 +1,40 @@
+/* Ruler */
+.ruler {
+  position: absolute; z-index: var(--z-bar); height: 62px; translate: -50% -50%; border-radius: var(--r-sm);
+  background: var(--guide-fill); box-shadow: inset 0 0 0 1.5px var(--guide-edge); cursor: grab; touch-action: none;
+}
+.ticks { position: absolute; left: 0; top: 0; pointer-events: none; }
+.ticks line, .tick { stroke: var(--guide-tick); stroke-width: 1; }
+.ticks text, .num { fill: var(--guide-tick); font: 500 10px/1 var(--sans); font-feature-settings: "tnum"; }
+.turn {
+  position: absolute; right: 8px; bottom: 6px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--overlay); color: var(--fg); box-shadow: var(--thumb-shadow); cursor: grab;
+}
+.close {
+  position: absolute; left: 8px; bottom: 6px; width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%;
+  background: var(--overlay); color: var(--mute); box-shadow: var(--thumb-shadow); cursor: pointer;
+}
+.close:hover { color: var(--fg); }
+.close:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.readout {
+  position: absolute; z-index: var(--z-bar); translate: -50% -50%; padding: 6px var(--sp-3); border-radius: var(--r-full);
+  background: var(--overlay); color: var(--fg); font: var(--t-label-sm); font-feature-settings: "tnum"; box-shadow: var(--e1), inset 0 0 0 1px var(--line); pointer-events: none;
+}
+
+/* Protractor */
+.protractor { position: absolute; z-index: var(--z-bar); cursor: grab; touch-action: none; }
+.disc { display: block; overflow: visible; }
+.face { fill: var(--guide-fill); stroke: var(--guide-edge); stroke-width: 1.5; stroke-linejoin: round; }
+.cross { fill: none; stroke: var(--guide-tick); stroke-width: 1.25; stroke-linecap: round; }
+.read { stroke: var(--guide-line); stroke-width: 2; stroke-linecap: round; }
+.value { fill: var(--guide-line); font: 600 14px/1 var(--sans); font-feature-settings: "tnum"; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+.turnP {
+  position: absolute; right: 6px; bottom: 6px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%;
+  background: var(--overlay); color: var(--fg); box-shadow: var(--thumb-shadow); cursor: grab;
+}
+.closeP {
+  position: absolute; left: 6px; bottom: 6px; width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%;
+  background: var(--overlay); color: var(--mute); box-shadow: var(--thumb-shadow); cursor: pointer;
+}
+.closeP:hover { color: var(--fg); }
+.closeP:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
