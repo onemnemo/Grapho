@@ -1,0 +1,7 @@
+.layer { position: fixed; inset: 0; display: grid; place-items: center; z-index: var(--z-sheet); }
+.layer[data-placement="container"] { position: absolute; }
+.layer[data-layer="dialog"] { z-index: var(--z-dialog); }
+.scrim { position: absolute; inset: 0; background: var(--scrim); animation: fade var(--d-base) var(--ease) both; }
+.layer[data-state="leave"] .scrim { animation: fadeOut var(--d-exit) var(--ease) both; }
+@keyframes fade { from { opacity: 0; } }
+@keyframes fadeOut { to { opacity: 0; } }
