@@ -1,0 +1,5 @@
+.line { fill: none; stroke: var(--paper-ink); stroke-linejoin: round; }
+.fill { fill: var(--paper-ink); }
+.open { fill: none; stroke: var(--paper-ink); stroke-linecap: round; stroke-linejoin: round; }
+.handle { fill: var(--white); stroke: var(--ink); stroke-width: 1.5; }
+.defs marker { overflow: visible; }

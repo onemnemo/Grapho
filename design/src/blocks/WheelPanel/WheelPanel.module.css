@@ -1,0 +1,27 @@
+/* Panels that open from the pen wheel share one surface. Selected is a soft fill; colour lives in ink only. */
+.panel {
+  background: var(--overlay); border-radius: var(--r-lg); box-shadow: var(--e2); color: var(--fg); font: var(--t-label);
+  display: flex; flex-direction: column; min-height: 0; max-width: 100%;
+}
+.list { padding: var(--sp-2); gap: 6px; }
+.dialog { padding: 14px; gap: 14px; }
+.form { padding: 22px; gap: 12px; }
+.panel[data-state="open"] { animation: panelIn var(--d-sheet) var(--spring) both; }
+.panel[data-state="leave"] { animation: panelOut var(--d-exit) ease both; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes panelOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(4px) scale(.98); } }
+.dialog[data-state="open"], .form[data-state="open"] { animation-name: dialogIn; }
+.dialog[data-state="leave"], .form[data-state="leave"] { animation-name: dialogOut; }
+@keyframes dialogIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes dialogOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(.96); } }
+
+/* inside a PanelModal the panel sits above the layer's scrim */
+[data-placement="container"] > .panel { position: relative; }
+
+/* line style: the pen list shows them in a 40 high strip */
+.linesIn { height: 40px; }
+.linesIn > button { height: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { animation-duration: .01ms !important; }
+}

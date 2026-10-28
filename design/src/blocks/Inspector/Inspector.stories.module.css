@@ -1,0 +1,1 @@
+.frame { width: 300px; height: 700px; display: flex; flex-direction: column; border-radius: var(--r-md); overflow: hidden; background: var(--s1); }

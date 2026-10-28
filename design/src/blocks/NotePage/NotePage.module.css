@@ -1,0 +1,10 @@
+.page {
+  position: absolute; inset: var(--it, 0) var(--ir, 0) var(--ib, 0) var(--il, 0);
+  background: var(--paper); color: var(--paper-ink); overflow: hidden;
+  transition: inset var(--d-base) var(--ease);
+}
+.page[data-tone="dark"] { --paper-ink: var(--paper-ink-light); --paper-rule: var(--dot-edge); }
+.page[data-pattern]::before { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.page[data-pattern="lined"]::before { background-image: repeating-linear-gradient(to bottom, transparent 0 39px, var(--paper-rule) 39px 40px); background-position: 0 24px; }
+.page[data-pattern="grid"]::before { background-image: linear-gradient(var(--paper-rule) 1px, transparent 1px), linear-gradient(90deg, var(--paper-rule) 1px, transparent 1px); background-size: 32px 32px; }
+.page[data-pattern="dotted"]::before { background-image: radial-gradient(circle, var(--page-pattern) 1.4px, transparent 1.8px); background-size: 28px 28px; background-position: 14px 14px; }

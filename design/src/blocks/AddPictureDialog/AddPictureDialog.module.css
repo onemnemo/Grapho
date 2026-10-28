@@ -1,0 +1,15 @@
+.lede { margin: 0 0 16px; color: var(--mute); }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.surf { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 8px; background: linear-gradient(160deg, var(--st-surf-a), var(--st-surf-b)); }
+.sticker {
+  width: 62%; height: auto; display: block;
+  transform: rotate(calc(-5deg + 8deg * var(--choice-hover, 0))) scale(calc(1 + .04 * var(--choice-hover, 0)));
+  transition: transform var(--d-slow) var(--spring);
+}
+.frame { position: relative; display: block; width: 74%; aspect-ratio: 3 / 2; box-shadow: var(--st-image-edge); }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 4px; }
+.frame i { position: absolute; width: 8px; height: 8px; background: var(--white); border-radius: 2px; box-shadow: 0 0 0 1px var(--st-box-edge); }
+.k1 { left: -4px; top: -4px; }
+.k2 { right: -4px; top: -4px; }
+.k3 { left: -4px; bottom: -4px; }
+.k4 { right: -4px; bottom: -4px; }

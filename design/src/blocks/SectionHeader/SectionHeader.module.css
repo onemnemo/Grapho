@@ -1,0 +1,24 @@
+/* Section heading: title and count on the left, See all, Sort and the grid/list switch on the right. */
+.head { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin-bottom: var(--sp-4); min-height: 36px; }
+.left { display: flex; align-items: center; gap: var(--sp-2); min-width: 0; flex-wrap: wrap; }
+.title { margin: 0; font: var(--t-heading); letter-spacing: var(--track-heading); color: var(--mute); display: flex; align-items: baseline; gap: 10px; }
+.count { font: var(--t-caption); color: var(--dim); letter-spacing: 0; font-feature-settings: "tnum"; }
+.extra { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; margin-left: 6px; }
+.right { display: flex; align-items: center; gap: 10px; flex: none; }
+.seeAll {
+  display: inline-flex; align-items: center; gap: var(--sp-1); padding: 6px var(--sp-2); border: 0; border-radius: var(--r-sm);
+  background: none; color: var(--mute); font: var(--t-caption); cursor: pointer;
+  transition: background var(--d-fast), color var(--d-fast);
+}
+.seeAll:hover { background: var(--hover); color: var(--fg); }
+.seeAll svg { transition: transform var(--d-base) var(--spring); }
+.seeAll:hover svg { transform: translateX(2px); }
+.sort {
+  display: inline-flex; align-items: center; gap: var(--sp-2); height: 36px; padding: 0 14px 0 12px; border-radius: var(--r-full);
+  background: var(--s2); border: 1px solid var(--line); color: var(--fg); font: var(--t-label-sm); cursor: pointer;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.sort:hover { background: var(--s3); }
+.sort:active { transform: scale(.97); }
+.sort[aria-expanded="true"] { background: var(--s3); border-color: var(--line2); }
+.sort span { color: var(--mute); }

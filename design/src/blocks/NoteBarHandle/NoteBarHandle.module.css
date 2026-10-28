@@ -1,0 +1,6 @@
+.handle { position: absolute; z-index: var(--z-bar); border-radius: var(--r-full); background: var(--fg); opacity: 0; pointer-events: none; transition: opacity 400ms var(--ease); }
+.handle[data-pos="top"], .handle[data-pos="bottom"] { left: 50%; width: 40px; height: 4px; translate: -50% 0; }
+.handle[data-pos="left"], .handle[data-pos="right"] { top: 50%; width: 4px; height: 40px; translate: 0 -50%; }
+.handle[data-pos="top"] { top: 6px; } .handle[data-pos="bottom"] { bottom: 6px; }
+.handle[data-pos="left"] { left: 6px; } .handle[data-pos="right"] { right: 6px; }
+.handle[data-on] { opacity: .4; }

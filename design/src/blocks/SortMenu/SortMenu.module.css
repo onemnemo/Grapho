@@ -1,0 +1,6 @@
+.pop { width: 304px; padding: var(--sp-2); }
+.label { padding: 14px var(--sp-3) var(--sp-1); font: var(--t-group); color: var(--group-fg); }
+.first { padding-top: var(--sp-2); }
+.pad { padding: 2px 6px 6px; }
+.size { padding: 0 var(--sp-2) var(--sp-1); }
+.size[data-off="true"] { opacity: .4; pointer-events: none; }
