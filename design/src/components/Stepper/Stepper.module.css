@@ -1,0 +1,2 @@
+.stepper { display: inline-flex; align-items: center; background: var(--s2); border-radius: var(--r-full); box-shadow: inset 0 0 0 1px var(--line); padding: 3px; flex: none; }
+.value { min-width: 48px; text-align: center; font: var(--t-label-lg); font-feature-settings: "tnum"; }

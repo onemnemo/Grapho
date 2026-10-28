@@ -1,0 +1,16 @@
+.row {
+  display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--sp-3); row-gap: var(--sp-2);
+  min-height: var(--row); padding: var(--sp-2) 0; min-width: 0; max-width: 100%; position: relative;
+  width: 100%; border: 0; background: none; color: var(--fg); text-align: left; font: inherit;
+}
+.row + .row { box-shadow: inset 0 1px 0 var(--line); }
+.press { cursor: pointer; border-radius: var(--r-sm); transition: background var(--d-fast); }
+.press:hover { background: var(--hover); }
+.label { flex: 1 1 120px; min-width: 0; font: var(--t-label); display: flex; align-items: center; gap: var(--sp-3); }
+.label > span { min-width: 0; }
+.label small { display: block; font: var(--t-caption); color: var(--dim); white-space: normal; }
+.ctl { flex: 0 1 auto; min-width: 0; max-width: 100%; display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
+.below .ctl { flex: 1 1 100%; justify-content: stretch; }
+.below .ctl > * { flex: 1; }
+
+.row.plain { box-shadow: none; }
