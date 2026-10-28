@@ -1,0 +1,14 @@
+.editor { display: flex; flex-direction: column; gap: var(--sp-6); width: 100%; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(136px, 1fr)); gap: var(--sp-3); }
+.action { align-self: flex-start; }
+
+.custom { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--sp-8); align-items: start; padding: 0 var(--sp-2); }
+.live { align-self: start; }
+.tools { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-5); }
+.fields { display: flex; gap: var(--sp-5); flex-wrap: wrap; padding: var(--sp-2) var(--sp-2) 0; }
+.field { display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); }
+.name { font: var(--t-micro); color: var(--dim); }
+
+@media (max-width: 560px) {
+  .custom { grid-template-columns: minmax(0, 1fr); }
+}

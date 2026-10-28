@@ -1,0 +1,19 @@
+/* The options popover: quiet, no title, no dividers. Spacing separates the groups. */
+.pop { display: flex; flex-direction: column; gap: var(--sp-4); }
+.group { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.label { font: var(--t-group); color: var(--group-fg); }
+
+/* one row: [start] swap [end] */
+.ends { display: flex; align-items: center; gap: var(--sp-1); }
+.cap {
+  flex: 1 1 0; min-width: 0; height: var(--ctl); display: flex; align-items: center; justify-content: space-between;
+  padding: 0 10px 0 12px; border: 0; border-radius: var(--r-sm); background: var(--hover-fill); color: var(--fg); cursor: pointer;
+  transition: background var(--d-fast);
+}
+.cap:hover, .cap[aria-expanded="true"] { background: var(--sel-fill); }
+.cap:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.cap > svg:last-child { color: var(--dim); flex: none; }
+.glyph { display: inline-flex; align-items: center; gap: var(--sp-3); }
+.glyph svg { flex: none; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); min-height: var(--ctl); }
+.rowLabel { font: var(--t-label-sm); color: var(--mute); }

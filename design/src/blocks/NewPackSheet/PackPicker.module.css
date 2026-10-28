@@ -1,0 +1,5 @@
+.picker { display: flex; flex-direction: column; gap: var(--sp-3); min-width: 0; }
+.bar { display: flex; align-items: center; justify-content: space-between; }
+.grid { display: grid; gap: var(--sp-1); margin: 0 calc(var(--sp-2) * -1); grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+.grid[data-shape="wide"], .grid[data-shape="stroke"] { grid-template-columns: repeat(auto-fill, minmax(144px, 1fr)); }
+.none { grid-column: 1 / -1; margin: var(--sp-8) var(--sp-2); color: var(--dim); font: var(--t-body); }

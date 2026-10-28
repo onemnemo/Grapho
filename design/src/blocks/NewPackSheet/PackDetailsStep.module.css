@@ -1,0 +1,13 @@
+.step { display: flex; flex-direction: column; gap: var(--sp-6); }
+.top { display: flex; align-items: flex-start; gap: var(--sp-5); }
+.fields { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-4); }
+.types { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-4); color: var(--mute); font: var(--t-label-sm); }
+.types li { display: inline-flex; align-items: center; gap: var(--sp-2); font-feature-settings: "tnum"; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+h4 { margin: 0 0 var(--sp-2); font: var(--t-group); color: var(--group-fg); }
+.covers { display: flex; flex-wrap: wrap; gap: var(--sp-1); margin-left: calc(var(--sp-2) * -1); }
+.choice { padding: var(--sp-2); border: 0; border-radius: var(--r-md); background: none; cursor: pointer; line-height: 0; transition: background var(--d-fast); }
+.choice:hover { background: var(--hover); }
+.choice[aria-checked="true"] { background: var(--sel); }
+.choice:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+.opts { display: flex; flex-direction: column; gap: var(--sp-3); }

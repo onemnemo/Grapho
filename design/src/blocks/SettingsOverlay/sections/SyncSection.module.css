@@ -1,0 +1,8 @@
+/* the state is one calm line, no chip, no colour except when something failed */
+.status { display: flex; align-items: center; gap: var(--sp-3); min-height: var(--hit); color: var(--mute); font: var(--t-label); font-weight: 400; }
+.status > span { flex: 1; min-width: 0; }
+.status svg { flex: none; }
+.status[data-status="error"] svg { color: var(--danger); }
+.spin { animation: turn 1s linear infinite; }
+@keyframes turn { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }

@@ -1,0 +1,12 @@
+.chip {
+  position: absolute; z-index: var(--z-bar); translate: -50% 0; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 var(--sp-4) 0 var(--sp-3);
+  border: 0; border-radius: var(--r-full); background: var(--overlay); color: var(--fg); font: var(--t-label-sm); cursor: pointer;
+  box-shadow: var(--e1), inset 0 0 0 1px var(--line); animation: pasteIn var(--d-base) var(--spring) both;
+  transition: background var(--d-fast), transform var(--d-fast) var(--spring);
+}
+.chip svg { color: var(--mute); }
+.chip:hover { background: var(--s3); }
+.chip:active { transform: scale(.96); }
+.chip:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+@keyframes pasteIn { from { opacity: 0; transform: translateY(6px) scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .chip { animation: none; } }

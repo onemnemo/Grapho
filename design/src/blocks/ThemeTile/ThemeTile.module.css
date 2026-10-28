@@ -1,0 +1,45 @@
+.tile {
+  display: flex; flex-direction: column; gap: var(--sp-3); width: 100%; min-width: 0; padding: var(--sp-2) var(--sp-2) var(--sp-3);
+  border: 0; border-radius: var(--r-lg); background: none; color: var(--mute); text-align: left; cursor: pointer;
+  transition: background var(--d-fast), color var(--d-fast), transform var(--d-base) var(--spring);
+  -webkit-tap-highlight-color: transparent;
+}
+.tile:hover { background: var(--hover-fill); color: var(--fg); }
+.tile:active { transform: scale(.985); }
+.tile[aria-checked="true"] { background: var(--sel-fill); color: var(--fg); }
+.tile[aria-checked="true"]:hover { background: var(--sel-fill-hover); }
+.tile:focus-visible { outline: var(--focus); outline-offset: var(--focus-out); }
+
+.name { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); padding: 0 var(--sp-2); font: var(--t-label); color: inherit; }
+.tick { flex: none; opacity: 0; transform: scale(.4); transition: opacity var(--d-fast), transform var(--d-base) var(--spring); }
+.tile[aria-checked="true"] .tick { opacity: 1; transform: none; }
+
+/* the picture. It carries its own theme (data-theme on this element), so every var() below is that theme's. */
+.frame {
+  container-type: inline-size; width: 100%; aspect-ratio: 16 / 10; overflow: hidden;
+  border-radius: var(--r-md); background: var(--bg); color: var(--fg);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.screen { display: flex; flex-direction: column; gap: 4.4cqw; height: 100%; padding: 5cqw; background: var(--s1); border-radius: inherit; }
+.head { display: flex; align-items: center; gap: 2.4cqw; }
+.title { flex: 1; font: 500 5.6cqw/1 var(--sans); letter-spacing: -0.02em; color: var(--fg); }
+.search { display: inline-flex; align-items: center; gap: 1.4cqw; height: 7.4cqw; padding: 0 2.6cqw; border-radius: var(--r-full); background: var(--s2); color: var(--dim); font: 500 3.2cqw/1 var(--sans); }
+.search svg { width: 3.8cqw; height: 3.8cqw; }
+.new { display: inline-grid; place-items: center; height: 7.4cqw; padding: 0 3.4cqw; border-radius: var(--r-full); background: var(--fg); color: var(--on-fg); font: 500 3.2cqw/1 var(--sans); }
+
+.folders { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.6cqw; }
+.folder { display: block; height: 11cqw; border-radius: 2cqw; background: var(--f-indigo-1); }
+.folder[data-tone="rose"] { background: var(--f-rose-1); }
+.folder[data-tone="sea"] { background: var(--f-sea-1); }
+
+.notes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.6cqw; flex: 1; min-height: 0; }
+.note { display: flex; flex-direction: column; justify-content: center; gap: 1.8cqw; padding: 0 2.2cqw; border-radius: 1.6cqw; background: var(--paper); }
+.note u { display: block; height: 0.7cqw; border-radius: 1cqw; background: var(--paper-rule); text-decoration: none; }
+.note u:first-child { height: 1cqw; width: 60%; background: var(--paper-ink); opacity: .7; }
+.note[data-chosen] { box-shadow: 0 0 0 0.9cqw var(--s1), 0 0 0 1.5cqw var(--fg); }
+
+.controls { display: flex; align-items: center; gap: 3cqw; }
+.toggle { position: relative; width: 8cqw; height: 4.4cqw; border-radius: var(--r-full); background: var(--accent); }
+.toggle::after { content: ""; position: absolute; top: 0.6cqw; right: 0.6cqw; width: 3.2cqw; height: 3.2cqw; border-radius: 50%; background: var(--on-fg); }
+.slider { position: relative; flex: 1; max-width: 30cqw; height: 0.9cqw; border-radius: var(--r-full); background: var(--s3); }
+.slider i { position: absolute; inset: 0 auto 0 0; width: 58%; border-radius: inherit; background: var(--accent); }
