@@ -1,0 +1,10 @@
+.roll { display: inline-grid; overflow: hidden; font-feature-settings: "tnum"; height: 1.15em; line-height: 1.15em; vertical-align: bottom; }
+.roll > span { grid-area: 1 / 1; text-align: left; }
+.inUp { animation: rIn var(--d-slow) var(--spring) both; }
+.outUp { animation: rOut var(--d-base) var(--ease) both; }
+.inDn { animation: rInD var(--d-slow) var(--spring) both; }
+.outDn { animation: rOutD var(--d-base) var(--ease) both; }
+@keyframes rIn { from { transform: translateY(100%); opacity: 0; } }
+@keyframes rOut { to { transform: translateY(-100%); opacity: 0; } }
+@keyframes rInD { from { transform: translateY(-100%); opacity: 0; } }
+@keyframes rOutD { to { transform: translateY(100%); opacity: 0; } }

@@ -1,0 +1,3 @@
+.surface { background: var(--s1); padding: var(--sp-8); border-radius: var(--r-lg); box-shadow: inset 0 0 0 1px var(--line); }
+.row { display: flex; flex-wrap: wrap; gap: var(--sp-8); align-items: flex-start; }
+.cell { display: grid; gap: var(--sp-3); justify-items: start; font: var(--t-caption); color: var(--dim); }

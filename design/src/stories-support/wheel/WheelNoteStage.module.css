@@ -1,0 +1,11 @@
+.stage {
+  position: relative; overflow: hidden; user-select: none; -webkit-user-select: none; font: var(--t-body); color: var(--fg);
+  background-color: var(--wh-paper); background-image: radial-gradient(var(--wh-dot-grid) 1.3px, transparent 1.6px); background-size: 28px 28px; background-position: 14px 14px;
+  border-radius: var(--r-md); box-shadow: 0 0 0 1px var(--line);
+}
+.ink { position: absolute; left: 0; top: 0; pointer-events: none; }
+.hit { position: absolute; inset: 0; cursor: crosshair; touch-action: none; }
+.cursor { position: absolute; left: 0; top: 0; border-radius: 50%; border: 1.5px solid var(--wh-cursor); box-shadow: 0 0 0 1px var(--wh-cursor-edge); pointer-events: none; opacity: 0; transition: opacity .12s; will-change: transform; }
+.bar { position: absolute; left: 0; right: 0; top: 0; height: 52px; display: flex; align-items: center; padding: 0 8px; gap: 2px; background: var(--wh-bar); border-bottom: 1px solid var(--line); z-index: 2; }
+.title { font: var(--t-label); margin-left: 6px; flex: 1; letter-spacing: -.01em; }
+.title small { color: var(--dim); font: var(--t-caption); margin-left: 8px; }
