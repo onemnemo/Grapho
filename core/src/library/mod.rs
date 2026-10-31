@@ -18,10 +18,13 @@ mod folders;
 mod id;
 mod items;
 mod model;
+mod package;
 mod query;
 mod store;
 mod trash;
 
+#[cfg(test)]
+mod package_tests;
 #[cfg(test)]
 mod tests;
 
@@ -30,6 +33,9 @@ pub use error::LibraryError;
 pub use folders::CanMove;
 pub use id::Id;
 pub use model::{Folder, Item, ItemKind, NewItem};
+pub use package::{
+    is_package, PackageError, PackageReport, Shelf, PACKAGE_FORMAT, PACKAGE_VERSION,
+};
 pub use query::{Listing, Sort, SortDir, SortKey, Window};
 pub use store::{Library, FORMAT_VERSION};
 pub use trash::{Removed, RestoreMode, TRASH_DAYS};
