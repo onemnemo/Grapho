@@ -272,13 +272,8 @@ object NativeNotebook {
      * Moves strokes from [from] onto the active layer of [to], placed by [matrix] from [from]'s page units to [to]'s,
      * as one undo step. Returns the new ids, empty if nothing moved.
      */
-    @JvmStatic external fun nativeMoveToPage(
-        handle: Long,
-        from: Int,
-        ids: LongArray,
-        to: Int,
-        matrix: FloatArray,
-    ): LongArray
+    @JvmStatic
+    external fun nativeMoveToPage(handle: Long, from: Int, ids: LongArray, to: Int, matrix: FloatArray): LongArray
 
     /** Copies strokes onto the active layer of [page], moved by ([dx], [dy]), as one undo step. Returns the copies' ids. */
     @JvmStatic external fun nativeDuplicate(handle: Long, page: Int, ids: LongArray, dx: Float, dy: Float): LongArray
