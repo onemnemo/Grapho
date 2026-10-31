@@ -329,3 +329,40 @@ fn common_width_is_the_most_used_whole_width_and_skips_fills() {
     assert_eq!(e.common_width(0, &[f]), None);
     assert_eq!(e.common_width(0, &[Id::new_v4()]), None);
 }
+
+#[test]
+fn move_to_page_lands_on_the_target_and_undoes_in_one_step() {
+    let mut e = editor();
+    e.document_mut().add_page();
+    let a = add(&mut e, hline(10.0, 0.0, 20.0));
+    let b = add(&mut e, hline(30.0, 0.0, 20.0));
+    let ids = e.move_to_page(0, &[a], 1, [1.0, 0.0, 5.0, 0.0, 1.0, -7.0]);
+    assert_eq!(ids.len(), 1);
+    assert_eq!(layer_ids(&e, 0), vec![b]);
+    let moved = &e.document().pages[1].layers[0].strokes;
+    assert_eq!(moved.len(), 1);
+    assert_eq!(moved[0].id, ids[0]);
+    assert_eq!((moved[0].points[0].x, moved[0].points[0].y), (5.0, 3.0));
+    e.undo();
+    assert_eq!(layer_ids(&e, 0), vec![a, b]);
+    assert!(e.document().pages[1].layers[0].strokes.is_empty());
+    let mut pages = e.history_pages().to_vec();
+    pages.sort_unstable();
+    assert_eq!(pages, vec![0, 1]);
+    e.redo();
+    assert_eq!(layer_ids(&e, 0), vec![b]);
+    assert_eq!(e.document().pages[1].layers[0].strokes.len(), 1);
+}
+
+#[test]
+fn move_to_page_changes_nothing_when_the_target_layer_is_locked() {
+    let mut e = editor();
+    e.document_mut().add_page();
+    let a = add(&mut e, hline(10.0, 0.0, 20.0));
+    e.document_mut().pages[1].layers[0].locked = true;
+    assert!(e
+        .move_to_page(0, &[a], 1, [1.0, 0.0, 0.0, 0.0, 1.0, 0.0])
+        .is_empty());
+    assert_eq!(layer_ids(&e, 0), vec![a]);
+    assert!(e.document().pages[1].layers[0].strokes.is_empty());
+}
