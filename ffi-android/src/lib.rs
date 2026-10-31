@@ -34,7 +34,9 @@ use grapho_core::{
     outline_pieces_styled, outline_styled, Brush, InputSample, Rect, Snapped, StrokeBuilder,
 };
 use jni::objects::{JClass, JFloatArray, JLongArray, JString};
-use jni::sys::{jboolean, jfloat, jfloatArray, jint, jlong, jlongArray, jstring, JNI_FALSE};
+use jni::sys::{
+    jboolean, jfloat, jfloatArray, jint, jintArray, jlong, jlongArray, jstring, JNI_FALSE,
+};
 use jni::JNIEnv;
 
 pub(crate) fn read_floats(env: &mut JNIEnv, arr: &JFloatArray) -> Vec<f32> {
@@ -621,6 +623,25 @@ pub extern "system" fn Java_com_onemnemo_grapho_engine_NativeNotebook_nativeRedo
     handle: jlong,
 ) -> jint {
     unsafe { notebook(handle) }.redo().map_or(-1, |i| i as jint)
+}
+
+/// Every page the last undo or redo changed when it reached more than one,
+/// such as a move from one page to another; empty otherwise.
+#[no_mangle]
+pub extern "system" fn Java_com_onemnemo_grapho_engine_NativeNotebook_nativeHistoryPages(
+    env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+) -> jintArray {
+    let pages: Vec<jint> = unsafe { notebook(handle) }
+        .history_pages()
+        .iter()
+        .map(|&p| p as jint)
+        .collect();
+    match env.new_int_array(pages.len() as i32) {
+        Ok(out) if env.set_int_array_region(&out, 0, &pages).is_ok() => out.into_raw(),
+        _ => std::ptr::null_mut(),
+    }
 }
 
 /// Outlines for drawing the given strokes of a page, in document units.

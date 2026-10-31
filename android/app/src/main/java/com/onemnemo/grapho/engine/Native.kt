@@ -268,6 +268,13 @@ object NativeNotebook {
      */
     @JvmStatic external fun nativePaste(handle: Long, page: Int, x: Float, y: Float): LongArray
 
+    /**
+     * Moves strokes from [from] onto the active layer of [to], placed by [matrix] from [from]'s page units to [to]'s,
+     * as one undo step. Returns the new ids, empty if nothing moved.
+     */
+    @JvmStatic
+    external fun nativeMoveToPage(handle: Long, from: Int, ids: LongArray, to: Int, matrix: FloatArray): LongArray
+
     /** Copies strokes onto the active layer of [page], moved by ([dx], [dy]), as one undo step. Returns the copies' ids. */
     @JvmStatic external fun nativeDuplicate(handle: Long, page: Int, ids: LongArray, dx: Float, dy: Float): LongArray
 
@@ -275,6 +282,9 @@ object NativeNotebook {
     @JvmStatic external fun nativeUndo(handle: Long): Int
 
     @JvmStatic external fun nativeRedo(handle: Long): Int
+
+    /** Every page the last undo or redo changed when it reached more than one, as with a move between pages. */
+    @JvmStatic external fun nativeHistoryPages(handle: Long): IntArray
 
     /**
      * Stroke ids of the visible layers of [page], bottom to top. For each layer: `[alpha, n, <n ids as hi, lo pairs>]`,
