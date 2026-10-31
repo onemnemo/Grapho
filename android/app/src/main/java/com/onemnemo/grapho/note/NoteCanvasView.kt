@@ -1090,6 +1090,13 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
         } else {
             cache.refresh(id, page)
             geometry.settle(id, page)
+            // A step that moved ink between pages changed the others too.
+            for (other in NativeNotebook.nativeHistoryPages(notebook.nativeHandle).distinct()) {
+                if (other == page) continue
+                val otherId = info.pageIds.getOrNull(other) ?: continue
+                cache.refresh(otherId, other)
+                geometry.settle(otherId, other)
+            }
         }
         // Show where the change happened if it is off screen.
         if (id != null && !viewport.infinite && !viewport.isPageVisible(page)) {
