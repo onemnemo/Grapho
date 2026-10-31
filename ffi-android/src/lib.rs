@@ -14,6 +14,7 @@ mod guide;
 mod images;
 mod layers;
 mod library;
+mod package;
 mod pdf;
 mod select;
 mod shapes;

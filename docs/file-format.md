@@ -253,3 +253,6 @@ more than 30 days is removed, and the shell deletes the files the removal report
 Readers ignore fields they do not know and refuse a `version` above the one they support. Writers
 replace the file in one step (write a temporary file, then rename it), so a crash never leaves a
 half written library.
+
+To share or back up many notebooks and folders at once, the app writes a
+library package instead, see [library-package.md](library-package.md).
