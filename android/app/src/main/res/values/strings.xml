@@ -158,6 +158,26 @@
     <string name="library_import">Import</string>
     <string name="library_import_file">Notebook file</string>
     <string name="library_imported">Imported</string>
+    <string name="library_importing">Importing</string>
+    <string name="library_package_imported">Imported %1$s</string>
+    <string name="library_package_exported">Exported %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Grapho library %1$s</string>
+    <string name="library_package_nothing">There\'s nothing to export.</string>
+    <string name="library_package_export_failed">Couldn\'t export the library file.</string>
+    <string name="library_package_newer">This library file needs a newer version of Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d notebook</item>
+        <item quantity="other">%d notebooks</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d folder</item>
+        <item quantity="other">%d folders</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d notebook couldn\'t be read and was left out</item>
+        <item quantity="other">%d notebooks couldn\'t be read and were left out</item>
+    </plurals>
     <string name="library_import_failed">Couldn\'t import that file.</string>
     <string name="library_export_failed">Couldn\'t export the notebook.</string>
     <string name="library_create_failed">Couldn\'t create the notebook.</string>

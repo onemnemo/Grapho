@@ -153,6 +153,26 @@
     <string name="library_import">Importieren</string>
     <string name="library_import_file">Notizbuch-Datei</string>
     <string name="library_imported">Importiert</string>
+    <string name="library_importing">Wird importiert</string>
+    <string name="library_package_imported">%1$s importiert</string>
+    <string name="library_package_exported">%1$s exportiert</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Grapho-Bibliothek %1$s</string>
+    <string name="library_package_nothing">Es gibt nichts zu exportieren.</string>
+    <string name="library_package_export_failed">Die Bibliotheksdatei konnte nicht exportiert werden.</string>
+    <string name="library_package_newer">Für diese Bibliotheksdatei ist eine neuere Version von Grapho nötig.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d Notizbuch</item>
+        <item quantity="other">%d Notizbücher</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d Ordner</item>
+        <item quantity="other">%d Ordner</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d Notizbuch war nicht lesbar und wurde ausgelassen</item>
+        <item quantity="other">%d Notizbücher waren nicht lesbar und wurden ausgelassen</item>
+    </plurals>
     <string name="library_import_failed">Die Datei konnte nicht importiert werden.</string>
     <string name="library_export_failed">Das Notizbuch konnte nicht exportiert werden.</string>
     <string name="library_create_failed">Das Notizbuch konnte nicht erstellt werden.</string>

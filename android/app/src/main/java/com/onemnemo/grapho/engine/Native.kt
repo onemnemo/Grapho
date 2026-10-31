@@ -503,6 +503,26 @@ object NativeLibrary {
     @JvmStatic
     external fun nativeCall(handle: Long, op: String, args: String): String
 
+    /**
+     * Writes picked folders and items as one library package. [args] is a JSON object with `folderIds`, `itemIds`,
+     * `dir` (the notebook folder), `out` (the package file) and `now`. Returns the JSON report.
+     */
+    @Throws(IOException::class)
+    @JvmStatic
+    external fun nativeExportPackage(handle: Long, args: String): String
+
+    /**
+     * Adds the library package at `path` under `folderId`, writing its notebooks into `dir`. [args] is a JSON
+     * object with those and `now`. Returns the JSON report.
+     */
+    @Throws(IOException::class)
+    @JvmStatic
+    external fun nativeImportPackage(handle: Long, args: String): String
+
+    /** Whether the file at [path] is a library package rather than one notebook. */
+    @JvmStatic
+    external fun nativeIsPackage(path: String): Boolean
+
     /** Frees the handle. */
     @JvmStatic
     external fun nativeFree(handle: Long)
