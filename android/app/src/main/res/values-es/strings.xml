@@ -156,6 +156,26 @@
     <string name="library_import">Importar</string>
     <string name="library_import_file">Archivo de cuaderno</string>
     <string name="library_imported">Importado</string>
+    <string name="library_importing">Importando</string>
+    <string name="library_package_imported">Se importó: %1$s</string>
+    <string name="library_package_exported">Se exportó: %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Biblioteca de Grapho %1$s</string>
+    <string name="library_package_nothing">No hay nada que exportar.</string>
+    <string name="library_package_export_failed">No se pudo exportar el archivo de biblioteca.</string>
+    <string name="library_package_newer">Este archivo de biblioteca necesita una versión más reciente de Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d cuaderno</item>
+        <item quantity="other">%d cuadernos</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d carpeta</item>
+        <item quantity="other">%d carpetas</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d cuaderno no se pudo leer y se omitió</item>
+        <item quantity="other">%d cuadernos no se pudieron leer y se omitieron</item>
+    </plurals>
     <string name="library_import_failed">No se pudo importar ese archivo.</string>
     <string name="library_export_failed">No se pudo exportar el cuaderno.</string>
     <string name="library_create_failed">No se pudo crear el cuaderno.</string>

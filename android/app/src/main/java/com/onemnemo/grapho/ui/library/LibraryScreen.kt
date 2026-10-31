@@ -418,7 +418,7 @@ fun LibraryScreen(
         SelectionBar(
             visible = selecting,
             count = selected.size,
-            canExport = selected.size == 1 && pickedItems.size == 1,
+            canExport = pickedItems.isNotEmpty() || pickedFolders.isNotEmpty(),
             canStar = pickedItems.isNotEmpty(),
             allStarred = allStarred,
             moveTargets = {
@@ -428,7 +428,14 @@ fun LibraryScreen(
                     pickedItems.map { it.folderId }.toSet() + pickedFolders.map { it.parentId }.toSet(),
                 )
             },
-            onExport = { pickedItems.firstOrNull()?.let(files.export) },
+            onExport = {
+                val single = pickedItems.singleOrNull()
+                if (single != null && pickedFolders.isEmpty()) {
+                    files.export(single)
+                } else {
+                    files.exportPackage(pickedFolders, pickedItems)
+                }
+            },
             onMoveTo = { id ->
                 actions.move(pickedItems, pickedFolders, id, placeName(id))
                 endSelection()
