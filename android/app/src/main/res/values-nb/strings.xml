@@ -153,6 +153,26 @@
     <string name="library_import">Importer</string>
     <string name="library_import_file">Notatbokfil</string>
     <string name="library_imported">Importert</string>
+    <string name="library_importing">Importerer</string>
+    <string name="library_package_imported">Importerte %1$s</string>
+    <string name="library_package_exported">Eksporterte %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Grapho-bibliotek %1$s</string>
+    <string name="library_package_nothing">Det er ingenting å eksportere.</string>
+    <string name="library_package_export_failed">Kunne ikke eksportere bibliotekfilen.</string>
+    <string name="library_package_newer">Denne bibliotekfilen trenger en nyere versjon av Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d notatbok</item>
+        <item quantity="other">%d notatbøker</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d mappe</item>
+        <item quantity="other">%d mapper</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d notatbok kunne ikke leses og ble utelatt</item>
+        <item quantity="other">%d notatbøker kunne ikke leses og ble utelatt</item>
+    </plurals>
     <string name="library_import_failed">Kunne ikke importere den filen.</string>
     <string name="library_export_failed">Kunne ikke eksportere notatboken.</string>
     <string name="library_create_failed">Kunne ikke opprette notatboken.</string>

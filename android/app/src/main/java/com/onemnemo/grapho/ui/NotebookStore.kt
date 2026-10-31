@@ -6,13 +6,16 @@ import androidx.annotation.StringRes
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.note.CoverRef
 import com.onemnemo.grapho.note.Library
+import com.onemnemo.grapho.note.LibraryErrors
 import com.onemnemo.grapho.note.LibraryException
 import com.onemnemo.grapho.note.LibraryFolder
 import com.onemnemo.grapho.note.LibraryItem
 import com.onemnemo.grapho.note.LibraryKind
+import com.onemnemo.grapho.note.LibraryPackage
 import com.onemnemo.grapho.note.MoveVerdict
 import com.onemnemo.grapho.note.Notebook
 import com.onemnemo.grapho.note.NotebookInfo
+import com.onemnemo.grapho.note.PackageReport
 import com.onemnemo.grapho.note.PageBackground
 import com.onemnemo.grapho.note.PaperColors
 import com.onemnemo.grapho.note.RestoreMode
@@ -221,18 +224,24 @@ class NotebookStore(context: Context) {
         file
     }
 
-    /** Copies a picked file in, after checking that it really is a notebook. */
-    suspend fun import(uri: Uri, folderId: String? = null): File = withContext(NotebookIo) {
+    /**
+     * Copies a picked file in: one notebook, or every notebook and folder of a library package, which keeps its
+     * folder tree under [folderId]. Anything else is refused.
+     */
+    suspend fun import(uri: Uri, folderId: String? = null): PackageReport = withContext(NotebookIo) {
         val temp = File(dir, "import-${UUID.randomUUID()}.tmp")
         try {
             val input = appContext.contentResolver.openInputStream(uri)
                 ?: throw StoreException(R.string.store_open_file)
             input.use { i -> temp.outputStream().use { o -> i.copyTo(o) } }
-            try {
+            val single = try {
                 NotebookInfo.read(temp)
+                true
             } catch (e: Exception) {
-                throw StoreException(R.string.store_not_notebook, e)
+                if (!LibraryPackage.isPackage(temp)) throw StoreException(R.string.store_not_notebook, e)
+                false
             }
+            if (!single) return@withContext importPackage(temp, folderId)
             val target = File(dir, "${UUID.randomUUID()}${LibraryStorage.EXTENSION}")
             if (!temp.renameTo(target)) throw StoreException(R.string.store_add_notebook)
             try {
@@ -241,15 +250,40 @@ class NotebookStore(context: Context) {
                 target.delete()
                 throw StoreException(R.string.store_add_notebook, e)
             }
-            target
+            PackageReport(folders = 0, items = 1, skipped = 0, fileRefs = listOf(target.name))
         } catch (e: StoreException) {
-            temp.delete()
             throw e
         } catch (e: Exception) {
-            temp.delete()
             throw StoreException(R.string.store_read_file, e)
+        } finally {
+            temp.delete()
         }
     }
+
+    /**
+     * Writes the picked [folders], with everything in them, and the picked [entries] as one library package to the
+     * document at [uri].
+     */
+    suspend fun exportPackage(folders: List<String>, entries: List<NotebookEntry>, uri: Uri): PackageReport =
+        withContext(NotebookIo) {
+            val temp = File(appContext.cacheDir, "export-${UUID.randomUUID()}${LibraryPackage.EXTENSION}")
+            try {
+                val report = try {
+                    LibraryPackage.export(storage.open(), folders, entries.map { it.id }, dir, temp, now())
+                } catch (e: LibraryException) {
+                    val why = if (e.kind == LibraryErrors.EMPTY) {
+                        R.string.library_package_nothing
+                    } else {
+                        R.string.library_package_export_failed
+                    }
+                    throw StoreException(why, e)
+                }
+                copyFileToUri(appContext, temp, uri)
+                report
+            } finally {
+                temp.delete()
+            }
+        }
 
     /** Makes a notebook from the PDF at [uri], one page per PDF page. The message of a failure is fit to show. */
     suspend fun importPdf(uri: Uri, folderId: String? = null): File = withContext(NotebookIo) {
@@ -440,6 +474,28 @@ class NotebookStore(context: Context) {
             throw StoreException(R.string.library_save_failed, e)
         }
         return result
+    }
+
+    /** Adds the package [file] under [folderId]. The library only changes, and is saved, if the whole import works. */
+    private fun importPackage(file: File, folderId: String?): PackageReport {
+        val lib = storage.open()
+        val report = try {
+            LibraryPackage.import(lib, file, dir, folderId, now())
+        } catch (e: LibraryException) {
+            val why = if (e.kind == LibraryErrors.UNSUPPORTED_VERSION) {
+                R.string.library_package_newer
+            } else {
+                R.string.library_import_failed
+            }
+            throw StoreException(why, e)
+        }
+        try {
+            storage.save(lib)
+        } catch (e: IOException) {
+            // The notebooks are on disk and in the library in memory, and the next change saves it. Even after a
+            // restart they come back as top level items, never lost.
+        }
+        return report
     }
 
     private fun register(file: File, folderId: String?) {
