@@ -171,10 +171,18 @@ internal class LassoController(private val notebook: Notebook, private val host:
         select(t.page, ids)
     }
 
-    /** A finger tap at ([x], [y]) in view pixels: selects the image under it, or clears the selection. */
+    /**
+     * A finger tap at ([x], [y]) in view pixels: selects the image under it, or clears the selection, or, with
+     * nothing selected and something copied, offers to paste there.
+     */
     fun tapAt(x: Float, y: Float) {
         val page = host.currentViewport.pageAt(x, y)
-        if (page < 0 || !selectImageAt(page, x, y)) clear()
+        if (page >= 0 && selectImageAt(page, x, y)) return
+        val hadSelection = selection != null
+        clear()
+        if (page >= 0 && !hadSelection && NativeNotebook.nativeHasClipboard(notebook.nativeHandle)) {
+            host.pasteOffered(x, y)
+        }
     }
 
     private fun selectImageAt(page: Int, x: Float, y: Float): Boolean {
