@@ -202,6 +202,8 @@ pub struct Editor {
     clipboard: Clipboard,
     /// The layer new ink goes to, per page. Not saved in the file.
     active: HashMap<Id, Id>,
+    /// Every page the last undo or redo of a grouped step touched.
+    history_pages: Vec<usize>,
 }
 
 /// Undo history is capped so a long session can't use unbounded memory.
@@ -216,6 +218,7 @@ impl Editor {
             erasing: None,
             clipboard: Clipboard::default(),
             active: HashMap::new(),
+            history_pages: Vec::new(),
         }
     }
 
@@ -284,6 +287,7 @@ impl Editor {
     /// Reverses the last change. Returns the index of the page it touched.
     pub fn undo(&mut self) -> Option<usize> {
         self.end_erase();
+        self.history_pages.clear();
         let step = self.undo.pop()?;
         let (inverse, page) = self.apply(step)?;
         self.redo.push(inverse);
@@ -293,10 +297,18 @@ impl Editor {
     /// Repeats the last undone change. Returns the index of the page it touched.
     pub fn redo(&mut self) -> Option<usize> {
         self.end_erase();
+        self.history_pages.clear();
         let step = self.redo.pop()?;
         let (inverse, page) = self.apply(step)?;
         self.undo.push(inverse);
         Some(page)
+    }
+
+    /// The pages the last undo or redo changed besides the one it returned,
+    /// when it held edits to more than one page, such as a move from one
+    /// page to another. May repeat pages.
+    pub fn history_pages(&self) -> &[usize] {
+        &self.history_pages
     }
 
     fn record(&mut self, inverse: Step) {
@@ -413,6 +425,7 @@ impl Editor {
                 for part in steps {
                     let (inverse, page) = self.apply(part)?;
                     inverses.push(inverse);
+                    self.history_pages.push(page);
                     shown = page;
                 }
                 inverses.reverse();

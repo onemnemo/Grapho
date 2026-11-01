@@ -59,6 +59,19 @@ fn moved(s: &Stroke, dx: f32, dy: f32) -> Stroke {
     out
 }
 
+/// A copy placed by `m`, as for [`Editor::transform`].
+fn mapped(s: &Stroke, m: [f32; 6]) -> Stroke {
+    let [sx, kx, tx, ky, sy, ty] = m;
+    let mut out = renewed(s);
+    out.style.width *= (sx * sy - kx * ky).abs().sqrt();
+    for p in &mut out.points {
+        let (x, y) = (p.x, p.y);
+        p.x = sx * x + kx * y + tx;
+        p.y = ky * x + sy * y + ty;
+    }
+    out
+}
+
 fn shifted(i: &Image, dx: f32, dy: f32) -> Image {
     i.transformed([1.0, 0.0, dx, 0.0, 1.0, dy])
 }
@@ -143,18 +156,7 @@ impl Editor {
     /// keeps its id; unknown ids and anything on a locked layer are skipped.
     pub fn transform(&mut self, page: usize, ids: &[Id], m: [f32; 6]) -> Vec<Id> {
         self.end_erase();
-        let [sx, kx, tx, ky, sy, ty] = m;
-        let scale = (sx * sy - kx * ky).abs().sqrt();
-        let strokes = self.replace_step(page, ids, |s| {
-            let mut out = renewed(s);
-            out.style.width *= scale;
-            for p in &mut out.points {
-                let (x, y) = (p.x, p.y);
-                p.x = sx * x + kx * y + tx;
-                p.y = ky * x + sy * y + ty;
-            }
-            out
-        });
+        let strokes = self.replace_step(page, ids, |s| mapped(s, m));
         let images = self.replace_images_step(page, ids, |i| i.transformed(m));
         let texts = self.update_texts_step(page, ids, |t| t.transformed(m));
         let kept = self.text_ids(page, ids);
@@ -218,6 +220,15 @@ impl Editor {
     /// to remove.
     pub fn delete(&mut self, page: usize, ids: &[Id]) -> bool {
         self.end_erase();
+        let steps = self.remove_steps(page, ids);
+        let done = !steps.is_empty();
+        self.apply_steps(steps);
+        done
+    }
+
+    /// The steps, not yet applied, that remove the strokes, images and text
+    /// boxes on unlocked layers.
+    fn remove_steps(&self, page: usize, ids: &[Id]) -> Vec<Step> {
         let mut steps = Vec::new();
         let page_id = self.doc.pages.get(page).map(|p| p.id);
         let strokes = self.locate(page, ids, true).unwrap_or_default();
@@ -241,9 +252,7 @@ impl Editor {
                 ids: texts.iter().map(|f| f.id).collect(),
             });
         }
-        let done = !steps.is_empty();
-        self.apply_steps(steps);
-        done
+        steps
     }
 
     /// Stores copies of the strokes, images and text boxes, each in drawing order, for
@@ -428,19 +437,28 @@ impl Editor {
         images: Vec<Image>,
         texts: Vec<TextBox>,
     ) -> Vec<Id> {
+        let Some((steps, ids)) = self.insert_steps(page, strokes, images, texts) else {
+            return Vec::new();
+        };
+        self.apply_steps(steps);
+        ids
+    }
+
+    /// The steps, not yet applied, that add the strokes, images and text
+    /// boxes to the end of the page's active layer, and their ids. `None` if
+    /// there is nothing to add or the active layer is locked or hidden.
+    fn insert_steps(
+        &self,
+        page: usize,
+        strokes: Vec<Stroke>,
+        images: Vec<Image>,
+        texts: Vec<TextBox>,
+    ) -> Option<(Vec<Step>, Vec<Id>)> {
         if strokes.is_empty() && images.is_empty() && texts.is_empty() {
-            return Vec::new();
+            return None;
         }
-        let Some((page_id, layer_id)) = self.drawing_target(page) else {
-            return Vec::new();
-        };
-        let Some(layer) = self
-            .doc
-            .page_mut(page_id)
-            .and_then(|p| p.layer_mut(layer_id))
-        else {
-            return Vec::new();
-        };
+        let (page_id, layer_id) = self.drawing_target(page)?;
+        let layer = self.doc.page(page_id).and_then(|p| p.layer(layer_id))?;
         let mut ids: Vec<Id> = strokes.iter().map(|s| s.id).collect();
         ids.extend(images.iter().map(|i| i.id));
         ids.extend(texts.iter().map(|t| t.id));
@@ -493,8 +511,7 @@ impl Editor {
                 texts: placed_texts,
             });
         }
-        self.apply_steps(steps);
-        ids
+        Some((steps, ids))
     }
 
     /// Applies a step and records its reverse as a new undo step.
@@ -504,6 +521,8 @@ impl Editor {
         }
     }
 }
+
+mod pages;
 
 #[cfg(test)]
 mod tests;
