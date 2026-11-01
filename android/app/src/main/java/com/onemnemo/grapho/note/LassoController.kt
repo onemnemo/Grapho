@@ -171,10 +171,18 @@ internal class LassoController(private val notebook: Notebook, private val host:
         select(t.page, ids)
     }
 
-    /** A finger tap at ([x], [y]) in view pixels: selects the image under it, or clears the selection. */
+    /**
+     * A finger tap at ([x], [y]) in view pixels: selects the image under it, or clears the selection, or, with
+     * nothing selected and something copied, offers to paste there.
+     */
     fun tapAt(x: Float, y: Float) {
         val page = host.currentViewport.pageAt(x, y)
-        if (page < 0 || !selectImageAt(page, x, y)) clear()
+        if (page >= 0 && selectImageAt(page, x, y)) return
+        val hadSelection = selection != null
+        clear()
+        if (page >= 0 && !hadSelection && NativeNotebook.nativeHasClipboard(notebook.nativeHandle)) {
+            host.pasteOffered(x, y)
+        }
     }
 
     private fun selectImageAt(page: Int, x: Float, y: Float): Boolean {
@@ -242,9 +250,13 @@ internal class LassoController(private val notebook: Notebook, private val host:
 
     private fun angleTo(x: Float, y: Float): Float = Math.toDegrees(atan2(y - pivotY, x - pivotX).toDouble()).toFloat()
 
-    /** The finger lifted: a real move, scale or turn becomes one edit, and the items get new ids. */
+    /**
+     * The finger lifted: a real move, scale or turn becomes one edit, and the items get new ids. A selection let go
+     * over another page moves onto that page, so it is not left drawn past the edge of its own.
+     */
     fun endDrag() {
         val sel = selection ?: return
+        val grabbed = grab
         grab = NONE
         if (!sel.moved) {
             selection = sel.with(Matrix(), false)
@@ -254,8 +266,30 @@ internal class LassoController(private val notebook: Notebook, private val host:
         val v = FloatArray(9)
         sel.matrix.getValues(v)
         val matrix = floatArrayOf(v[0], v[1], v[2], v[3], v[4], v[5])
+        val target = if (grabbed == BOX) dropPage(sel) else sel.page
+        if (target != sel.page) {
+            val vp = host.currentViewport
+            // From the old page's units to the new one's: pages differ only by where they sit.
+            matrix[2] += vp.localX(target, vp.viewX(sel.page, 0f))
+            matrix[5] += vp.localY(target, vp.viewY(sel.page, 0f))
+            val ids = NativeNotebook.nativeMoveToPage(notebook.nativeHandle, sel.page, sel.flat, target, matrix)
+            if (ids.isNotEmpty()) {
+                host.documentEdited(sel.page)
+                adopt(target, ids)
+                return
+            }
+            matrix[2] = v[2]
+            matrix[5] = v[5]
+        }
         val ids = NativeNotebook.nativeTransform(notebook.nativeHandle, sel.page, sel.flat, matrix)
         adopt(sel.page, ids)
+    }
+
+    /** The page under the middle of the moved selection, or its own page when the middle is on the desk. */
+    private fun dropPage(sel: LassoSelection): Int {
+        sel.viewBox(host.currentViewport, 0f, box)
+        val page = host.currentViewport.pageAt(box.centerX(), box.centerY())
+        return if (page < 0) sel.page else page
     }
 
     /** Abandons the trace or drag in progress; a half-made move is undone on screen. */

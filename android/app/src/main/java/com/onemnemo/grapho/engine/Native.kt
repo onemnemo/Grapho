@@ -268,6 +268,13 @@ object NativeNotebook {
      */
     @JvmStatic external fun nativePaste(handle: Long, page: Int, x: Float, y: Float): LongArray
 
+    /**
+     * Moves strokes from [from] onto the active layer of [to], placed by [matrix] from [from]'s page units to [to]'s,
+     * as one undo step. Returns the new ids, empty if nothing moved.
+     */
+    @JvmStatic
+    external fun nativeMoveToPage(handle: Long, from: Int, ids: LongArray, to: Int, matrix: FloatArray): LongArray
+
     /** Copies strokes onto the active layer of [page], moved by ([dx], [dy]), as one undo step. Returns the copies' ids. */
     @JvmStatic external fun nativeDuplicate(handle: Long, page: Int, ids: LongArray, dx: Float, dy: Float): LongArray
 
@@ -275,6 +282,9 @@ object NativeNotebook {
     @JvmStatic external fun nativeUndo(handle: Long): Int
 
     @JvmStatic external fun nativeRedo(handle: Long): Int
+
+    /** Every page the last undo or redo changed when it reached more than one, as with a move between pages. */
+    @JvmStatic external fun nativeHistoryPages(handle: Long): IntArray
 
     /**
      * Stroke ids of the visible layers of [page], bottom to top. For each layer: `[alpha, n, <n ids as hi, lo pairs>]`,
@@ -502,6 +512,26 @@ object NativeLibrary {
     @Throws(IOException::class)
     @JvmStatic
     external fun nativeCall(handle: Long, op: String, args: String): String
+
+    /**
+     * Writes picked folders and items as one library package. [args] is a JSON object with `folderIds`, `itemIds`,
+     * `dir` (the notebook folder), `out` (the package file) and `now`. Returns the JSON report.
+     */
+    @Throws(IOException::class)
+    @JvmStatic
+    external fun nativeExportPackage(handle: Long, args: String): String
+
+    /**
+     * Adds the library package at `path` under `folderId`, writing its notebooks into `dir`. [args] is a JSON
+     * object with those and `now`. Returns the JSON report.
+     */
+    @Throws(IOException::class)
+    @JvmStatic
+    external fun nativeImportPackage(handle: Long, args: String): String
+
+    /** Whether the file at [path] is a library package rather than one notebook. */
+    @JvmStatic
+    external fun nativeIsPackage(path: String): Boolean
 
     /** Frees the handle. */
     @JvmStatic

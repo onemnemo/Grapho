@@ -21,7 +21,7 @@ type Shared = Mutex<Library>;
 
 /// # Safety
 /// `handle` must come from `nativeNew` or `nativeFromJson` and not be freed.
-unsafe fn library<'a>(handle: jlong) -> MutexGuard<'a, Library> {
+pub(crate) unsafe fn library<'a>(handle: jlong) -> MutexGuard<'a, Library> {
     // SAFETY: the caller guarantees `handle` is a live library.
     let m = unsafe { &*(handle as *const Shared) };
     m.lock().unwrap_or_else(|e| e.into_inner())

@@ -1,6 +1,6 @@
 //! JNI entry points for lasso selection on `NativeNotebook`: select, move,
-//! recolour, delete, copy, paste and duplicate. Ids cross as `[hi, lo, ...]`
-//! pairs like everywhere else.
+//! recolour, delete, copy, paste, duplicate and move to another page. Ids
+//! cross as `[hi, lo, ...]` pairs like everywhere else.
 
 use grapho_core::document::Id;
 use jni::objects::{JClass, JFloatArray, JLongArray};
@@ -254,6 +254,30 @@ pub extern "system" fn Java_com_onemnemo_grapho_engine_NativeNotebook_nativeDupl
         Vec::new()
     } else {
         unsafe { notebook(handle) }.duplicate(page as usize, &ids, dx, dy)
+    };
+    ids_to_java(&mut env, &out)
+}
+
+/// Moves the strokes from page `from` onto the active layer of page `to`,
+/// placed by `matrix` (`[sx, kx, tx, ky, sy, ty]`) from `from`'s page units
+/// to `to`'s, as one undo step. Returns the new ids, empty if nothing moved.
+#[no_mangle]
+pub extern "system" fn Java_com_onemnemo_grapho_engine_NativeNotebook_nativeMoveToPage(
+    mut env: JNIEnv,
+    _class: JClass,
+    handle: jlong,
+    from: jint,
+    ids: JLongArray,
+    to: jint,
+    matrix: JFloatArray,
+) -> jlongArray {
+    let ids = read_ids(&mut env, &ids);
+    let m = read_floats(&mut env, &matrix);
+    let out = match <[f32; 6]>::try_from(m.as_slice()) {
+        Ok(m) if from >= 0 && to >= 0 => {
+            unsafe { notebook(handle) }.move_to_page(from as usize, &ids, to as usize, m)
+        }
+        _ => Vec::new(),
     };
     ids_to_java(&mut env, &out)
 }

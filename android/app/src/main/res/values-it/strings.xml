@@ -156,6 +156,26 @@
     <string name="library_import">Importa</string>
     <string name="library_import_file">File del quaderno</string>
     <string name="library_imported">Importato</string>
+    <string name="library_importing">Importazione</string>
+    <string name="library_package_imported">Importato: %1$s</string>
+    <string name="library_package_exported">Esportato: %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Libreria Grapho %1$s</string>
+    <string name="library_package_nothing">Non c\'è niente da esportare.</string>
+    <string name="library_package_export_failed">Impossibile esportare il file della libreria.</string>
+    <string name="library_package_newer">Questo file di libreria richiede una versione più recente di Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d quaderno</item>
+        <item quantity="other">%d quaderni</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d cartella</item>
+        <item quantity="other">%d cartelle</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d quaderno non leggibile è stato escluso</item>
+        <item quantity="other">%d quaderni non leggibili sono stati esclusi</item>
+    </plurals>
     <string name="library_import_failed">Impossibile importare quel file.</string>
     <string name="library_export_failed">Impossibile esportare il quaderno.</string>
     <string name="library_create_failed">Impossibile creare il quaderno.</string>

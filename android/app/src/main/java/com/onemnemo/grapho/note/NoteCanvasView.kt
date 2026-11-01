@@ -489,6 +489,8 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
                 lassoPainter.draw(canvas, viewport, info, cache.scenes, snapshot, lasso.selection, lasso.trace)
             }
             guidePainter.draw(canvas, viewport, info.background.color, guides.guides)
+            // Showing this layer clears the front buffer, so the next wet frame paints the whole stroke again.
+            synchronized(lock) { frontCleared = true }
             multiInFlight = false
         }
     }
@@ -608,9 +610,17 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
     private var queuedAt = 0L
     private var lostRenders = 0 // UI thread only
 
+    // Set when the multi-buffered layer has been drawn, which wipes the front buffer. Painting only the area changed
+    // since the last wet frame would then leave the rest of the stroke missing until the pen lifts.
+    private var frontCleared = false
+
     private fun takePending(): Pair<WetFrame, Rect>? = synchronized(lock) {
         renderQueued = false
         val frame = latest ?: return null
+        if (frontCleared) {
+            frontCleared = false
+            pendingDirty.union(frame.clip)
+        }
         // Whole pixels only. A clip with fractional edges is antialiased, so
         // the clear would only half-erase the edge pixels and the redraw
         // would only half-cover them, leaving faint light lines across the
@@ -741,10 +751,18 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
     // changes ask for it.
     private var redrawQueued = false
 
+    // A page redraw asked for while the pen is inking waits until it lifts. Drawing the multi-buffered layer hides
+    // the front buffer, so a background render landing mid-stroke (slow on pages with pictures) cut the wet stroke.
+    private var redrawHeld = false
+
     @Volatile private var multiInFlight = false
     private var multiRequestedAt = 0L
     private val redrawFrame = Runnable {
         redrawQueued = false
+        if (wetInFront()) {
+            redrawHeld = true
+            return@Runnable
+        }
         val r = renderer ?: return@Runnable
         val now = SystemClock.uptimeMillis()
         if (multiInFlight && now - multiRequestedAt < STUCK_MS) {
@@ -753,7 +771,15 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
         }
         multiInFlight = true
         multiRequestedAt = now
+        redrawHeld = false
         r.renderMultiBufferedLayer(emptyList())
+    }
+
+    /** The stroke being drawn is in the front buffer, not yet a shape drawn in the page layer. */
+    private fun wetInFront(): Boolean = mode == Mode.INK && wet != null && shapeDrag == null && snapped == null
+
+    private fun releaseHeldRedraw() {
+        if (redrawHeld) redraw()
     }
 
     private fun redraw() {
@@ -1064,6 +1090,13 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
         } else {
             cache.refresh(id, page)
             geometry.settle(id, page)
+            // A step that moved ink between pages changed the others too.
+            for (other in NativeNotebook.nativeHistoryPages(notebook.nativeHandle).distinct()) {
+                if (other == page) continue
+                val otherId = info.pageIds.getOrNull(other) ?: continue
+                cache.refresh(otherId, other)
+                geometry.settle(otherId, other)
+            }
         }
         // Show where the change happened if it is off screen.
         if (id != null && !viewport.infinite && !viewport.isPageVisible(page)) {
@@ -1492,6 +1525,7 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
         mode = Mode.NONE
         tapCandidate = false
         showWaitingPublish()
+        releaseHeldRedraw()
         lasso.touching(false)
         crop?.touching(false)
     }
@@ -1502,6 +1536,7 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
         mode = Mode.NONE
         tapCandidate = false
         showWaitingPublish()
+        releaseHeldRedraw()
         lasso.touching(false)
         crop?.touching(false)
     }
@@ -2008,6 +2043,7 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
             resetPending()
             renderer?.cancel()
         }
+        releaseHeldRedraw()
     }
 
     private companion object {

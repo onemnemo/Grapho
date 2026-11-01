@@ -153,6 +153,26 @@
     <string name="library_import">आयात करें</string>
     <string name="library_import_file">नोटबुक फ़ाइल</string>
     <string name="library_imported">आयात हो गया</string>
+    <string name="library_importing">आयात हो रहा है</string>
+    <string name="library_package_imported">आयात हुआ: %1$s</string>
+    <string name="library_package_exported">निर्यात हुआ: %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Grapho लाइब्रेरी %1$s</string>
+    <string name="library_package_nothing">निर्यात करने के लिए कुछ नहीं है।</string>
+    <string name="library_package_export_failed">लाइब्रेरी फ़ाइल निर्यात नहीं हो सकी।</string>
+    <string name="library_package_newer">इस लाइब्रेरी फ़ाइल के लिए Grapho का नया संस्करण चाहिए।</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d नोटबुक</item>
+        <item quantity="other">%d नोटबुक</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d फ़ोल्डर</item>
+        <item quantity="other">%d फ़ोल्डर</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d नोटबुक पढ़ी नहीं जा सकी और छोड़ दी गई</item>
+        <item quantity="other">%d नोटबुक पढ़ी नहीं जा सकीं और छोड़ दी गईं</item>
+    </plurals>
     <string name="library_import_failed">वह फ़ाइल आयात नहीं हो सकी।</string>
     <string name="library_export_failed">नोटबुक निर्यात नहीं हो सकी।</string>
     <string name="library_create_failed">नोटबुक नहीं बन सकी।</string>

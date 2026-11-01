@@ -279,9 +279,13 @@ class Library private constructor(private var handle: Long) {
 
     private fun call(op: String, args: JSONObject): JSONObject = JSONObject(callRaw(op, args))
 
+    private fun callRaw(op: String, args: JSONObject): String =
+        withHandle { NativeLibrary.nativeCall(it, op, args.toString()) }
+
+    /** Runs a native call on the live handle, one at a time, with its failure as a [LibraryException]. */
     @Synchronized
-    private fun callRaw(op: String, args: JSONObject): String = try {
-        NativeLibrary.nativeCall(live(), op, args.toString())
+    internal fun <T> withHandle(block: (Long) -> T): T = try {
+        block(live())
     } catch (e: IOException) {
         val message = e.message.orEmpty()
         throw LibraryException(LibraryErrors.kindOf(message), message)
