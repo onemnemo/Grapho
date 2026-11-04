@@ -32,9 +32,29 @@ internal class NoteUiState {
     var selectionMenu by mutableStateOf<SelectionMenu?>(null)
     var cropMenu by mutableStateOf<CropMenu?>(null)
     var pasteAt by mutableStateOf<Offset?>(null)
-    var layersOpen by mutableStateOf(false)
     var pageLayers by mutableStateOf<PageLayers?>(null)
-    var insertOpen by mutableStateOf(false)
+
+    /**
+     * The one pane of the bar that is open, or null. Only one is ever open, so opening one closes the last, and a
+     * button that opened a pane closes it again on the next tap.
+     */
+    var pane by mutableStateOf<BarPane?>(null)
+
+    /** Where the bar is in the window, so a touch on it is left to its buttons. */
+    var barBounds by mutableStateOf<Rect?>(null)
+
+    /** Where an options card open over the page is in the window, so a touch inside it does not close it. */
+    var cardBounds by mutableStateOf<Rect?>(null)
+
+    var layersOpen: Boolean
+        get() = pane == BarPane.Layers
+        set(value) = setPane(BarPane.Layers, value)
+    var insertOpen: Boolean
+        get() = pane == BarPane.Insert
+        set(value) = setPane(BarPane.Insert, value)
+    var moreOpen: Boolean
+        get() = pane == BarPane.More
+        set(value) = setPane(BarPane.More, value)
 
     /** Where the bar's Layers button is in the window (More on a side bar), so the panel opens from it. */
     var layersAnchor by mutableStateOf<Rect?>(null)
@@ -43,17 +63,23 @@ internal class NoteUiState {
     var shapesAnchor by mutableStateOf<Rect?>(null)
 
     /** The Shapes tool's options card is open. */
-    var shapeOptionsOpen by mutableStateOf(false)
+    var shapeOptionsOpen: Boolean
+        get() = pane == BarPane.Shapes
+        set(value) = setPane(BarPane.Shapes, value)
 
     /** Where the bar's Text button is in the window, so the options card opens from it. Null when the bar has none. */
     var textAnchor by mutableStateOf<Rect?>(null)
 
     /** The Text tool's options card is open. */
-    var textOptionsOpen by mutableStateOf(false)
+    var textOptionsOpen: Boolean
+        get() = pane == BarPane.Text
+        set(value) = setPane(BarPane.Text, value)
 
     /** The text box being typed into, or null. The canvas keeps it up to date. */
     var textEdit by mutableStateOf<TextEdit?>(null)
-    var imageToolOpen by mutableStateOf(false)
+    var imageToolOpen: Boolean
+        get() = pane == BarPane.Image
+        set(value) = setPane(BarPane.Image, value)
     var fullScreen by mutableStateOf(false)
 
     /** Whether the bar is away, and why: the pen is down, it was called back, or a menu on it is open. */
@@ -74,7 +100,7 @@ internal class NoteUiState {
     /** True while something is open that Back closes before it leaves the note. */
     val dismissable: Boolean get() = !readMode && (cardOpen || cropMenu != null || selectionMenu != null)
 
-    private val cardOpen: Boolean get() = layersOpen || shapeOptionsOpen || textOptionsOpen || textEdit != null
+    private val cardOpen: Boolean get() = pane != null || textEdit != null
 
     /** Switches to read mode, putting away everything that belongs to drawing: the wheel, panels, menus and selection. */
     fun enterRead() {
@@ -85,16 +111,32 @@ internal class NoteUiState {
             readPage = currentPage()
         }
         wheelOpen = false
-        layersOpen = false
-        insertOpen = false
-        shapeOptionsOpen = false
-        textOptionsOpen = false
-        imageToolOpen = false
+        pane = null
         selectionMenu = null
         cropMenu = null
         pasteAt = null
         shapeSuggestion = null
         readMode = true
+    }
+
+    /** Opens [which] when [open], closing whatever pane was open; closes it when it is the one open. */
+    fun setPane(which: BarPane, open: Boolean) {
+        if (open) {
+            pane = which
+        } else if (pane == which) {
+            pane = null
+        }
+    }
+
+    /** Opens [which], or closes it when it is already open. */
+    fun togglePane(which: BarPane) = setPane(which, pane != which)
+
+    /**
+     * A touch landed outside the bar and outside the open card: every pane goes away but the layers panel, which
+     * stays beside the page while you work on its layers and closes from its own button.
+     */
+    fun closePanes() {
+        if (pane != null && pane != BarPane.Layers) pane = null
     }
 
     /** Back to editing. */
@@ -103,17 +145,22 @@ internal class NoteUiState {
     }
 
     /**
-     * Closes the topmost of the options cards, then the layers panel, then the text box being typed into, then crop,
-     * then the selection, the order Back follows.
+     * Closes the open pane of the bar, then the text box being typed into, then crop, then the selection, the order
+     * Back follows.
      */
     fun dismissTop() {
         when {
-            shapeOptionsOpen -> shapeOptionsOpen = false
-            textOptionsOpen -> textOptionsOpen = false
-            layersOpen -> layersOpen = false
+            pane != null -> pane = null
             textEdit != null -> view[0]?.commitText()
             cropMenu != null -> view[0]?.finishCrop(false)
             else -> view[0]?.clearSelection()
         }
     }
 }
+
+/**
+ * The panes that open from the note bar. Menus and option cards share one slot, so there is never more than one,
+ * and every one of them closes the same way: its own button again, a touch anywhere off the bar and off the pane,
+ * or Back. Layers is the one exception to the touch: it stays open while you draw.
+ */
+internal enum class BarPane { Image, Insert, More, Layers, Shapes, Text }

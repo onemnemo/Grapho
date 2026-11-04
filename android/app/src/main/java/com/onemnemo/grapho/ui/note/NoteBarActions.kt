@@ -33,7 +33,9 @@ internal fun NoteBarActions(
     actions: NoteActions,
     vertical: Boolean = false,
     tip: TooltipSide? = TooltipSide.Below,
+    moreOpen: Boolean = false,
     onMoreOpen: (Boolean) -> Unit = {},
+    onMoreHeld: (Boolean) -> Unit = {},
     onLayersPlaced: (Rect) -> Unit = {},
     imageTool: Boolean = false,
 ) {
@@ -47,6 +49,7 @@ internal fun NoteBarActions(
                 onClick = onLayers,
                 selected = layersOpen,
                 tooltipSide = tip,
+                longPressClicks = true,
             )
         }
     }
@@ -55,9 +58,10 @@ internal fun NoteBarActions(
             GraphoIconButton(
                 R.drawable.ic_plus,
                 stringResource(R.string.note_bar_insert),
-                onClick = { onInsertOpen(true) },
+                onClick = { onInsertOpen(!insertOpen) },
                 selected = insertOpen,
                 tooltipSide = tip,
+                longPressClicks = true,
             )
             InsertMenu(
                 expanded = insertOpen,
@@ -95,7 +99,9 @@ internal fun NoteBarActions(
             layersOpen = layersOpen,
             onLayers = onLayers,
             tip = tip,
-            onOpenChange = onMoreOpen,
+            open = moreOpen,
+            onOpen = onMoreOpen,
+            onOpenChange = onMoreHeld,
         )
     }
 }
