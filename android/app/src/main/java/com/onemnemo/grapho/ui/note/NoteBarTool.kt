@@ -31,7 +31,7 @@ enum class NoteBarTool(
     Lasso("lasso", R.drawable.ic_lasso, R.string.wheel_tool_lasso, BarToolGroup.Draw, ToolMode.LASSO),
     Text("text", R.drawable.ic_text, R.string.wheel_tool_text, BarToolGroup.Insert, ToolMode.TEXT),
     Shapes("shapes", R.drawable.ic_shapes, R.string.wheel_tool_shapes, BarToolGroup.Insert, ToolMode.SHAPE),
-    Image("image", R.drawable.ic_image, R.string.note_insert_group_image, BarToolGroup.Insert, null),
+    Image("image", R.drawable.ic_plus, R.string.note_bar_insert, BarToolGroup.Insert, null),
     ;
 
     /** The compact bar has no room for Image, which Insert in More already covers. */
