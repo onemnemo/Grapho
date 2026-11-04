@@ -1,7 +1,6 @@
 package com.onemnemo.grapho.note
 
 import android.graphics.Canvas
-import android.graphics.DashPathEffect
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
@@ -21,22 +20,7 @@ internal const val LASSO_ROTATE_DP = 28f
  * lasso being traced, and the selection box with its corner handles and the handle that turns it. Render thread only.
  */
 internal class LassoPainter(private val density: Float, private val images: ImageBitmaps) {
-    private val dashed = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.STROKE
-        strokeWidth = 1.5f
-        pathEffect = DashPathEffect(floatArrayOf(7f * density, 5f * density), 0f)
-    }
-    private val handleFill = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
-        color = WHITE
-    }
-    private val handleRing = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.STROKE
-        strokeWidth = 1.5f
-    }
+    private val ink = SelectionInk(density)
     private val glyph = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
@@ -61,11 +45,9 @@ internal class LassoPainter(private val density: Float, private val images: Imag
         selection: LassoSelection?,
         trace: LassoTrace?,
     ) {
-        val dark = isDarkPaper(info.background.color)
         paper = info.background.color
-        dashed.color = SelectionColours.line(dark)
-        handleRing.color = SelectionColours.accent(dark)
-        glyph.color = handleRing.color
+        ink.setPaper(paper)
+        glyph.color = ink.edge
         drawStrokes(canvas, vp, scenes, snapshot, selection)
         if (trace != null) drawTrace(canvas, vp, trace)
         if (selection != null) drawBox(canvas, vp, selection)
@@ -143,7 +125,7 @@ internal class LassoPainter(private val density: Float, private val images: Imag
             i += 2
         }
         if (trace.closed) path.close()
-        canvas.drawPath(path, dashed)
+        ink.drawPath(canvas, path, dashed = true)
     }
 
     private fun drawBox(canvas: Canvas, vp: Viewport, selection: LassoSelection) {
@@ -151,13 +133,12 @@ internal class LassoPainter(private val density: Float, private val images: Imag
         canvas.save()
         // A turn in progress shows the box turning with its contents.
         if (selection.turned) canvas.rotate(selection.angle, box.centerX(), box.centerY())
-        canvas.drawRect(box, dashed)
+        ink.drawRect(canvas, box, dashed = true)
         val r = LASSO_HANDLE_DP * density
         for (corner in 0 until 4) {
             val x = if (corner == 0 || corner == 3) box.left else box.right
             val y = if (corner < 2) box.top else box.bottom
-            canvas.drawCircle(x, y, r, handleFill)
-            canvas.drawCircle(x, y, r, handleRing)
+            ink.drawHandle(canvas, x, y, r)
         }
         drawRotateHandle(canvas)
         canvas.restore()
@@ -168,16 +149,14 @@ internal class LassoPainter(private val density: Float, private val images: Imag
         Rotation.handle(box, LASSO_ROTATE_DP * density, handle)
         val r = LASSO_HANDLE_DP * density * 1.5f
         val edge = if (handle[1] < box.top) box.top else box.bottom
-        canvas.drawLine(handle[0], edge, handle[0], handle[1], dashed)
-        canvas.drawCircle(handle[0], handle[1], r, handleFill)
-        canvas.drawCircle(handle[0], handle[1], r, handleRing)
+        ink.drawLine(canvas, handle[0], edge, handle[0], handle[1], dashed = true)
+        ink.drawHandle(canvas, handle[0], handle[1], r)
         val a = r * 0.5f
         arc.set(handle[0] - a, handle[1] - a, handle[0] + a, handle[1] + a)
         canvas.drawArc(arc, ARC_START, ARC_SWEEP, false, glyph)
     }
 
     private companion object {
-        const val WHITE = SelectionColours.WHITE
         const val ARC_START = -50f
         const val ARC_SWEEP = 280f
     }

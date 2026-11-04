@@ -411,12 +411,7 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
     // same reason as the eraser's circle: reshaping repaints the whole shape every move, and
     // clearing that much of the front buffer while it is on screen flickers.
     @Volatile private var liveShape: WetFrame? = null
-    private val markPaint = Paint().apply {
-        color = 0xFF50545E.toInt()
-        isAntiAlias = true
-        style = Paint.Style.STROKE
-        strokeWidth = 1.5f
-    }
+    private val markInk = SelectionInk(resources.displayMetrics.density) // render thread only
 
     // Set once the wet stroke has been snapped to a shape: the shape's points in view pixels.
     private var snapped: FloatArray? = null
@@ -483,7 +478,10 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
                 it.draw(canvas)
                 canvas.restore()
             }
-            eraserMark?.let { canvas.drawCircle(it[0], it[1], it[2], markPaint) }
+            eraserMark?.let {
+                markInk.setPaper(info.background.color)
+                markInk.drawCircle(canvas, it[0], it[1], it[2])
+            }
             val cropping = crop
             if (cropping != null) {
                 cropPainter.draw(canvas, viewport, info, cropping)
