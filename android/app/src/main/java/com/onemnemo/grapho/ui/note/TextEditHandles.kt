@@ -38,7 +38,7 @@ private val SIDE_MARK = DpSize(6.dp, 28.dp)
  */
 @Composable
 internal fun BoxScope.TextHandles(
-    scale: Float,
+    scale: () -> Float,
     onMove: (dx: Float, dy: Float) -> Unit,
     onStretch: (fromLeft: Boolean, delta: Float) -> Unit,
 ) {
@@ -53,21 +53,21 @@ internal fun BoxScope.TextHandles(
         GRIP_MARK,
         Alignment.Center,
         moveLabel,
-    ) { move(it.x / units, it.y / units) }
+    ) { move(it.x / units(), it.y / units()) }
     Handle(
         Modifier.align(Alignment.CenterStart),
         DpSize(TEXT_HANDLE_SLOT, TEXT_HANDLE_SLOT),
         SIDE_MARK,
         Alignment.CenterEnd,
         sizeLabel,
-    ) { stretch(true, it.x / units) }
+    ) { stretch(true, it.x / units()) }
     Handle(
         Modifier.align(Alignment.CenterEnd),
         DpSize(TEXT_HANDLE_SLOT, TEXT_HANDLE_SLOT),
         SIDE_MARK,
         Alignment.CenterStart,
         sizeLabel,
-    ) { stretch(false, it.x / units) }
+    ) { stretch(false, it.x / units()) }
 }
 
 /** A touch area of size [hit] showing a small pill of size [mark] at [markAt], which reports each drag step. */
