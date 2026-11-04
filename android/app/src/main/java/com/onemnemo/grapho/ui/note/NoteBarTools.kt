@@ -27,8 +27,8 @@ internal val BAR_RULE_SLOT = GraphoSpace.spaceMd
 
 /**
  * The tools on the bar, in order, with a quiet rule where the group changes. The one for the canvas's current tool
- * shows as selected. Image is not a canvas tool: it opens the picture choices under its own button, and a second
- * tap closes them ([imageOpen] and [onImageOpen]). On a [vertical] bar the rule lies across the column, and each tip opens on
+ * shows as selected. Image is not a canvas tool: it opens the insert menu, pictures and pages, under its
+ * own button ([imageOpen] and [onImageOpen]), a second tap closes it, and the bar then has no separate insert button. On a [vertical] bar the rule lies across the column, and each tip opens on
  * [tip], away from the edge. [onShapesPlaced] and [onTextPlaced] hear where the Shapes and Text buttons are, so
  * their options cards open from them.
  */
@@ -40,6 +40,7 @@ internal fun NoteBarTools(
     imageOpen: Boolean,
     onImageOpen: (Boolean) -> Unit,
     actions: NoteActions,
+    infinite: Boolean,
     vertical: Boolean = false,
     tip: TooltipSide? = TooltipSide.Below,
     onShapesPlaced: (Rect) -> Unit = {},
@@ -61,9 +62,8 @@ internal fun NoteBarTools(
                 InsertMenu(
                     expanded = imageOpen,
                     onDismiss = { onImageOpen(false) },
-                    infinite = false,
+                    infinite = infinite,
                     actions = actions,
-                    pages = false,
                 )
             }
         } else {

@@ -10,7 +10,7 @@ enum class BarToolGroup { Draw, Insert }
 
 /**
  * A tool the note bar can hold. [mode] is the canvas tool it switches to, or null for a tool that is an action
- * instead (Image opens the insert menu). Fill stays on the pen wheel and is not here.
+ * instead (Image opens the insert menu, pictures and pages). Fill stays on the pen wheel and is not here.
  */
 enum class NoteBarTool(
     val id: String,
