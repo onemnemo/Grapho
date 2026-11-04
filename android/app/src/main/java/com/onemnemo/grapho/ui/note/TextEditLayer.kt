@@ -6,43 +6,33 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.note.NoteCanvasView
 import com.onemnemo.grapho.note.PaperColors
-import com.onemnemo.grapho.note.TextAlignment
 import com.onemnemo.grapho.note.TextEdit
 import com.onemnemo.grapho.note.TextSettings
 import com.onemnemo.grapho.note.displayColor
@@ -61,7 +51,10 @@ import kotlin.math.roundToInt
  */
 private data class TextSpot(val x: Float, val y: Float, val width: Float, val scale: Float, val degrees: Float)
 
-/** Follows the open box a frame at a time, so the field over it keeps up with scrolling and zooming. */
+/**
+ * Follows the open box a frame at a time, so the field over it keeps up with scrolling and zooming. Read the state
+ * only while laying out or drawing, never while composing, so a scroll does not recompose the field and its bar.
+ */
 @Composable
 private fun rememberTextSpot(view: () -> NoteCanvasView?, serial: Int): State<TextSpot?> {
     val spot = remember(serial) { mutableStateOf<TextSpot?>(null) }
@@ -91,30 +84,32 @@ private val DONE_ROOM = 56.dp
 @Composable
 internal fun TextEditLayer(ui: NoteUiState, toolbar: ToolbarState, insets: EdgeInsets) {
     val edit = ui.textEdit ?: return
-    val spot by rememberTextSpot({ ui.view[0] }, edit.serial)
-    val here = spot ?: return
     key(edit.serial) {
-        TextEditField(
-            edit = edit,
-            spot = here,
-            paper = ui.view[0]?.paperColor ?: PaperColors.WHITE.argb,
-            insets = insets,
-            palette = toolbar.palette,
-            recent = toolbar.recent,
-            onChange = { applyTextStyle(ui, toolbar, it) },
-            onCustomColour = { applyTextColour(ui, toolbar, it) },
-            onTyped = { ui.view[0]?.textTyped(it) },
-            onMove = { dx, dy -> ui.view[0]?.moveText(dx, dy) },
-            onStretch = { fromLeft, delta -> ui.view[0]?.stretchText(fromLeft, delta) },
-            onDone = { ui.view[0]?.commitText() },
-        )
+        val spot = rememberTextSpot({ ui.view[0] }, edit.serial)
+        val placed by remember { derivedStateOf { spot.value != null } }
+        if (placed) {
+            TextEditField(
+                edit = edit,
+                spot = spot,
+                paper = ui.view[0]?.paperColor ?: PaperColors.WHITE.argb,
+                insets = insets,
+                palette = toolbar.palette,
+                recent = toolbar.recent,
+                onChange = { applyTextStyle(ui, toolbar, it) },
+                onCustomColour = { applyTextColour(ui, toolbar, it) },
+                onTyped = { ui.view[0]?.textTyped(it) },
+                onMove = { dx, dy -> ui.view[0]?.moveText(dx, dy) },
+                onStretch = { fromLeft, delta -> ui.view[0]?.stretchText(fromLeft, delta) },
+                onDone = { ui.view[0]?.commitText() },
+            )
+        }
     }
 }
 
 @Composable
 private fun TextEditField(
     edit: TextEdit,
-    spot: TextSpot,
+    spot: State<TextSpot?>,
     paper: Int,
     insets: EdgeInsets,
     palette: List<Int>,
@@ -126,66 +121,61 @@ private fun TextEditField(
     onStretch: (fromLeft: Boolean, delta: Float) -> Unit,
     onDone: () -> Unit,
 ) {
-    var value by remember { mutableStateOf(TextFieldValue(edit.startText, TextRange(edit.startText.length))) }
-    var heightPx by remember { mutableIntStateOf(0) }
-    val focus = remember { FocusRequester() }
-    LaunchedEffect(Unit) { runCatching { focus.requestFocus() } }
     val density = LocalDensity.current
     val style = edit.style
     val ink = displayColor(style.argb, paper)
-    val textStyle = with(density) {
-        TextStyle(
-            color = Color(ink),
-            fontSize = (style.size * spot.scale).toSp(),
-            fontWeight = if (style.bold) FontWeight.Bold else FontWeight.Normal,
-            fontStyle = if (style.italic) FontStyle.Italic else FontStyle.Normal,
-            textDecoration = if (style.underline) TextDecoration.Underline else TextDecoration.None,
-            textAlign = when (style.align) {
-                TextAlignment.Start -> TextAlign.Start
-                TextAlignment.Centre -> TextAlign.Center
-                TextAlignment.End -> TextAlign.End
-            },
-        )
-    }
     val label = stringResource(R.string.text_box)
     val ring = Grapho.colors.selectionIndicator
+    val accent = ring.toArgb()
     val slot = with(density) { TEXT_HANDLE_SLOT.roundToPx() }
+    val typed by rememberUpdatedState(onTyped)
+    val move by rememberUpdatedState(onMove)
+    val field = remember { arrayOfNulls<TextBoxInput>(1) }
+    val heightPx = remember { mutableIntStateOf(0) }
+    // Zooming changes the font size on the field itself, so the field and its bar are not composed again.
+    LaunchedEffect(Unit) {
+        snapshotFlow { spot.value }.collect { at -> if (at != null) field[0]?.follow(at.scale, at.degrees) }
+    }
+    val box = remember {
+        derivedStateOf<RectF?>(structuralEqualityPolicy()) {
+            spot.value?.let { RectF(it.x, it.y, it.x + it.width, it.y + heightPx.intValue) }
+        }
+    }
     Box(Modifier.pinnedBox(spot, slot)) {
-        BasicTextField(
-            value = value,
-            onValueChange = {
-                if (it.text.length <= TextSettings.MAX_CHARS) {
-                    value = it
-                    onTyped(it.text)
+        AndroidView(
+            factory = { context ->
+                TextBoxInput(context, edit.startText).also { input ->
+                    field[0] = input
+                    input.contentDescription = label
+                    input.onTyped = { typed(it) }
+                    input.onDrag = { dx, dy -> move(dx, dy) }
+                    spot.value?.let { input.follow(it.scale, it.degrees) }
+                    input.applyLook(style, ink, accent)
+                    input.focusAndShowKeyboard()
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(TEXT_HANDLE_SLOT)
-                .onSizeChanged { heightPx = it.height }
-                .border(GraphoSpace.borderWidthHairline, ring)
-                .focusRequester(focus)
-                .semantics { contentDescription = label },
-            textStyle = textStyle,
-            cursorBrush = SolidColor(ring),
+                .onSizeChanged { heightPx.intValue = it.height }
+                .border(GraphoSpace.borderWidthHairline, ring),
+            update = { it.applyLook(style, ink, accent) },
+            onRelease = {
+                it.release()
+                field[0] = null
+            },
         )
-        TextHandles(spot.scale, onMove, onStretch)
+        TextHandles({ spot.value?.scale ?: 1f }, onMove, onStretch)
     }
     val margins = with(density) {
         EdgeInsets(insets.left.dp.toPx(), insets.top.dp.toPx(), insets.right.dp.toPx(), insets.bottom.dp.toPx())
     }
     val gap = with(density) { GraphoSpace.spaceMd.toPx() }
-    val under = remember(spot.x, spot.y, spot.width, heightPx) {
-        mutableStateOf<RectF?>(RectF(spot.x, spot.y, spot.x + spot.width, spot.y + heightPx))
-    }
-    val above = remember(spot.x, spot.y, spot.width, heightPx) {
-        mutableStateOf<RectF?>(RectF(spot.x, spot.y, spot.x + spot.width, spot.y + heightPx))
-    }
     val handleGap = with(density) { (TEXT_HANDLE_SLOT + GraphoSpace.spaceXs).toPx() }
     val doneRoom = with(density) { DONE_ROOM.toPx() }
     TextFormatBar(
         style = style,
-        rect = above,
+        rect = box,
         gap = handleGap,
         belowRoom = doneRoom,
         margins = margins,
@@ -196,7 +186,7 @@ private fun TextEditField(
     )
     Row(
         Modifier
-            .placedUnder(under, gap, margins)
+            .placedUnder(box, gap, margins)
             .floatingCard(GraphoShapes.pill)
             .padding(horizontal = GraphoSpace.spaceXs),
         verticalAlignment = Alignment.CenterVertically,
@@ -213,14 +203,17 @@ private fun TextEditField(
 /**
  * Gives the content the width of the text box on the page plus [slot] pixels of room for the handles on each side,
  * and the height its lines need plus the same, and puts the text box's top left corner on [spot], turned about that
- * corner. The layer takes no touches of its own, so the page under it still gets them.
+ * corner. [spot] is read here, while laying out, so following the page only moves the box. The layer takes no
+ * touches of its own, so the page under it still gets them.
  */
-private fun Modifier.pinnedBox(spot: TextSpot, slot: Int): Modifier = layout { measurable, constraints ->
-    val wide = spot.width.roundToInt().coerceAtLeast(1) + 2 * slot
+private fun Modifier.pinnedBox(spot: State<TextSpot?>, slot: Int): Modifier = layout { measurable, constraints ->
+    val at = spot.value
+    val wide = (at?.width ?: 1f).roundToInt().coerceAtLeast(1) + 2 * slot
     val placeable = measurable.measure(Constraints(wide, wide, 0, Constraints.Infinity))
     layout(constraints.maxWidth, constraints.maxHeight) {
-        placeable.placeWithLayer(spot.x.roundToInt() - slot, spot.y.roundToInt() - slot) {
-            rotationZ = spot.degrees
+        if (at == null) return@layout
+        placeable.placeWithLayer(at.x.roundToInt() - slot, at.y.roundToInt() - slot) {
+            rotationZ = at.degrees
             transformOrigin = TransformOrigin(slot / placeable.width.toFloat(), slot / placeable.height.toFloat())
         }
     }
