@@ -14,6 +14,7 @@ import com.onemnemo.grapho.note.ShapeSettings
 import com.onemnemo.grapho.note.TextSettings
 import com.onemnemo.grapho.note.ToolMode
 import com.onemnemo.grapho.note.ToolState
+import com.onemnemo.grapho.note.WetStroke
 import com.onemnemo.grapho.ui.theme.PenColors
 
 /** Colour (opaque ARGB), width and line style of one pen. */
@@ -68,6 +69,9 @@ class ToolbarState {
     /** What the Text tool starts a box with: size, colour, alignment and weight. */
     var text by mutableStateOf(TextSettings())
 
+    /** How much a pen stroke is smoothed while it is drawn, 0 (none) to 1 (most). */
+    var stabilizer by mutableFloatStateOf(WetStroke.STABILIZER)
+
     /** The lasso picks a dragged rectangle instead of a freehand loop. */
     var lassoRect by mutableStateOf(false)
 
@@ -119,6 +123,7 @@ class ToolbarState {
                 eraserArea,
                 eraserPt,
                 pen.line,
+                stabilizer = stabilizer,
             )
 
             ToolMode.HIGHLIGHTER -> ToolState(
@@ -128,6 +133,7 @@ class ToolbarState {
                 eraserArea,
                 eraserPt,
                 highlighter.line,
+                stabilizer = stabilizer,
             )
 
             ToolMode.ERASER -> ToolState(ToolMode.ERASER, pen.color, eraserPt, eraserArea, eraserPt)
@@ -153,6 +159,7 @@ class ToolbarState {
                 eraserPt,
                 pen.line,
                 shape,
+                stabilizer = stabilizer,
             )
 
             ToolMode.TEXT -> ToolState(
