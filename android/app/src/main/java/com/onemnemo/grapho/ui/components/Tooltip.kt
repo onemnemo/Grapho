@@ -1,5 +1,6 @@
 package com.onemnemo.grapho.ui.components
 
+import android.view.WindowManager
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
@@ -81,12 +82,7 @@ fun GraphoTooltip(label: String, state: TooltipState, side: TooltipSide = Toolti
     val c = Grapho.colors
     Popup(
         popupPositionProvider = positioner,
-        properties = PopupProperties(
-            focusable = false,
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false,
-            clippingEnabled = false,
-        ),
+        properties = TooltipProperties,
     ) {
         Text(
             label,
@@ -109,6 +105,18 @@ fun GraphoTooltip(label: String, state: TooltipState, side: TooltipSide = Toolti
         )
     }
 }
+
+/**
+ * A tooltip is a window of its own, which would take every touch inside it. It must not: one shown under a bar
+ * button sits over the page, and a pen that lands there would hit nothing for as long as the tip is up.
+ */
+private val TooltipProperties = PopupProperties(
+    flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
+        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+    dismissOnBackPress = false,
+    dismissOnClickOutside = false,
+)
 
 /** A tooltip's top-left corner in window pixels. */
 data class TooltipSpot(val x: Int, val y: Int)
