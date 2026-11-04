@@ -40,6 +40,7 @@ internal fun NoteBarTools(
     imageOpen: Boolean,
     onImageOpen: (Boolean) -> Unit,
     actions: NoteActions,
+    infinite: Boolean,
     vertical: Boolean = false,
     tip: TooltipSide? = TooltipSide.Below,
     onShapesPlaced: (Rect) -> Unit = {},
@@ -62,9 +63,8 @@ internal fun NoteBarTools(
                 InsertMenu(
                     expanded = imageOpen,
                     onDismiss = { onImageOpen(false) },
-                    infinite = false,
+                    infinite = infinite,
                     actions = actions,
-                    pages = false,
                 )
             }
         } else {

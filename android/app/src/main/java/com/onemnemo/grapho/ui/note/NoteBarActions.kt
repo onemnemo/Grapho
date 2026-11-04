@@ -17,7 +17,7 @@ import com.onemnemo.grapho.ui.components.TooltipSide
  * a compact window, where insert moves into More to leave room for the title. A [vertical] bar folds layers into More
  * as well, and every tip opens on [tip], away from the edge ([onMoreOpen] hears when the menu opens and closes).
  * [onLayersPlaced] hears where the button the layers panel opens from is: Layers, or More when layers is in it.
- * With the Image tool on the bar ([imageTool]) insert leaves pictures to it, and is left out when nothing remains.
+ * With the Image tool on the bar ([imageTool]) it opens the insert menu instead, so insert is left out here.
  */
 @Composable
 internal fun NoteBarActions(
@@ -39,7 +39,7 @@ internal fun NoteBarActions(
     onLayersPlaced: (Rect) -> Unit = {},
     imageTool: Boolean = false,
 ) {
-    val hasInsert = insertHasItems(imageTool, info?.infinite == true)
+    val hasInsert = !imageTool
     val placed = Modifier.onGloballyPositioned { onLayersPlaced(it.boundsInWindow()) }
     if (!vertical) {
         Box(placed) {
@@ -68,7 +68,6 @@ internal fun NoteBarActions(
                 onDismiss = { onInsertOpen(false) },
                 infinite = info?.infinite == true,
                 actions = actions,
-                images = !imageTool,
             )
         }
     }
@@ -92,7 +91,6 @@ internal fun NoteBarActions(
             toggles = toggles,
             actions = actions,
             insertInMenu = !insertOnBar && hasInsert,
-            insertImages = !imageTool,
             insertOpen = insertOpen,
             onInsertOpen = onInsertOpen,
             layersInMenu = vertical,

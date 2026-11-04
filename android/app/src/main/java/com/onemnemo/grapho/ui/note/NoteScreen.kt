@@ -372,6 +372,7 @@ private fun NoteContent(
                             imageOpen = ui.imageToolOpen,
                             onImageOpen = { ui.imageToolOpen = it },
                             actions = actions,
+                            infinite = info?.infinite == true,
                             vertical = position.vertical,
                             tip = tip,
                             onShapesPlaced = { ui.shapesAnchor = it },
