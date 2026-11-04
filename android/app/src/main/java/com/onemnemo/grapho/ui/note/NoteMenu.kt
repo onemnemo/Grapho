@@ -49,7 +49,6 @@ internal fun NoteMenu(
     onLayers: () -> Unit = {},
     tip: TooltipSide? = TooltipSide.Below,
     onOpenChange: (Boolean) -> Unit = {},
-    insertImages: Boolean = true,
 ) {
     var open by remember { mutableStateOf(false) }
     var background by remember { mutableStateOf(false) }
@@ -168,7 +167,6 @@ internal fun NoteMenu(
                 onDismiss = { onInsertOpen(false) },
                 infinite = info?.infinite == true,
                 actions = actions,
-                images = insertImages,
             )
         }
     }
