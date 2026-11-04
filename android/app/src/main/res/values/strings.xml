@@ -479,6 +479,10 @@
     <string name="wheel_edit_pens">Edit pens</string>
     <string name="wheel_save_pen">Save current pen</string>
     <string name="wheel_save_pen_button">+ Save current pen</string>
+    <string name="pen_width_pt" translatable="false">%1$.1f pt</string>
+    <string name="value_percent" translatable="false">%1$d%%</string>
+    <string name="pen_stabilization">Stroke stabilisation</string>
+    <string name="pen_add_to_box">Add to pen box</string>
     <string name="wheel_remove_named">Remove %1$s</string>
     <string name="wheel_edit_named">Edit %1$s</string>
     <string name="wheel_delete_named">Delete %1$s?</string>

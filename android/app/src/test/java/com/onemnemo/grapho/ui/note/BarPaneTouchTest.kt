@@ -34,6 +34,20 @@ class BarPaneTouchTest {
     }
 
     @Test
+    fun aTouchInsideAToolCardKeepsItOpen() {
+        assertFalse(paneClosesOn(BarPane.Pen, Offset(700f, 200f), bar, card))
+        assertFalse(paneClosesOn(BarPane.Eraser, Offset(700f, 200f), bar, card))
+        assertFalse(paneClosesOn(BarPane.Lasso, Offset(700f, 200f), bar, card))
+    }
+
+    @Test
+    fun aTouchOnThePageClosesAToolCard() {
+        assertTrue(paneClosesOn(BarPane.Pen, page, bar, card))
+        assertTrue(paneClosesOn(BarPane.Eraser, page, bar, card))
+        assertTrue(paneClosesOn(BarPane.Lasso, page, bar, card))
+    }
+
+    @Test
     fun theCardOnlyCountsForTheCardPanes() {
         assertTrue(paneClosesOn(BarPane.Image, Offset(700f, 200f), bar, card))
     }

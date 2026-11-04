@@ -188,6 +188,13 @@ internal class PenStore(context: Context) {
     }
 }
 
+/** One [PenStore] for as long as the caller stays in the composition. */
+@Composable
+internal fun rememberPenStore(): PenStore {
+    val context = LocalContext.current
+    return remember { PenStore(context) }
+}
+
 internal fun applyPreset(state: ToolbarState, preset: PenPreset) {
     val setting = PenSetting(preset.color.toArgb() or 0xFF000000.toInt(), preset.widthPt, preset.line)
     state.mode = preset.mode
@@ -201,7 +208,7 @@ internal fun applyPreset(state: ToolbarState, preset: PenPreset) {
 }
 
 /** The tool as it is now, as a new pen named after its kind and the number of that kind. */
-private fun currentAsPreset(context: Context, state: ToolbarState, count: Int): PenPreset {
+internal fun currentAsPreset(context: Context, state: ToolbarState, count: Int): PenPreset {
     val kind = nibKind(state)
     val setting = currentSetting(state)
     val name = context.getString(
@@ -211,7 +218,7 @@ private fun currentAsPreset(context: Context, state: ToolbarState, count: Int): 
     return PenPreset(name, kind, Color(setting.color), setting.widthPt, state.alpha, setting.line)
 }
 
-private fun isCurrent(state: ToolbarState, preset: PenPreset): Boolean {
+internal fun isCurrent(state: ToolbarState, preset: PenPreset): Boolean {
     val setting = currentSetting(state)
     return preset.mode == (if (state.mode == ToolMode.HIGHLIGHTER) ToolMode.HIGHLIGHTER else ToolMode.PEN) &&
         (preset.color.toArgb() or 0xFF000000.toInt()) == setting.color &&
