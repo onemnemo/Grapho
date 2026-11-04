@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +38,10 @@ import java.io.File
  */
 @Composable
 fun GraphoApp(store: NotebookStore, settings: AppSettings) {
-    var openFile by remember { mutableStateOf<File?>(null) }
+    // Kept by path so the open note survives the activity being recreated, for example by a system change the
+    // manifest does not list or the process being reclaimed in the background.
+    var openPath by rememberSaveable { mutableStateOf<String?>(null) }
+    val openFile = openPath?.let(::File)
     var settingsOpen by remember { mutableStateOf(false) }
     // Bumped when Settings changes what the library keeps, so it reads its view again.
     var libraryRevision by remember { mutableIntStateOf(0) }
@@ -90,7 +94,7 @@ fun GraphoApp(store: NotebookStore, settings: AppSettings) {
                 store = store,
                 notices = notices,
                 appScope = appScope,
-                onOpen = { openFile = it },
+                onOpen = { openPath = it.path },
                 reload = { reloadKey++ },
                 viewRevision = libraryRevision,
                 onSettings = { settingsOpen = true },
@@ -107,7 +111,7 @@ fun GraphoApp(store: NotebookStore, settings: AppSettings) {
                 onSettings = { settingsOpen = true },
                 customiseWheel = wheelRequested,
                 onWheelCustomised = { wheelRequested = false },
-                onBack = { openFile = null },
+                onBack = { openPath = null },
                 // The note is saved by now, so the list can pick up its new date.
                 onClosed = { error ->
                     reloadKey++
