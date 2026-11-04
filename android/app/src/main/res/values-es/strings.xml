@@ -556,6 +556,10 @@
     <string name="settings_note_bar">Barra de la nota</string>
     <string name="settings_general">General</string>
     <string name="settings_bar_behaviour">Comportamiento</string>
+    <string name="settings_bar_quick">Colores y tamaños</string>
+    <string name="bar_quick_buttons">Botones</string>
+    <string name="bar_quick_inline">En la barra</string>
+    <string name="bar_quick_off">Desactivado</string>
     <string name="settings_show_title">Mostrar el título de la nota</string>
     <string name="settings_bar_tools">Herramientas de la barra</string>
     <string name="settings_bar_tools_count">%1$d activas</string>

@@ -39,12 +39,22 @@ internal class NoteUiState {
      * The one pane of the bar that is open, or null. Only one is ever open, so opening one closes the last, and a
      * button that opened a pane closes it again on the next tap.
      */
-    var pane by mutableStateOf<BarPane?>(null)
+    var pane: BarPane?
+        get() = paneState
+        set(value) {
+            // A card that goes away leaves no bounds behind for the next pane to be measured against.
+            if (value != paneState) cardBounds = null
+            paneState = value
+        }
+    private var paneState by mutableStateOf<BarPane?>(null)
 
     /** Where the bar is in the window, so a touch on it is left to its buttons. */
     var barBounds by mutableStateOf<Rect?>(null)
 
-    /** Where an options card open over the page is in the window, so a touch inside it does not close it. */
+    /**
+     * Where the open pane's card over the page is in the window (an options card, a strip or the layers panel), so a
+     * touch inside it does not close it.
+     */
     var cardBounds by mutableStateOf<Rect?>(null)
 
     var layersOpen: Boolean
@@ -143,12 +153,13 @@ internal class NoteUiState {
     /** Opens [which], or closes it when it is already open. */
     fun togglePane(which: BarPane) = setPane(which, pane != which)
 
-    /**
-     * A touch landed outside the bar and outside the open card: every pane goes away but the layers panel, which
-     * stays beside the page while you work on its layers and closes from its own button.
-     */
+    /** Where the bar's colour and size buttons are in the window, so their strips open under them. */
+    var colourAnchor by mutableStateOf<Rect?>(null)
+    var sizeAnchor by mutableStateOf<Rect?>(null)
+
+    /** A touch landed outside the bar and outside the open card, or another tool was picked: the pane goes away. */
     fun closePanes() {
-        if (pane != null && pane != BarPane.Layers) pane = null
+        pane = null
     }
 
     /** Back to editing. */
@@ -173,7 +184,7 @@ internal class NoteUiState {
 /**
  * The panes that open from the note bar. Menus and option cards share one slot, so there is never more than one,
  * and every one of them closes the same way: its own button again, a touch anywhere off the bar and off the pane,
- * or Back. Layers is the one exception to the touch: it stays open while you draw. Pen is the options card of both
- * the pen and the highlighter.
+ * or Back. Pen is the options card of both the pen and the highlighter; Colours and Sizes are the strips from the
+ * bar's colour and size buttons.
  */
-internal enum class BarPane { Image, Insert, More, Layers, Shapes, Text, Pen, Eraser, Lasso }
+internal enum class BarPane { Image, Insert, More, Layers, Shapes, Text, Pen, Eraser, Lasso, Colours, Sizes }

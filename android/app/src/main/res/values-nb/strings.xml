@@ -545,6 +545,10 @@
     <string name="settings_note_bar">Notatlinje</string>
     <string name="settings_general">Generelt</string>
     <string name="settings_bar_behaviour">Oppførsel</string>
+    <string name="settings_bar_quick">Farger og størrelser</string>
+    <string name="bar_quick_buttons">Knapper</string>
+    <string name="bar_quick_inline">På linjen</string>
+    <string name="bar_quick_off">Av</string>
     <string name="settings_show_title">Vis notattittel</string>
     <string name="settings_bar_tools">Verktøy i linjen</string>
     <string name="settings_bar_tools_count">%1$d på</string>

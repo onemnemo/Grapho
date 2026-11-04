@@ -34,6 +34,12 @@ val BarPosition.popupSide: PopupSide
 /** When the bar steps away: never, while the pen or a finger is drawing, or until it is called back from its edge. */
 enum class AutoHide { Off, WhileWriting, Always }
 
+/**
+ * How the bar offers colours and sizes: one button each that opens a strip of them (the default, which keeps the bar
+ * short), the colours and sizes right on the bar, or not at all.
+ */
+enum class BarQuick { Buttons, Inline, Off }
+
 /** Where the layers panel opens: a panel at the foot of a compact window, a card on the end edge of anything wider. */
 enum class LayersPlacement { Bottom, Side }
 
@@ -56,6 +62,8 @@ fun barPositionFrom(stored: String?): BarPosition =
 
 /** The saved [AutoHide] named [stored], Off when there is none or it is not known. */
 fun autoHideFrom(stored: String?): AutoHide = AutoHide.entries.firstOrNull { it.name == stored } ?: AutoHide.Off
+
+fun barQuickFrom(stored: String?): BarQuick = BarQuick.entries.firstOrNull { it.name == stored } ?: BarQuick.Buttons
 
 /** The room set aside along each edge of the window, in dp. */
 data class EdgeInsets(val left: Float = 0f, val top: Float = 0f, val right: Float = 0f, val bottom: Float = 0f) {

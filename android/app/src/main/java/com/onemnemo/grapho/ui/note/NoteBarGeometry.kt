@@ -56,12 +56,13 @@ internal fun barFitFor(
     wantTitle: Boolean,
     windowWidth: Dp,
     windowHeight: Dp,
+    quick: BarQuick = BarQuick.Buttons,
 ): BarFit {
     val insertBar = insertOnBar(windowWidth.value)
     val length = if (position.vertical) windowHeight.value else windowWidth.value
     val floating = style == NoteBarStyle.Floating
     val cap = GraphoSpace.sizeBarNoteMax.value
-    val quickDp = if (position.vertical) 0f else QUICK_LENGTH.value
+    val quickDp = if (position.vertical) 0f else quickLength(quick).value
     return fitBar(
         tools = tools,
         active = NoteBarTool.forMode(mode),
