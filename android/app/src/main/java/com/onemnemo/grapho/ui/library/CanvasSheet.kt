@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
@@ -102,8 +100,6 @@ fun CanvasSheet(
     var name by remember { mutableStateOf(TextFieldValue(startName, TextRange(0, startName.length))) }
     var tab by remember { mutableStateOf(CanvasTab.Presets) }
     var customColour by remember { mutableStateOf(false) }
-    val focus = remember { FocusRequester() }
-    LaunchedEffect(Unit) { focus.requestFocus() }
     val changed = draft != initial || name.text != startName
     val save = { onSave(draft.copy(name = name.text.trim().ifEmpty { untitled })) }
 
@@ -147,7 +143,7 @@ fun CanvasSheet(
                     value = name,
                     onValueChange = { name = it },
                     label = stringResource(R.string.new_title),
-                    focusRequester = focus,
+                    autoFocus = true,
                     onDone = save,
                 )
             },

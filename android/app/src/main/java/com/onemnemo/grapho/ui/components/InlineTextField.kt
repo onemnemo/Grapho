@@ -11,12 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,24 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onPreviewKeyEvent
-import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoShapes
 import com.onemnemo.grapho.ui.theme.GraphoSpace
@@ -167,7 +153,7 @@ fun GraphoInlineTextField(
         }
         return
     }
-    InlineEditor(value, onCommit, modifier, placeholder, textStyle, color, state, source, frame)
+    InlineEditor(value, onCommit, modifier, placeholder, textStyle, color, state, height, frame)
 }
 
 @Composable
@@ -179,68 +165,45 @@ private fun InlineEditor(
     textStyle: TextStyle,
     color: Color,
     state: InlineEditState,
-    source: MutableInteractionSource,
+    height: Dp,
     frame: @Composable (@Composable () -> Unit) -> Unit,
 ) {
     val c = Grapho.colors
-    val focusManager = LocalFocusManager.current
-    val focus = remember { FocusRequester() }
     val end = TextRange(value.length)
     var draft by remember {
         mutableStateOf(TextFieldValue(value, if (state.selectAll) TextRange(0, value.length) else end))
     }
-    var hadFocus by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { focus.requestFocus() }
+
+    var finished by remember { mutableStateOf(false) }
 
     fun commit() {
+        if (finished) return
+        finished = true
         val next = draft.text.trim()
         if (next.isNotEmpty() && next != value) onCommit(next)
     }
 
-    BasicTextField(
-        value = draft,
-        onValueChange = { draft = it },
-        modifier = modifier
-            .fillMaxWidth()
-            .focusRequester(focus)
-            .onFocusChanged { focusState ->
-                if (focusState.isFocused) {
-                    hadFocus = true
-                } else if (hadFocus) {
-                    commit()
-                    state.stop()
-                }
+    Box(modifier.fillMaxWidth()) {
+        frame {
+            if (draft.text.isEmpty() && placeholder != null) {
+                Text(placeholder, style = textStyle, color = c.textSubtle)
             }
-            .onPreviewKeyEvent { event ->
-                if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
-                when (event.key) {
-                    Key.Enter, Key.NumPadEnter -> {
-                        focusManager.clearFocus()
-                        true
+            PlatformTextInput(
+                value = draft,
+                onValueChange = { draft = it },
+                textStyle = textStyle.copy(color = color),
+                cursorColor = c.textDefault,
+                modifier = Modifier.fillMaxWidth().heightIn(min = height),
+                autoFocus = true,
+                blurOnAction = true,
+                onFocusChange = { focused ->
+                    if (!focused) {
+                        commit()
+                        state.stop()
                     }
-
-                    Key.Escape -> {
-                        draft = TextFieldValue(value)
-                        focusManager.clearFocus()
-                        true
-                    }
-
-                    else -> false
-                }
-            },
-        singleLine = true,
-        textStyle = textStyle.copy(color = color),
-        cursorBrush = SolidColor(c.textDefault),
-        interactionSource = source,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        decorationBox = { inner ->
-            frame {
-                if (draft.text.isEmpty() && placeholder != null) {
-                    Text(placeholder, style = textStyle, color = c.textSubtle)
-                }
-                inner()
-            }
-        },
-    )
+                },
+                onEscape = { draft = TextFieldValue(value) },
+            )
+        }
+    }
 }

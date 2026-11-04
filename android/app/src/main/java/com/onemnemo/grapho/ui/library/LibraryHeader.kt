@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -173,14 +171,12 @@ private fun TrailTitle(trail: HeaderTrail, style: TextStyle, showPath: Boolean, 
 
 @Composable
 private fun RowScope.SearchBar(state: HeaderState, actions: HeaderActions) {
-    val focus = remember { FocusRequester() }
-    LaunchedEffect(Unit) { focus.requestFocus() }
     GraphoSearchField(
         value = state.query,
         onValueChange = actions.onQueryChange,
         placeholder = stringResource(R.string.library_search_placeholder),
         modifier = Modifier.weight(1f),
-        focusRequester = focus,
+        autoFocus = true,
         onSearch = actions.onSearchDone,
     )
     GraphoButton(stringResource(R.string.action_cancel), onClick = actions.onSearchClose, kind = ButtonKind.Quiet)
