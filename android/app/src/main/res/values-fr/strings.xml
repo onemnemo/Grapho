@@ -483,6 +483,8 @@
     <string name="wheel_edit_pens">Modifier les stylos</string>
     <string name="wheel_save_pen">Enregistrer le stylo actuel</string>
     <string name="wheel_save_pen_button">+ Enregistrer le stylo actuel</string>
+    <string name="pen_stabilization">Stabilisation du trait</string>
+    <string name="pen_add_to_box">Ajouter à la trousse</string>
     <string name="wheel_remove_named">Retirer %1$s</string>
     <string name="wheel_edit_named">Modifier %1$s</string>
     <string name="wheel_delete_named">Supprimer %1$s ?</string>

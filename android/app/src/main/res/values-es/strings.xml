@@ -483,6 +483,8 @@
     <string name="wheel_edit_pens">Editar lápices</string>
     <string name="wheel_save_pen">Guardar el lápiz actual</string>
     <string name="wheel_save_pen_button">+ Guardar el lápiz actual</string>
+    <string name="pen_stabilization">Estabilización del trazo</string>
+    <string name="pen_add_to_box">Añadir al estuche</string>
     <string name="wheel_remove_named">Quitar %1$s</string>
     <string name="wheel_edit_named">Editar %1$s</string>
     <string name="wheel_delete_named">¿Eliminar %1$s?</string>
