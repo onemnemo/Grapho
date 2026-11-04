@@ -39,8 +39,11 @@ internal interface TextHost {
     /** True, after telling the person why, when the page's active layer takes no new boxes. */
     fun blocked(page: Int): Boolean
 
-    /** The open edit changed or ended: the box it holds is hidden from the page while it is open. */
-    fun editChanged(edit: TextEdit?)
+    /**
+     * The open edit opened, changed its look or ended. [rerender] is true when the page has to be drawn again because
+     * the box it holds is hidden from the page while it is open, or shown again once it closes.
+     */
+    fun editChanged(edit: TextEdit?, rerender: Boolean)
 
     /** The document changed on [page]: read it again, show it and save it. */
     fun documentEdited(page: Int)
@@ -118,7 +121,7 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
         draft = text
         edit = next
         hiddenBox = next.id?.let { HiddenStrokes(next.page, pageId, emptySet(), setOf(it)) }
-        host.editChanged(next)
+        host.editChanged(next, rerender = true)
     }
 
     /** What the field holds now, kept so the edit can end from anywhere. */
@@ -129,7 +132,10 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
     /** Draws and saves the open box with [style] from now on. */
     fun restyle(style: TextSettings) {
         val current = edit ?: return
-        reframe(current.copy(style = style.coerced()))
+        val next = current.copy(style = style.coerced())
+        edit = next
+        // The box is hidden while it is open, so only the field over it changes.
+        host.editChanged(next, rerender = false)
     }
 
     /** Moves the open box by ([dx], [dy]) along its own axes, in page-local units. */
@@ -162,9 +168,10 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
         reframe(current.copy(x = scratch[0], y = scratch[1], width = width, height = height, moved = true))
     }
 
+    // The field over the box follows its frame on the next frame, see [placement]. Nothing else has to hear about a
+    // move: the page does not show the open box and the field keeps its text and look.
     private fun reframe(next: TextEdit) {
         edit = next
-        host.editChanged(next)
     }
 
     /**
@@ -177,7 +184,7 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
         edit = null
         hiddenBox = null
         val changed = write(current, text)
-        host.editChanged(null)
+        host.editChanged(null, rerender = true)
         if (changed) host.documentEdited(current.page)
     }
 
