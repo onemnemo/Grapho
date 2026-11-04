@@ -1,11 +1,14 @@
 package com.onemnemo.grapho.ui.note
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -16,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextAlign
@@ -56,18 +61,23 @@ internal fun ToolOptionsCard(
     ) {
         Text(
             title,
-            style = Grapho.type.heading,
+            style = Grapho.type.label,
             color = Grapho.colors.textDefault,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(vertical = GraphoSpace.spaceMd),
+        )
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(GraphoSpace.borderWidthHairline)
+                .background(Grapho.colors.borderSubtle),
         )
         Column(
             modifier = Modifier
                 .weight(1f, fill = false)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = GraphoSpace.spaceMd)
-                .padding(bottom = GraphoSpace.spaceMd),
-            verticalArrangement = Arrangement.spacedBy(GraphoSpace.spaceMd),
+                .padding(GraphoSpace.spaceLg),
+            verticalArrangement = Arrangement.spacedBy(GraphoSpace.spaceLg),
             content = content,
         )
     }
@@ -98,7 +108,27 @@ internal fun BoxScope.ToolOptionsLayer(
     )
 }
 
-/** A label with its value on the right, over a slider across [range]. */
+/** A soft sunken panel a control sits in, so each row of a card reads as one block. */
+internal fun Modifier.well(): Modifier = composed {
+    fillMaxWidth()
+        .clip(GraphoShapes.item)
+        .background(Grapho.colors.surfaceSunken)
+        .padding(horizontal = GraphoSpace.spaceSm, vertical = GraphoSpace.spaceXs)
+}
+
+/** A label over [content] in a [well]. */
+@Composable
+internal fun WellRow(label: String, value: String? = null, content: @Composable () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(GraphoSpace.spaceSm)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(label, style = Grapho.type.caption, color = Grapho.colors.textDefault, modifier = Modifier.weight(1f))
+            if (value != null) Text(value, style = Grapho.type.tabular, color = Grapho.colors.textMuted)
+        }
+        Box(Modifier.well()) { content() }
+    }
+}
+
+/** A label with its value on the right, over a slider across [range] in a [well]. */
 @Composable
 internal fun ValueSlider(
     label: String,
@@ -107,11 +137,7 @@ internal fun ValueSlider(
     valueText: String,
     onValue: (Float) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(GraphoSpace.spaceXs)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(label, style = Grapho.type.caption, color = Grapho.colors.textMuted, modifier = Modifier.weight(1f))
-            Text(valueText, style = Grapho.type.tabular, color = Grapho.colors.textDefault)
-        }
+    WellRow(label, valueText) {
         GraphoSlider(
             value = value.coerceIn(range),
             onValueChange = onValue,
