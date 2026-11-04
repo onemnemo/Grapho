@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -35,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.ui.components.GraphoIcon
+import com.onemnemo.grapho.ui.components.PlatformTextInput
 import com.onemnemo.grapho.ui.components.pressable
 import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoWheel
@@ -126,22 +125,22 @@ private fun GroupBlock(ui: ToolsUi, group: WheelSlot.Group, groups: List<WheelSl
                 Box(Modifier.size(32.dp), contentAlignment = Alignment.Center) {
                     GraphoIcon(R.drawable.ic_layers, null, GraphoWheel.text, size = 22.dp)
                 }
-                BasicTextField(
+                PlatformTextInput(
                     value = name,
-                    onValueChange = {
-                        name = it.take(GROUP_NAME_MAX)
+                    filter = { it.take(GROUP_NAME_MAX) },
+                    onValueChange = { v ->
+                        name = v
                         if (name.isNotBlank()) store.rename(group.id, name.trim())
                     },
-                    singleLine = true,
                     textStyle = Grapho.type.label.copy(color = GraphoWheel.text),
-                    cursorBrush = SolidColor(GraphoWheel.text),
+                    cursorColor = GraphoWheel.text,
                     modifier = Modifier
                         .weight(1f)
                         .height(36.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(GraphoWheel.field)
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .semantics { contentDescription = nameLabel },
+                        .padding(horizontal = 10.dp),
+                    description = nameLabel,
                 )
                 IconAction(R.drawable.ic_chevron_up, stringResource(R.string.wheel_move_up_named, group.name), index > 0) { store.move(index, -1) }
                 IconAction(R.drawable.ic_chevron_down, stringResource(R.string.wheel_move_down_named, group.name), index < last) { store.move(index, 1) }

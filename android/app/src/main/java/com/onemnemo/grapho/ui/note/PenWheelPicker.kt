@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,7 +34,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -50,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.onemnemo.grapho.R
+import com.onemnemo.grapho.ui.components.PlatformTextInput
 import com.onemnemo.grapho.ui.components.pressable
 import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoWheel
@@ -156,10 +154,10 @@ internal fun ColorPickerPanel(
                 ) {
                     Box(Modifier.size(32.dp).clip(CircleShape).background(color))
                     Text("#", style = Grapho.type.label, color = GraphoWheel.textMuted)
-                    BasicTextField(
+                    PlatformTextInput(
                         value = hex,
-                        onValueChange = { v ->
-                            val t = v.uppercase(Locale.US).filter { it in '0'..'9' || it in 'A'..'F' }.take(6)
+                        filter = { v -> v.uppercase(Locale.US).filter { it in '0'..'9' || it in 'A'..'F' }.take(6) },
+                        onValueChange = { t ->
                             hex = t
                             if (t.length == 6) {
                                 val hsv = FloatArray(3)
@@ -170,17 +168,17 @@ internal fun ColorPickerPanel(
                                 if (!editing) applyColor(state, t.toInt(16))
                             }
                         },
-                        singleLine = true,
                         textStyle = Grapho.type.label.copy(color = GraphoWheel.text),
-                        cursorBrush = SolidColor(GraphoWheel.text),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
+                        cursorColor = GraphoWheel.text,
+                        keyboardType = KeyboardType.Ascii,
+                        capitals = true,
                         modifier = Modifier
                             .weight(1f)
                             .height(40.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(GraphoWheel.field)
-                            .padding(horizontal = 10.dp, vertical = 10.dp)
-                            .semantics { contentDescription = hexLabel },
+                            .padding(horizontal = 10.dp),
+                        description = hexLabel,
                     )
                 }
 
