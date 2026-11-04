@@ -31,7 +31,7 @@ internal object TextLayouts {
 
     /**
      * The layout of [text] in a box [width] wide, with the font [size] in page-local units. Only the weight, slant,
-     * underline and alignment of [look] count.
+     * underline and alignment of [look] count. Math between dollar signs is set as formulas.
      */
     fun build(text: String, look: TextSettings, size: Float, width: Float): StaticLayout {
         val paint = TextPaint(TextPaint.ANTI_ALIAS_FLAG).apply {
@@ -46,7 +46,8 @@ internal object TextLayouts {
             TextAlignment.End -> Layout.Alignment.ALIGN_OPPOSITE
         }
         val wide = ceil(width).toInt().coerceAtLeast(1)
-        return StaticLayout.Builder.obtain(text, 0, text.length, paint, wide)
+        val laid = MathText.prepare(text, size, wide.toFloat())
+        return StaticLayout.Builder.obtain(laid, 0, laid.length, paint, wide)
             .setAlignment(alignment)
             .setIncludePad(false)
             .build()
