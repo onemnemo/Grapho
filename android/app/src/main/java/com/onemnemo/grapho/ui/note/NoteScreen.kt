@@ -357,7 +357,7 @@ private fun NoteContent(
                 position = position,
                 maxLength = floatingBarMaxWidthDp(
                     if (position.vertical) windowHeight.value else windowWidth.value,
-                    GraphoSpace.sizeBarNoteMax.value,
+                    GraphoSpace.sizeBarNoteMax.value + if (barFit.quick) QUICK_LENGTH.value else 0f,
                 ).dp,
                 showTitle = barFit.showTitle,
                 readMode = ui.readMode,
@@ -379,6 +379,7 @@ private fun NoteContent(
                             onTextPlaced = { ui.textAnchor = it },
                             onToolPlaced = ui::placeTool,
                         )
+                        if (barFit.quick) NoteBarQuick(toolbar, position.vertical)
                     }
                 },
             ) {
