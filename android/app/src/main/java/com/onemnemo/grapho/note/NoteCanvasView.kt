@@ -49,6 +49,8 @@ data class ToolState(
     val text: TextSettings = TextSettings(),
     /** The lasso picks a dragged rectangle instead of a freehand loop. */
     val lassoRect: Boolean = false,
+    /** How much a pen stroke is smoothed, 0 to 1. */
+    val stabilizer: Float = WetStroke.STABILIZER,
 )
 
 /** What the current touch is doing. */
@@ -1336,6 +1338,7 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
                 code,
                 displayColor(activeTool.color, info.background.color),
                 activeTool.line,
+                activeTool.stabilizer,
             )
             wet = stroke
             if (activeTool.mode == ToolMode.SHAPE) {

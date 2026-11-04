@@ -5,6 +5,7 @@ import com.onemnemo.grapho.note.LineStyle
 import com.onemnemo.grapho.note.ShapeSettings
 import com.onemnemo.grapho.note.TextSettings
 import com.onemnemo.grapho.note.ToolMode
+import com.onemnemo.grapho.note.WetStroke
 
 /** What a [ToolbarState] keeps between notes and launches, as plain values that compare by content. */
 internal data class ToolSettings(
@@ -20,6 +21,7 @@ internal data class ToolSettings(
     val text: TextSettings,
     val recent: List<Int>,
     val lassoRect: Boolean = false,
+    val stabilizer: Float = WetStroke.STABILIZER,
 )
 
 /** The value snapshot of the persisted fields of this state. */
@@ -36,6 +38,7 @@ internal fun ToolbarState.settings() = ToolSettings(
     text = text,
     recent = recent.toList(),
     lassoRect = lassoRect,
+    stabilizer = stabilizer,
 )
 
 /** Keeps the selected tool and each tool's settings in shared preferences, so they survive notes and restarts. */
@@ -51,6 +54,10 @@ internal class ToolSettingsStore(context: Context) {
         if (prefs.contains(ERASER_AREA)) state.eraserArea = prefs.getBoolean(ERASER_AREA, state.eraserArea)
         if (prefs.contains(ERASER_PT)) state.eraserPt = prefs.getFloat(ERASER_PT, state.eraserPt)
         if (prefs.contains(LASSO_RECT)) state.lassoRect = prefs.getBoolean(LASSO_RECT, state.lassoRect)
+        if (prefs.contains(STABILIZER)) {
+            val saved = prefs.getFloat(STABILIZER, state.stabilizer)
+            if (!saved.isNaN()) state.stabilizer = saved.coerceIn(0f, 1f)
+        }
         if (prefs.contains(SHAPE)) state.shape = ShapeSettings.decode(prefs.getString(SHAPE, null))
         if (prefs.contains(TEXT)) state.text = TextSettings.decode(prefs.getString(TEXT, null))
         val recent = prefs.getString(RECENT, null).orEmpty()
@@ -85,6 +92,7 @@ internal class ToolSettingsStore(context: Context) {
             .putBoolean(ERASER_AREA, s.eraserArea)
             .putFloat(ERASER_PT, s.eraserPt)
             .putBoolean(LASSO_RECT, s.lassoRect)
+            .putFloat(STABILIZER, s.stabilizer)
             .putString(SHAPE, s.shape.encode())
             .putString(TEXT, s.text.encode())
             .putString(RECENT, s.recent.joinToString(","))
@@ -127,6 +135,7 @@ internal class ToolSettingsStore(context: Context) {
         const val HIGHLIGHTER_ALPHA = "highlighter_alpha"
         const val ERASER_AREA = "eraser_area"
         const val ERASER_PT = "eraser_pt"
+        const val STABILIZER = "stabilizer"
         const val SHAPE = "shape"
         const val TEXT = "text"
         const val RECENT = "recent"

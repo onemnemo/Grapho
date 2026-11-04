@@ -52,8 +52,14 @@ class SnappedShape(val points: FloatArray, val frame: WetFrame, val line: FloatA
  * The stroke being drawn while the pen is down, modelled and tessellated by
  * grapho-core. Works in view pixels. Only used on the UI thread.
  */
-class WetStroke(widthPx: Float, tool: Int, argb: Int, line: LineStyle = LineStyle.SOLID) {
-    private val handle = NativeInk.nativeNew(widthPx, STABILIZER, tool, line.code)
+class WetStroke(
+    widthPx: Float,
+    tool: Int,
+    argb: Int,
+    line: LineStyle = LineStyle.SOLID,
+    stabilizer: Float = STABILIZER,
+) {
+    private val handle = NativeInk.nativeNew(widthPx, stabilizer.coerceIn(0f, 1f), tool, line.code)
     private val committed = GrowableFloats(8192)
 
     // Translucent colours are drawn opaque into a layer that is then faded,
@@ -136,8 +142,9 @@ class WetStroke(widthPx: Float, tool: Int, argb: Int, line: LineStyle = LineStyl
         NativeInk.nativeFinish(handle)
     }
 
-    private companion object {
+    companion object {
+        /** How much the pen's path is smoothed when the person has not chosen. */
         const val STABILIZER = 0.25f
-        const val DIRTY_PAD = 2f
+        private const val DIRTY_PAD = 2f
     }
 }
