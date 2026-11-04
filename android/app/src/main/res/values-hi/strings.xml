@@ -452,6 +452,8 @@
     <string name="wheel_edit_pens">पेन बदलें</string>
     <string name="wheel_save_pen">मौजूदा पेन सहेजें</string>
     <string name="wheel_save_pen_button">+ मौजूदा पेन सहेजें</string>
+    <string name="pen_stabilization">स्ट्रोक स्थिरीकरण</string>
+    <string name="pen_add_to_box">पेन बॉक्स में जोड़ें</string>
     <string name="wheel_remove_named">%1$s हटाएँ</string>
     <string name="wheel_edit_named">%1$s बदलें</string>
     <string name="wheel_delete_named">%1$s मिटाएँ?</string>

@@ -452,6 +452,8 @@
     <string name="wheel_edit_pens">Redigera pennor</string>
     <string name="wheel_save_pen">Spara aktuell penna</string>
     <string name="wheel_save_pen_button">+ Spara aktuell penna</string>
+    <string name="pen_stabilization">Streckstabilisering</string>
+    <string name="pen_add_to_box">Lägg till i pennfodralet</string>
     <string name="wheel_remove_named">Ta bort %1$s</string>
     <string name="wheel_edit_named">Redigera %1$s</string>
     <string name="wheel_delete_named">Ta bort %1$s?</string>

@@ -2,6 +2,7 @@ package com.onemnemo.grapho.ui.note
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
@@ -70,6 +71,12 @@ internal class NoteUiState {
     /** Where the bar's Text button is in the window, so the options card opens from it. Null when the bar has none. */
     var textAnchor by mutableStateOf<Rect?>(null)
 
+    /**
+     * Where the bar's Pen, Highlighter, Eraser and Lasso buttons are in the window, so their options cards open from
+     * them. A tool the bar does not show has no entry.
+     */
+    val toolAnchors = mutableStateMapOf<NoteBarTool, Rect>()
+
     /** The Text tool's options card is open. */
     var textOptionsOpen: Boolean
         get() = pane == BarPane.Text
@@ -119,6 +126,11 @@ internal class NoteUiState {
         readMode = true
     }
 
+    /** Keeps where [tool]'s button is, writing only when it moved so the map does not churn every layout. */
+    fun placeTool(tool: NoteBarTool, bounds: Rect) {
+        if (toolAnchors[tool] != bounds) toolAnchors[tool] = bounds
+    }
+
     /** Opens [which] when [open], closing whatever pane was open; closes it when it is the one open. */
     fun setPane(which: BarPane, open: Boolean) {
         if (open) {
@@ -161,6 +173,7 @@ internal class NoteUiState {
 /**
  * The panes that open from the note bar. Menus and option cards share one slot, so there is never more than one,
  * and every one of them closes the same way: its own button again, a touch anywhere off the bar and off the pane,
- * or Back. Layers is the one exception to the touch: it stays open while you draw.
+ * or Back. Layers is the one exception to the touch: it stays open while you draw. Pen is the options card of both
+ * the pen and the highlighter.
  */
-internal enum class BarPane { Image, Insert, More, Layers, Shapes, Text }
+internal enum class BarPane { Image, Insert, More, Layers, Shapes, Text, Pen, Eraser, Lasso }

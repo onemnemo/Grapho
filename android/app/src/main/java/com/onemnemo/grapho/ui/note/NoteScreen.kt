@@ -174,6 +174,7 @@ private fun NoteContent(
     val onBack = hooks.onBack
     val toolSettings = remember { ToolSettingsStore(context) }
     val toolbar = remember { ToolbarState().also { toolSettings.load(it) } }
+    val penStore = rememberPenStore()
     // Saved shortly after the last change, so a slider drag does not write every frame.
     LaunchedEffect(toolbar) {
         snapshotFlow { toolbar.settings() }
@@ -224,6 +225,9 @@ private fun NoteContent(
         ui.pasteAt = null
         if (toolbar.mode != ToolMode.SHAPE) ui.shapeOptionsOpen = false
         if (toolbar.mode != ToolMode.TEXT) ui.textOptionsOpen = false
+        if (toolbar.mode != ToolMode.PEN && toolbar.mode != ToolMode.HIGHLIGHTER) ui.setPane(BarPane.Pen, false)
+        if (toolbar.mode != ToolMode.ERASER) ui.setPane(BarPane.Eraser, false)
+        if (toolbar.mode != ToolMode.LASSO) ui.setPane(BarPane.Lasso, false)
     }
 
     // One thing open at a time: a pane of the bar puts the wheel away unless it is pinned, and the wheel coming up
@@ -327,6 +331,7 @@ private fun NoteContent(
                     rulerOn = ui.rulerOn,
                     onRulerChange = { ui.rulerOn = it },
                     notices = notices,
+                    store = penStore,
                 )
             }
             if (pdfInserter.busy) BusyOverlay(stringResource(R.string.note_inserting_pdf))
@@ -371,6 +376,7 @@ private fun NoteContent(
                             tip = tip,
                             onShapesPlaced = { ui.shapesAnchor = it },
                             onTextPlaced = { ui.textAnchor = it },
+                            onToolPlaced = ui::placeTool,
                         )
                     }
                 },
@@ -426,6 +432,14 @@ private fun NoteContent(
         }
         if (ui.shapeOptionsOpen && !ui.readMode) ShapeOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
         if (ui.textOptionsOpen && !ui.readMode) TextOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
+        if (!ui.readMode) {
+            when (ui.pane) {
+                BarPane.Pen -> PenOptionsLayer(ui, toolbar, penStore, windowWidth, geometry, barFit.tools)
+                BarPane.Eraser -> EraserOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
+                BarPane.Lasso -> LassoOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
+                else -> Unit
+            }
+        }
     }
 
     if (ui.showPaperColor) {

@@ -68,10 +68,11 @@ private enum class Layer { None, Pens, Picker, Colours, Customise }
  * The wheel, its handle and the closed tab are children of one box over the canvas, all placed
  * in that box's px, so a carry has a single frame to live in. The box itself takes no touches:
  * only the wheel's own parts do, and the rest of the area reaches the canvas underneath, which
- * keeps its live ink. The pen panel, colour picker and name pill never move, and are popup windows.
+ * keeps its live ink. The pen panel, colour picker and name pill never move, and are popup windows. The [store] of
+ * saved pens can be shared with the pen's options card, so a pen saved in one shows in the other at once.
  */
 @Composable
-fun PenWheel(
+internal fun PenWheel(
     state: ToolbarState,
     open: Boolean,
     onOpenChange: (Boolean) -> Unit,
@@ -80,6 +81,7 @@ fun PenWheel(
     rulerOn: Boolean = false,
     onRulerChange: (Boolean) -> Unit = {},
     notices: Notices,
+    store: PenStore = rememberPenStore(),
 ) {
     var layer by remember(open) { mutableStateOf(Layer.None) }
     var sizeMode by remember(open) { mutableStateOf(false) }
@@ -129,7 +131,6 @@ fun PenWheel(
     val tools = remember(toolList.size, openGroup) { newToolSpin(toolList.size) }
     val toolsFull = remember(toolList.size, openGroup) { newToolRing(toolList.size) }
     val haptic = LocalHapticFeedback.current
-    val store = remember { PenStore(context) }
     ring.step = stepOf(true, state.rim.size)
     val origin = remember { FloatArray(2) }
     val density = LocalDensity.current.density

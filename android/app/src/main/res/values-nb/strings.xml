@@ -452,6 +452,8 @@
     <string name="wheel_edit_pens">Rediger penner</string>
     <string name="wheel_save_pen">Lagre gjeldende penn</string>
     <string name="wheel_save_pen_button">+ Lagre gjeldende penn</string>
+    <string name="pen_stabilization">Strekstabilisering</string>
+    <string name="pen_add_to_box">Legg til i pennalet</string>
     <string name="wheel_remove_named">Fjern %1$s</string>
     <string name="wheel_edit_named">Rediger %1$s</string>
     <string name="wheel_delete_named">Slette %1$s?</string>

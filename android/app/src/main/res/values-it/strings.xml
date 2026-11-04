@@ -463,6 +463,8 @@
     <string name="wheel_edit_pens">Modifica le penne</string>
     <string name="wheel_save_pen">Salva la penna attuale</string>
     <string name="wheel_save_pen_button">+ Salva la penna attuale</string>
+    <string name="pen_stabilization">Stabilizzazione del tratto</string>
+    <string name="pen_add_to_box">Aggiungi all\'astuccio</string>
     <string name="wheel_remove_named">Rimuovi %1$s</string>
     <string name="wheel_edit_named">Modifica %1$s</string>
     <string name="wheel_delete_named">Eliminare %1$s?</string>

@@ -35,14 +35,17 @@ internal fun Modifier.closePanesOnTouch(ui: NoteUiState): Modifier = composed {
         }
 }
 
+/** The panes that are an options card over the page, as opposed to a menu. */
+private val CARD_PANES = setOf(BarPane.Shapes, BarPane.Text, BarPane.Pen, BarPane.Eraser, BarPane.Lasso)
+
 /**
  * Whether a touch at [at], in window pixels, closes [pane]. Nothing closes when no pane is open, or when it is
  * Layers, which stays while you draw. A touch on the [bar] belongs to its buttons, and one inside the options
- * [card] of Shapes or Text is a touch on the pane itself.
+ * [card] of a tool is a touch on the pane itself.
  */
 internal fun paneClosesOn(pane: BarPane?, at: Offset, bar: Rect?, card: Rect?): Boolean {
     if (pane == null || pane == BarPane.Layers) return false
     if (bar != null && bar.contains(at)) return false
-    val onCard = (pane == BarPane.Shapes || pane == BarPane.Text) && card != null && card.contains(at)
+    val onCard = pane in CARD_PANES && card != null && card.contains(at)
     return !onCard
 }
