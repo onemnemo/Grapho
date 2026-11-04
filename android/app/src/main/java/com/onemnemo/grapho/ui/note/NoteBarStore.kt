@@ -4,7 +4,8 @@ import android.content.Context
 
 /**
  * What the person chose for the note bar, in shared preferences: its style (floating is the default), the tools on
- * it in order, whether it shows the note's title, the edge it sits on (top is the default) and when it hides.
+ * it in order, whether it shows the note's title, the edge it sits on (top is the default), when it hides and how
+ * it offers colours and sizes.
  */
 class NoteBarStore(context: Context) {
     private val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -47,6 +48,10 @@ class NoteBarStore(context: Context) {
 
     fun saveAutoHide(autoHide: AutoHide) = prefs.edit().putString(AUTO_HIDE, autoHide.name).apply()
 
+    fun loadQuick(): BarQuick = barQuickFrom(prefs.getString(QUICK, null))
+
+    fun saveQuick(quick: BarQuick) = prefs.edit().putString(QUICK, quick.name).apply()
+
     private companion object {
         const val PREFS = "grapho_note_bar"
         const val STYLE = "style"
@@ -56,5 +61,6 @@ class NoteBarStore(context: Context) {
         const val SHOW_TITLE = "show_title"
         const val POSITION = "position"
         const val AUTO_HIDE = "auto_hide"
+        const val QUICK = "quick"
     }
 }

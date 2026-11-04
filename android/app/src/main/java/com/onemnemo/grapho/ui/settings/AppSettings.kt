@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import com.onemnemo.grapho.note.ShapeDetection
 import com.onemnemo.grapho.ui.note.AutoHide
 import com.onemnemo.grapho.ui.note.BarPosition
+import com.onemnemo.grapho.ui.note.BarQuick
 import com.onemnemo.grapho.ui.note.DockEdge
 import com.onemnemo.grapho.ui.note.NoteBarStore
 import com.onemnemo.grapho.ui.note.NoteBarStyle
@@ -48,6 +49,10 @@ class AppSettings(context: Context) {
 
     /** When the note bar steps away from the page. */
     var autoHide by mutableStateOf(noteBarStore.loadAutoHide())
+        private set
+
+    /** How the note bar offers colours and sizes. */
+    var barQuick by mutableStateOf(noteBarStore.loadQuick())
         private set
 
     /** Whether a new note starts with finger drawing on. A note can still switch it from its menu. */
@@ -99,6 +104,11 @@ class AppSettings(context: Context) {
     fun changeAutoHide(next: AutoHide) {
         autoHide = next
         noteBarStore.saveAutoHide(next)
+    }
+
+    fun changeBarQuick(next: BarQuick) {
+        barQuick = next
+        noteBarStore.saveQuick(next)
     }
 
     fun changeFingerDraws(on: Boolean) {

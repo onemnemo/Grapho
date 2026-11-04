@@ -545,6 +545,10 @@
     <string name="settings_note_bar">Anteckningsfält</string>
     <string name="settings_general">Allmänt</string>
     <string name="settings_bar_behaviour">Beteende</string>
+    <string name="settings_bar_quick">Färger och storlekar</string>
+    <string name="bar_quick_buttons">Knappar</string>
+    <string name="bar_quick_inline">I fältet</string>
+    <string name="bar_quick_off">Av</string>
     <string name="settings_show_title">Visa anteckningens titel</string>
     <string name="settings_bar_tools">Verktyg i fältet</string>
     <string name="settings_bar_tools_count">%1$d på</string>
