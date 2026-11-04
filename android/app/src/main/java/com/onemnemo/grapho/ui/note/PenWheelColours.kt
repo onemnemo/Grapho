@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,6 +36,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.ui.components.Notices
+import com.onemnemo.grapho.ui.components.PlatformTextInput
 import com.onemnemo.grapho.ui.components.pressable
 import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoWheel
@@ -127,22 +126,22 @@ private fun SetBlock(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(0.dp),
         ) {
-            BasicTextField(
+            PlatformTextInput(
                 value = name,
-                onValueChange = {
-                    name = it.take(NAME_MAX)
+                filter = { it.take(NAME_MAX) },
+                onValueChange = { v ->
+                    name = v
                     book.rename(index, name)
                 },
-                singleLine = true,
                 textStyle = Grapho.type.label.copy(color = GraphoWheel.text),
-                cursorBrush = SolidColor(GraphoWheel.text),
+                cursorColor = GraphoWheel.text,
                 modifier = Modifier
                     .weight(1f)
                     .height(36.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(GraphoWheel.field)
-                    .padding(horizontal = 10.dp, vertical = 8.dp)
-                    .semantics { contentDescription = nameLabel },
+                    .padding(horizontal = 10.dp),
+                description = nameLabel,
             )
             IconAction(R.drawable.ic_chevron_up, stringResource(R.string.wheel_move_up_named, set.name), index > 0) {
                 onPick(null)

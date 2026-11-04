@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -30,8 +28,6 @@ import com.onemnemo.grapho.ui.theme.GraphoSpace
 @Composable
 fun RenameDialog(initial: String, onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
     var value by remember { mutableStateOf(TextFieldValue(initial, TextRange(0, initial.length))) }
-    val focus = remember { FocusRequester() }
-    LaunchedEffect(Unit) { focus.requestFocus() }
     val confirm = {
         val name = value.text.trim()
         if (name.isNotEmpty()) onConfirm(name)
@@ -52,7 +48,7 @@ fun RenameDialog(initial: String, onConfirm: (String) -> Unit, onDismiss: () -> 
         GraphoTextField(
             value = value,
             onValueChange = { value = it },
-            focusRequester = focus,
+            autoFocus = true,
             onDone = confirm,
         )
     }
