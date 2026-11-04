@@ -15,21 +15,7 @@ internal class CropPainter(private val density: Float, private val images: Image
         style = Paint.Style.FILL
         color = Color.argb(DIM_ALPHA, 0, 0, 0)
     }
-    private val frame = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.STROKE
-        strokeWidth = 2f * density
-    }
-    private val handleFill = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
-        color = SelectionColours.WHITE
-    }
-    private val handleRing = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.STROKE
-        strokeWidth = 1.5f
-    }
+    private val ink = SelectionInk(density)
     private val imagePainter = ImagePainter()
     private val path = Path()
     private val pageRect = RectF()
@@ -37,9 +23,7 @@ internal class CropPainter(private val density: Float, private val images: Image
 
     fun draw(canvas: Canvas, vp: Viewport, info: NotebookInfo, crop: CropController) {
         val paper = info.background.color
-        val dark = isDarkPaper(paper)
-        frame.color = SelectionColours.accent(dark)
-        handleRing.color = frame.color
+        ink.setPaper(paper)
         drawPicture(canvas, vp, paper, crop)
         drawFrame(canvas, vp, crop)
     }
@@ -73,13 +57,12 @@ internal class CropPainter(private val density: Float, private val images: Image
             if (corner == 0) path.moveTo(point[0], point[1]) else path.lineTo(point[0], point[1])
         }
         path.close()
-        canvas.drawPath(path, frame)
+        ink.drawPath(canvas, path, dashed = false)
         for (i in 0 until CropController.HANDLES) {
             crop.handle(i, point)
             crop.viewPoint(vp, point[0], point[1], point)
             val r = (if (i < 4) CORNER_DP else EDGE_DP) * density
-            canvas.drawCircle(point[0], point[1], r, handleFill)
-            canvas.drawCircle(point[0], point[1], r, handleRing)
+            ink.drawHandle(canvas, point[0], point[1], r)
         }
     }
 

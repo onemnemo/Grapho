@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -20,7 +21,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.onemnemo.grapho.R
-import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoShapes
 
 /** The strip round the open text box that holds its handles. It is also the least any handle measures to touch. */
@@ -29,6 +29,9 @@ internal val TEXT_HANDLE_SLOT: Dp = 40.dp
 private val GRIP_HIT = DpSize(72.dp, TEXT_HANDLE_SLOT)
 private val GRIP_MARK = DpSize(32.dp, 6.dp)
 private val SIDE_MARK = DpSize(6.dp, 28.dp)
+
+// The halo round each mark, so it shows on any paper.
+private val MARK_HALO = 1.5.dp
 
 /**
  * The handles of the open text box, to be placed in a [Box] that is [TEXT_HANDLE_SLOT] larger than the box on every
@@ -39,6 +42,8 @@ private val SIDE_MARK = DpSize(6.dp, 28.dp)
 @Composable
 internal fun BoxScope.TextHandles(
     scale: Float,
+    accent: Color,
+    halo: Color,
     onMove: (dx: Float, dy: Float) -> Unit,
     onStretch: (fromLeft: Boolean, delta: Float) -> Unit,
 ) {
@@ -53,6 +58,8 @@ internal fun BoxScope.TextHandles(
         GRIP_MARK,
         Alignment.Center,
         moveLabel,
+        accent,
+        halo,
     ) { move(it.x / units, it.y / units) }
     Handle(
         Modifier.align(Alignment.CenterStart),
@@ -60,6 +67,8 @@ internal fun BoxScope.TextHandles(
         SIDE_MARK,
         Alignment.CenterEnd,
         sizeLabel,
+        accent,
+        halo,
     ) { stretch(true, it.x / units) }
     Handle(
         Modifier.align(Alignment.CenterEnd),
@@ -67,10 +76,15 @@ internal fun BoxScope.TextHandles(
         SIDE_MARK,
         Alignment.CenterStart,
         sizeLabel,
+        accent,
+        halo,
     ) { stretch(false, it.x / units) }
 }
 
-/** A touch area of size [hit] showing a small pill of size [mark] at [markAt], which reports each drag step. */
+/**
+ * A touch area of size [hit] showing a small [accent] pill of size [mark] at [markAt], ringed by [halo], which
+ * reports each drag step.
+ */
 @Composable
 private fun Handle(
     modifier: Modifier,
@@ -78,6 +92,8 @@ private fun Handle(
     mark: DpSize,
     markAt: Alignment,
     label: String,
+    accent: Color,
+    halo: Color,
     onDrag: (Offset) -> Unit,
 ) {
     val drag by rememberUpdatedState(onDrag)
@@ -93,6 +109,14 @@ private fun Handle(
             .semantics { contentDescription = label },
         contentAlignment = markAt,
     ) {
-        Box(Modifier.size(mark).clip(GraphoShapes.pill).background(Grapho.colors.selectionIndicator))
+        Box(
+            Modifier
+                .size(mark.width + MARK_HALO * 2, mark.height + MARK_HALO * 2)
+                .clip(GraphoShapes.pill)
+                .background(halo),
+            contentAlignment = Alignment.Center,
+        ) {
+            Box(Modifier.size(mark).clip(GraphoShapes.pill).background(accent))
+        }
     }
 }

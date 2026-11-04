@@ -42,15 +42,16 @@ import androidx.compose.ui.unit.dp
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.note.NoteCanvasView
 import com.onemnemo.grapho.note.PaperColors
+import com.onemnemo.grapho.note.SelectionColours
 import com.onemnemo.grapho.note.TextAlignment
 import com.onemnemo.grapho.note.TextEdit
 import com.onemnemo.grapho.note.TextSettings
 import com.onemnemo.grapho.note.displayColor
+import com.onemnemo.grapho.note.isDarkPaper
 import com.onemnemo.grapho.ui.components.ButtonKind
 import com.onemnemo.grapho.ui.components.ButtonSize
 import com.onemnemo.grapho.ui.components.GraphoButton
 import com.onemnemo.grapho.ui.components.floatingCard
-import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoShapes
 import com.onemnemo.grapho.ui.theme.GraphoSpace
 import kotlin.math.roundToInt
@@ -81,6 +82,10 @@ private const val PROBE_SIZE = 5
 
 /** The room the Done pill takes under the box, which the format bar clears when it has to go there. */
 private val DONE_ROOM = 56.dp
+
+// The open box's frame: an accent line with a halo inside it, so it shows on any paper.
+private val TEXT_FRAME_LINE = 1.5.dp
+private val TEXT_FRAME_HALO = 3.dp
 
 /**
  * The field a text box is typed into, laid over the box on the page at the page's scale, with a frame round it,
@@ -148,7 +153,9 @@ private fun TextEditField(
         )
     }
     val label = stringResource(R.string.text_box)
-    val ring = Grapho.colors.selectionIndicator
+    val darkPaper = isDarkPaper(paper)
+    val ring = Color(SelectionColours.accent(darkPaper))
+    val halo = Color(SelectionColours.halo(darkPaper))
     val slot = with(density) { TEXT_HANDLE_SLOT.roundToPx() }
     Box(Modifier.pinnedBox(spot, slot)) {
         BasicTextField(
@@ -163,13 +170,14 @@ private fun TextEditField(
                 .fillMaxWidth()
                 .padding(TEXT_HANDLE_SLOT)
                 .onSizeChanged { heightPx = it.height }
-                .border(GraphoSpace.borderWidthHairline, ring)
+                .border(TEXT_FRAME_HALO, halo)
+                .border(TEXT_FRAME_LINE, ring)
                 .focusRequester(focus)
                 .semantics { contentDescription = label },
             textStyle = textStyle,
             cursorBrush = SolidColor(ring),
         )
-        TextHandles(spot.scale, onMove, onStretch)
+        TextHandles(spot.scale, ring, halo, onMove, onStretch)
     }
     val margins = with(density) {
         EdgeInsets(insets.left.dp.toPx(), insets.top.dp.toPx(), insets.right.dp.toPx(), insets.bottom.dp.toPx())
