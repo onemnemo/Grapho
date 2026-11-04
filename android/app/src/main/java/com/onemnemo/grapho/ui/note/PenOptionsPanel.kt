@@ -95,10 +95,10 @@ private fun PenOptionRows(toolbar: ToolbarState, store: PenStore) {
         valueText = stringResource(R.string.value_percent, (toolbar.stabilizer * PERCENT).roundToInt()),
         onValue = { toolbar.stabilizer = (it / STABILIZER_STEPS).coerceIn(0f, 1f) },
     )
-    Group(R.string.wheel_line) {
+    WellRow(stringResource(R.string.wheel_line)) {
         LineStyleChoice(current = currentSetting(toolbar).line) { applyLine(toolbar, it) }
     }
-    Group(R.string.text_colour) {
+    WellRow(stringResource(R.string.text_colour)) {
         ColourRow(
             current = currentSetting(toolbar).color,
             palette = toolbar.palette,
@@ -174,11 +174,11 @@ private fun OutlinedAction(text: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .heightIn(min = Grapho.metrics.sizeControlDefault)
             .clip(GraphoShapes.pill)
-            .border(GraphoSpace.borderWidthHairline, Grapho.colors.borderStrong, GraphoShapes.pill)
+            .border(GraphoSpace.borderWidthHairline, Grapho.colors.selectionIndicator, GraphoShapes.pill)
             .pressable(onClick = onClick)
             .padding(horizontal = GraphoSpace.spaceLg, vertical = GraphoSpace.spaceSm),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text, style = Grapho.type.label, color = Grapho.colors.textDefault, textAlign = TextAlign.Center)
+        Text(text, style = Grapho.type.label, color = Grapho.colors.selectionIndicator, textAlign = TextAlign.Center)
     }
 }

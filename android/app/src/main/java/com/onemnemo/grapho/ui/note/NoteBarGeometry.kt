@@ -59,22 +59,28 @@ internal fun barFitFor(
 ): BarFit {
     val insertBar = insertOnBar(windowWidth.value)
     val length = if (position.vertical) windowHeight.value else windowWidth.value
+    val floating = style == NoteBarStyle.Floating
+    val cap = GraphoSpace.sizeBarNoteMax.value
+    val quickDp = if (position.vertical) 0f else QUICK_LENGTH.value
     return fitBar(
         tools = tools,
         active = NoteBarTool.forMode(mode),
         compact = !insertBar,
         wantTitle = wantTitle && !position.vertical,
         m = BarMeasure(
-            barLengthDp = if (style == NoteBarStyle.Floating) {
-                floatingBarMaxWidthDp(length, GraphoSpace.sizeBarNoteMax.value)
-            } else {
-                length
-            },
+            barLengthDp = if (floating) floatingBarMaxWidthDp(length, cap) else length,
             fixedSlots = barFixedSlots(insertBar, position.vertical),
             slotDp = (Grapho.metrics.sizeHitMin + GraphoSpace.spaceNudge).value,
             separatorDp = BAR_RULE_SLOT.value,
             paddingDp = (GraphoSpace.spaceXs * 2).value,
             titleMinDp = BAR_TITLE_MIN.value,
+            quickDp = quickDp,
+            // The floating pill may grow past its usual cap to hold them, as far as the window allows.
+            quickGrowDp = if (floating) {
+                floatingBarMaxWidthDp(length, cap + quickDp) - floatingBarMaxWidthDp(length, cap)
+            } else {
+                0f
+            },
         ),
     )
 }

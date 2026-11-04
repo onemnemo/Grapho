@@ -1,11 +1,16 @@
 package com.onemnemo.grapho.ui.note
 
-/** The tools that fit on the bar, and whether the title still has room beside them. */
-data class BarFit(val tools: List<NoteBarTool>, val showTitle: Boolean)
+/**
+ * The tools that fit on the bar, whether the title still has room beside them, and whether the [quick] colours and
+ * sizes do.
+ */
+data class BarFit(val tools: List<NoteBarTool>, val showTitle: Boolean, val quick: Boolean = false)
 
 /**
  * The measures [fitBar] works in, all in dp. [barLengthDp] is the bar's length along its edge: its width at the top
  * or bottom, its height at the left or right. [fixedSlots] counts the buttons that are always on the bar.
+ * [quickDp] is the length of the quick colours and sizes, 0 when the bar does not offer them, and [quickGrowDp] how
+ * much longer the bar may grow to hold them.
  */
 data class BarMeasure(
     val barLengthDp: Float,
@@ -14,6 +19,8 @@ data class BarMeasure(
     val separatorDp: Float,
     val paddingDp: Float,
     val titleMinDp: Float,
+    val quickDp: Float = 0f,
+    val quickGrowDp: Float = 0f,
 )
 
 /**
@@ -31,8 +38,9 @@ private fun toolsWidthDp(tools: List<NoteBarTool>, m: BarMeasure): Float {
 /**
  * Which of [tools] fit a bar of the measured length, in order, dropping from the end rather than overflowing. A
  * [compact] bar leaves out the tools that do not belong there. The [active] tool stays on the bar by taking the
- * place of the last one that fits. The title gets what is left, and hides when that is under its minimum or
- * [wantTitle] is off. A vertical bar passes [wantTitle] false, since it has no title.
+ * place of the last one that fits. Once every tool fits, the quick colours and sizes come next when there is room
+ * for them, since they are used more than the title. The title gets what is left, and hides when that is under its
+ * minimum or [wantTitle] is off. A vertical bar passes [wantTitle] false, since it has no title.
  */
 fun fitBar(
     tools: List<NoteBarTool>,
@@ -52,5 +60,7 @@ fun fitBar(
         }
     }
     val leftover = room - toolsWidthDp(shown, m)
-    return BarFit(shown, wantTitle && leftover >= m.titleMinDp)
+    val quick = m.quickDp > 0f && shown.size == pool.size && leftover + m.quickGrowDp >= m.quickDp
+    val titleRoom = if (quick) leftover + m.quickGrowDp - m.quickDp else leftover
+    return BarFit(shown, wantTitle && titleRoom >= m.titleMinDp, quick)
 }

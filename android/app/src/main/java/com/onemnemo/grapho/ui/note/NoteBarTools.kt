@@ -93,7 +93,7 @@ internal fun NoteBarTools(
 }
 
 @Composable
-private fun GroupRule(vertical: Boolean) {
+internal fun GroupRule(vertical: Boolean) {
     if (vertical) {
         Box(Modifier.height(BAR_RULE_SLOT).width(GraphoSpace.spaceXl), contentAlignment = Alignment.Center) {
             Box(
