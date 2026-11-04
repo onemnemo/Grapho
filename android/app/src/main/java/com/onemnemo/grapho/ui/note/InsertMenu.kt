@@ -13,12 +13,7 @@ import com.onemnemo.grapho.ui.components.GraphoMenuLabel
  * so that group is left out. Paste image shows only when the clipboard holds a picture.
  */
 @Composable
-internal fun InsertMenu(
-    expanded: Boolean,
-    onDismiss: () -> Unit,
-    infinite: Boolean,
-    actions: NoteActions,
-) {
+internal fun InsertMenu(expanded: Boolean, onDismiss: () -> Unit, infinite: Boolean, actions: NoteActions) {
     fun run(action: () -> Unit) {
         onDismiss()
         action()
@@ -58,4 +53,3 @@ internal fun InsertMenu(
         }
     }
 }
-
