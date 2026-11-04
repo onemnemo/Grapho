@@ -525,6 +525,10 @@
     <string name="settings_note_bar">नोट बार</string>
     <string name="settings_general">सामान्य</string>
     <string name="settings_bar_behaviour">व्यवहार</string>
+    <string name="settings_bar_quick">रंग और आकार</string>
+    <string name="bar_quick_buttons">बटन</string>
+    <string name="bar_quick_inline">बार पर</string>
+    <string name="bar_quick_off">बंद</string>
     <string name="settings_show_title">नोट का शीर्षक दिखाएँ</string>
     <string name="settings_bar_tools">बार में टूल</string>
     <string name="settings_bar_tools_count">%1$d चालू</string>

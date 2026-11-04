@@ -48,12 +48,19 @@ class BarPaneTouchTest {
     }
 
     @Test
-    fun theCardOnlyCountsForTheCardPanes() {
-        assertTrue(paneClosesOn(BarPane.Image, Offset(700f, 200f), bar, card))
+    fun aMenuWithNoCardClosesOnAnyTouchOffTheBar() {
+        assertTrue(paneClosesOn(BarPane.Image, Offset(700f, 200f), bar, null))
     }
 
     @Test
-    fun layersStaysOpenWhileDrawing() {
-        assertFalse(paneClosesOn(BarPane.Layers, page, bar, card))
+    fun layersClosesOnATouchOnThePageLikeTheOthers() {
+        assertTrue(paneClosesOn(BarPane.Layers, page, bar, card))
+        assertFalse(paneClosesOn(BarPane.Layers, Offset(700f, 200f), bar, card))
+    }
+
+    @Test
+    fun aTouchInsideAStripKeepsItOpen() {
+        assertFalse(paneClosesOn(BarPane.Colours, Offset(700f, 200f), bar, card))
+        assertTrue(paneClosesOn(BarPane.Sizes, page, bar, card))
     }
 }
