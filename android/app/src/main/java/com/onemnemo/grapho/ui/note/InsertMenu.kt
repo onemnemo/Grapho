@@ -26,7 +26,8 @@ internal fun InsertMenu(
         onDismiss()
         action()
     }
-    GraphoMenu(expanded = expanded, onDismiss = onDismiss) {
+    // Not modal: a tap on another button of the bar closes it and does what that button does, in one tap.
+    GraphoMenu(expanded = expanded, onDismiss = onDismiss, modal = false) {
         if (images) {
             GraphoMenuLabel(stringResource(R.string.note_insert_group_image))
             GraphoMenuItem(

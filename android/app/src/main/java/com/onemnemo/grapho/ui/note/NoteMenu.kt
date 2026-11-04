@@ -33,8 +33,8 @@ private val PATTERN_NAMES = listOf(
  * tools and view. Page background opens its own popover from here. On a compact bar the insert choices are
  * folded in as one row, which opens the insert menu under this button ([insertOpen] and [onInsertOpen]). A
  * vertical bar has no room for its own Layers button, so [layersInMenu] adds it under this note ([layersOpen]
- * and [onLayers]). [tip] is the side the button's tip opens on, and [onOpenChange] hears when the menu or its
- * page background popover opens and closes. Every action closes the menu before it runs.
+ * and [onLayers]). [tip] is the side the button's tip opens on. The menu is [open], and the button opens and closes
+ * it through [onOpen]; [onOpenChange] hears when the menu or its page background popover opens and closes. Every action closes the menu before it runs.
  */
 @Composable
 internal fun NoteMenu(
@@ -48,16 +48,17 @@ internal fun NoteMenu(
     layersOpen: Boolean = false,
     onLayers: () -> Unit = {},
     tip: TooltipSide? = TooltipSide.Below,
+    open: Boolean = false,
+    onOpen: (Boolean) -> Unit = {},
     onOpenChange: (Boolean) -> Unit = {},
     insertImages: Boolean = true,
 ) {
-    var open by remember { mutableStateOf(false) }
     var background by remember { mutableStateOf(false) }
     LaunchedEffect(open, background) { onOpenChange(open || background) }
     // A bar that leaves the screen takes its menu with it.
     DisposableEffect(Unit) { onDispose { onOpenChange(false) } }
     fun run(action: () -> Unit) {
-        open = false
+        onOpen(false)
         action()
     }
     val pattern = info?.background?.pattern ?: 0
@@ -67,11 +68,12 @@ internal fun NoteMenu(
         GraphoIconButton(
             R.drawable.ic_more_horizontal,
             stringResource(R.string.note_more),
-            onClick = { open = true },
+            onClick = { onOpen(!open) },
             selected = open,
             tooltipSide = tip,
+            longPressClicks = true,
         )
-        GraphoMenu(expanded = open, onDismiss = { open = false }) {
+        GraphoMenu(expanded = open, onDismiss = { onOpen(false) }, modal = false) {
             GraphoMenuQuickRow {
                 GraphoMenuQuick(
                     stringResource(R.string.note_share),
