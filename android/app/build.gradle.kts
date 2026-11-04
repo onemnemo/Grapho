@@ -71,6 +71,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.graphics:graphics-core:1.0.1")
     implementation("androidx.input:input-motionprediction:1.0.0-beta03")
+    // Draws LaTeX math in text boxes. GPL 2.0 with the classpath exception.
+    implementation("ru.noties:jlatexmath-android:0.2.0")
 
     testImplementation("junit:junit:4.13.2")
 }
