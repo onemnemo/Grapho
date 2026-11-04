@@ -525,6 +525,10 @@
     <string name="settings_note_bar">Notizleiste</string>
     <string name="settings_general">Allgemein</string>
     <string name="settings_bar_behaviour">Verhalten</string>
+    <string name="settings_bar_quick">Farben und Größen</string>
+    <string name="bar_quick_buttons">Tasten</string>
+    <string name="bar_quick_inline">In der Leiste</string>
+    <string name="bar_quick_off">Aus</string>
     <string name="settings_show_title">Notiztitel anzeigen</string>
     <string name="settings_bar_tools">Werkzeuge in der Leiste</string>
     <string name="settings_bar_tools_count">%1$d an</string>

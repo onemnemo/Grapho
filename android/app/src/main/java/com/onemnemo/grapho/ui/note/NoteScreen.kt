@@ -281,6 +281,7 @@ private fun NoteContent(
         wantTitle = hooks.settings.showTitle,
         windowWidth = windowWidth,
         windowHeight = windowHeight,
+        quick = hooks.settings.barQuick,
     )
     val visibility = ui.barVisibility
     val autoHide = hooks.settings.autoHide
@@ -357,7 +358,8 @@ private fun NoteContent(
                 position = position,
                 maxLength = floatingBarMaxWidthDp(
                     if (position.vertical) windowHeight.value else windowWidth.value,
-                    GraphoSpace.sizeBarNoteMax.value + if (barFit.quick) QUICK_LENGTH.value else 0f,
+                    GraphoSpace.sizeBarNoteMax.value +
+                        if (barFit.quick) quickLength(hooks.settings.barQuick).value else 0f,
                 ).dp,
                 showTitle = barFit.showTitle,
                 readMode = ui.readMode,
@@ -378,7 +380,13 @@ private fun NoteContent(
                             onTextPlaced = { ui.textAnchor = it },
                             onToolPlaced = ui::placeTool,
                         )
-                        if (barFit.quick) NoteBarQuick(toolbar, position.vertical)
+                        if (barFit.quick) {
+                            when (hooks.settings.barQuick) {
+                                BarQuick.Buttons -> NoteBarQuickButtons(toolbar, ui, position.vertical)
+                                BarQuick.Inline -> NoteBarQuick(toolbar, position.vertical)
+                                BarQuick.Off -> Unit
+                            }
+                        }
                     }
                 },
             ) {
@@ -428,7 +436,8 @@ private fun NoteContent(
                 state = layers,
                 placement = placement,
                 onClose = { ui.layersOpen = false },
-                modifier = barPanelPlacement(placement, ui.layersAnchor, geometry),
+                modifier = barPanelPlacement(placement, ui.layersAnchor, geometry)
+                    .onGloballyPositioned { ui.cardBounds = it.boundsInWindow() },
             )
         }
         if (ui.shapeOptionsOpen && !ui.readMode) ShapeOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
@@ -438,6 +447,8 @@ private fun NoteContent(
                 BarPane.Pen -> PenOptionsLayer(ui, toolbar, penStore, windowWidth, geometry, barFit.tools)
                 BarPane.Eraser -> EraserOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
                 BarPane.Lasso -> LassoOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
+                BarPane.Colours -> ColourStripLayer(ui, toolbar, windowWidth, geometry)
+                BarPane.Sizes -> SizeStripLayer(ui, toolbar, windowWidth, geometry)
                 else -> Unit
             }
         }

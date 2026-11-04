@@ -116,7 +116,7 @@ internal fun GroupRule(vertical: Boolean) {
 }
 
 /**
- * Picks [tool] for the canvas. A tool that was not on becomes the tool and closes any pane of the bar but Layers,
+ * Picks [tool] for the canvas. A tool that was not on becomes the tool and closes any open pane of the bar,
  * so one tap always does one thing. Picking the one that is already on opens its options card, or closes it when
  * it is open: Pen for the pen and the highlighter, then Eraser, Lasso, Shapes and Text. The pen wheel opens from
  * its own tab, not from here.

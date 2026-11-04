@@ -19,6 +19,7 @@ import com.onemnemo.grapho.ui.components.SegmentSize
 import com.onemnemo.grapho.ui.components.SegmentedControl
 import com.onemnemo.grapho.ui.note.AutoHide
 import com.onemnemo.grapho.ui.note.BarPosition
+import com.onemnemo.grapho.ui.note.BarQuick
 import com.onemnemo.grapho.ui.note.NoteBarStyle
 import com.onemnemo.grapho.ui.theme.GraphoSpace
 
@@ -41,6 +42,12 @@ private fun autoHideName(autoHide: AutoHide): Int = when (autoHide) {
     AutoHide.Off -> R.string.auto_hide_off
     AutoHide.WhileWriting -> R.string.auto_hide_while_writing
     AutoHide.Always -> R.string.auto_hide_always
+}
+
+private fun barQuickName(quick: BarQuick): Int = when (quick) {
+    BarQuick.Buttons -> R.string.bar_quick_buttons
+    BarQuick.Inline -> R.string.bar_quick_inline
+    BarQuick.Off -> R.string.bar_quick_off
 }
 
 /** Four tiles in a row when each can keep its width, two by two when it cannot. */
@@ -96,6 +103,14 @@ internal fun GeneralPage(settings: AppSettings, onEditTools: () -> Unit) {
                     options = AutoHide.entries.map { it to stringResource(autoHideName(it)) },
                     selected = settings.autoHide,
                     onSelect = settings::changeAutoHide,
+                    size = SegmentSize.Small,
+                )
+            }
+            FieldRow(stringResource(R.string.settings_bar_quick)) {
+                SegmentedControl(
+                    options = BarQuick.entries.map { it to stringResource(barQuickName(it)) },
+                    selected = settings.barQuick,
+                    onSelect = settings::changeBarQuick,
                     size = SegmentSize.Small,
                 )
             }

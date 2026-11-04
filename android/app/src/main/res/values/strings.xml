@@ -534,6 +534,10 @@
     <string name="settings_note_bar">Note bar</string>
     <string name="settings_general">General</string>
     <string name="settings_bar_behaviour">Behaviour</string>
+    <string name="settings_bar_quick">Colours and sizes</string>
+    <string name="bar_quick_buttons">Buttons</string>
+    <string name="bar_quick_inline">On the bar</string>
+    <string name="bar_quick_off">Off</string>
     <string name="settings_show_title">Show note title</string>
     <string name="settings_bar_tools">Tools in the bar</string>
     <string name="settings_bar_tools_count">%1$d on</string>
