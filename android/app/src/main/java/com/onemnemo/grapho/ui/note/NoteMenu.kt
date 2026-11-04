@@ -51,7 +51,6 @@ internal fun NoteMenu(
     open: Boolean = false,
     onOpen: (Boolean) -> Unit = {},
     onOpenChange: (Boolean) -> Unit = {},
-    insertImages: Boolean = true,
 ) {
     var background by remember { mutableStateOf(false) }
     LaunchedEffect(open, background) { onOpenChange(open || background) }
@@ -170,7 +169,6 @@ internal fun NoteMenu(
                 onDismiss = { onInsertOpen(false) },
                 infinite = info?.infinite == true,
                 actions = actions,
-                images = insertImages,
             )
         }
     }
