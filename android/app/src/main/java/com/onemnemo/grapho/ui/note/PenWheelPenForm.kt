@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -31,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.note.LineStyle
 import com.onemnemo.grapho.ui.components.PenKind
+import com.onemnemo.grapho.ui.components.PlatformTextInput
 import com.onemnemo.grapho.ui.components.pressable
 import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoWheel
@@ -69,22 +68,22 @@ internal fun PenEditor(state: ToolbarState, store: PenStore, index: Int) {
             .padding(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        BasicTextField(
+        PlatformTextInput(
             value = name,
+            filter = { it.take(NAME_LIMIT) },
             onValueChange = { v ->
-                name = v.take(NAME_LIMIT)
+                name = v
                 if (name.isNotBlank()) store.replace(index, PenPreset(name.trim(), pen.kind, pen.color, pen.widthPt, pen.alpha, pen.line))
             },
-            singleLine = true,
             textStyle = Grapho.type.label.copy(color = GraphoWheel.text),
-            cursorBrush = SolidColor(GraphoWheel.text),
+            cursorColor = GraphoWheel.text,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(GraphoWheel.field)
-                .padding(horizontal = 10.dp, vertical = 10.dp)
-                .semantics { contentDescription = nameLabel },
+                .padding(horizontal = 10.dp),
+            description = nameLabel,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             for ((kind, label) in listOf(
