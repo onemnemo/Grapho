@@ -260,24 +260,7 @@ private fun LassoOptionButtons(geo: Geo, state: ToolbarState) {
             onClick = { state.lassoRect = rect },
         ) {
             Canvas(Modifier.size(26.dp)) {
-                val ink = if (on) GraphoWheel.text else GraphoWheel.icon
-                val dash = Stroke(
-                    width = 2.dp.toPx(),
-                    cap = StrokeCap.Round,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx())),
-                )
-                val w = size.width
-                val h = size.height
-                if (rect) {
-                    drawRect(ink, Offset(w * 0.1f, h * 0.2f), Size(w * 0.8f, h * 0.6f), style = dash)
-                } else {
-                    val loop = Path().apply {
-                        moveTo(w * 0.15f, h * 0.55f)
-                        cubicTo(w * 0.1f, h * 0.1f, w * 0.7f, h * 0.05f, w * 0.85f, h * 0.4f)
-                        cubicTo(w * 0.95f, h * 0.75f, w * 0.35f, h * 0.95f, w * 0.15f, h * 0.55f)
-                    }
-                    drawPath(loop, ink, style = dash)
-                }
+                drawLassoModeGlyph(rect, if (on) GraphoWheel.text else GraphoWheel.icon)
             }
         }
     }

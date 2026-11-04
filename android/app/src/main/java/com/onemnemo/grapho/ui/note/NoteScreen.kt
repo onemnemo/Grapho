@@ -448,8 +448,8 @@ private fun NoteContent(
                 BarPane.Pen -> PenOptionsLayer(ui, toolbar, penStore, windowWidth, geometry, barFit.tools)
                 BarPane.Eraser -> EraserOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
                 BarPane.Lasso -> LassoOptionsLayer(ui, toolbar, windowWidth, geometry, barFit.tools)
-                BarPane.Colours -> ColourStripLayer(ui, toolbar, windowWidth, geometry)
-                BarPane.Sizes -> SizeStripLayer(ui, toolbar, windowWidth, geometry)
+                BarPane.Colours -> ColourStripLayer(ui, toolbar, position)
+                BarPane.Sizes -> SizeStripLayer(ui, toolbar, position)
                 else -> Unit
             }
         }

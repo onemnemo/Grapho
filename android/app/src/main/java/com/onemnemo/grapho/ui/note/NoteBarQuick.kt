@@ -2,17 +2,14 @@ package com.onemnemo.grapho.ui.note
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.boundsInWindow
@@ -26,7 +23,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.note.ToolMode
-import com.onemnemo.grapho.ui.components.floatingCard
 import com.onemnemo.grapho.ui.components.pressable
 import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoShapes
@@ -61,9 +57,6 @@ internal fun quickLength(quick: BarQuick): Dp = when (quick) {
     BarQuick.Off -> 0.dp
 }
 
-/** The sizes the size strip offers, as the wheel's 1 to 100 size numbers. */
-internal val STRIP_SIZES = listOf(6, 20, 40, 60, 85)
-
 /**
  * The colours shown on the bar: the first of [palette], with [current] taking the last place when it is not among
  * them, so the colour in use always shows.
@@ -82,7 +75,7 @@ internal fun quickColours(palette: List<Int>, current: Int): List<Int> {
 internal fun quickSizeAt(number: Int): Int? = QUICK_SIZES.firstOrNull { abs(it - number) <= SIZE_SLACK }
 
 private const val SIZE_SLACK = 4
-private const val OPAQUE_BITS = 0xFF000000.toInt()
+internal const val OPAQUE_BITS = 0xFF000000.toInt()
 
 /**
  * The colour and size buttons on the bar: each shows what the pen has now, and opens its strip under it, or closes
@@ -112,82 +105,24 @@ internal fun NoteBarQuickButtons(toolbar: ToolbarState, ui: NoteUiState, vertica
         onClick = { ui.togglePane(BarPane.Sizes) },
         modifier = Modifier.onGloballyPositioned { ui.sizeAnchor = it.boundsInWindow() },
     ) { radius ->
-        drawCircle(ink, radius = sizeDotRadius(number, radius))
+        drawSizeGlyph(ink, number, radius)
     }
 }
-
-/** A dot that grows with the size [number], from a speck up to [full]. */
-private fun sizeDotRadius(number: Int, full: Float): Float = full * (0.2f + 0.8f * (number.coerceIn(1, 100) / 100f))
 
 /**
- * The strip of colours that opens under the bar's colour button: a custom colour first, then the person's whole
- * palette. Picking one sets it on the pen and closes the strip.
+ * The size button's face: a short slanted stroke as thick as the pen's size, so it reads as a line weight and never
+ * as another colour.
  */
-@Composable
-internal fun BoxScope.ColourStripLayer(ui: NoteUiState, toolbar: ToolbarState, windowWidth: Dp, geometry: BarGeometry) {
-    QuickStrip(ui, ui.colourAnchor, windowWidth, geometry) {
-        ColourRow(
-            current = currentSetting(toolbar).color,
-            palette = toolbar.palette,
-            recent = toolbar.recent,
-            onPick = {
-                backToDrawing(toolbar)
-                applyColor(toolbar, it)
-                ui.closePanes()
-            },
-            onCustomColour = {
-                backToDrawing(toolbar)
-                toolbar.addRecent(it)
-                applyColor(toolbar, it)
-                ui.closePanes()
-            },
-        )
-    }
-}
-
-/** The strip of sizes that opens under the bar's size button. Picking one sets it on the pen and closes the strip. */
-@Composable
-internal fun BoxScope.SizeStripLayer(ui: NoteUiState, toolbar: ToolbarState, windowWidth: Dp, geometry: BarGeometry) {
-    val ink = Grapho.colors.textDefault
-    val label = stringResource(R.string.wheel_size)
-    val now = if (hasQuickSize(toolbar.mode)) sizeNumber(toolbar) else null
-    QuickStrip(ui, ui.sizeAnchor, windowWidth, geometry) {
-        Row {
-            for (number in STRIP_SIZES) {
-                QuickDot(
-                    label = label,
-                    selected = now != null && STRIP_SIZES.minBy { abs(it - now) } == number,
-                    onClick = {
-                        backToDrawing(toolbar)
-                        applySize(toolbar, widthOfNumber(toolbar, number.toFloat()))
-                        ui.closePanes()
-                    },
-                    slot = Grapho.metrics.sizeHitMin,
-                ) { radius ->
-                    drawCircle(ink, radius = sizeDotRadius(number, radius))
-                }
-            }
-        }
-    }
-}
-
-/** A small floating strip opened from [anchor] on the bar, placed and measured like the tools' cards. */
-@Composable
-private fun BoxScope.QuickStrip(
-    ui: NoteUiState,
-    anchor: Rect?,
-    windowWidth: Dp,
-    geometry: BarGeometry,
-    content: @Composable () -> Unit,
-) {
-    val placement = layersPlacement(windowWidth.value)
-    Box(
-        barPanelPlacement(placement, anchor, geometry)
-            .onGloballyPositioned { ui.cardBounds = it.boundsInWindow() }
-            .widthIn(max = GraphoSpace.sizePanelWidthOver + GraphoSpace.space5xl)
-            .floatingCard(GraphoShapes.pill)
-            .padding(horizontal = GraphoSpace.spaceXs),
-    ) { content() }
+internal fun DrawScope.drawSizeGlyph(ink: Color, number: Int, radius: Float) {
+    val weight = radius * (0.15f + 0.55f * (number.coerceIn(1, 100) / 100f))
+    val reach = radius * 0.7f
+    drawLine(
+        ink,
+        Offset(center.x - reach, center.y + reach),
+        Offset(center.x + reach, center.y - reach),
+        strokeWidth = weight,
+        cap = StrokeCap.Round,
+    )
 }
 
 /**
@@ -233,10 +168,10 @@ internal fun NoteBarQuick(toolbar: ToolbarState, vertical: Boolean) {
 }
 
 /** Tools that draw with the pen's colour and size. */
-private fun hasQuickSize(mode: ToolMode): Boolean =
+internal fun hasQuickSize(mode: ToolMode): Boolean =
     mode == ToolMode.PEN || mode == ToolMode.HIGHLIGHTER || mode == ToolMode.SHAPE
 
-private fun backToDrawing(toolbar: ToolbarState) {
+internal fun backToDrawing(toolbar: ToolbarState) {
     if (toolbar.mode == ToolMode.LASSO || toolbar.mode == ToolMode.FILL || toolbar.mode == ToolMode.ERASER) {
         toolbar.mode = toolbar.drawMode
     }
@@ -244,7 +179,7 @@ private fun backToDrawing(toolbar: ToolbarState) {
 
 /** One round slot, ringed when [selected]. [face] paints it, given the dot's radius in px. */
 @Composable
-private fun QuickDot(
+internal fun QuickDot(
     label: String,
     selected: Boolean,
     onClick: () -> Unit,

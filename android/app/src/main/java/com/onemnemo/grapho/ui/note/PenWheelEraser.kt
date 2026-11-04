@@ -102,32 +102,10 @@ internal fun EraserModeButtons(geo: Geo, state: ToolbarState) {
     }
 }
 
-/** A squiggle: whole for taking the stroke, with a gap for cutting part of it. Ringed when chosen. */
+/** The eraser's mode glyph in the wheel's colours, brighter when chosen. */
 @Composable
 private fun EraserModeGlyph(area: Boolean, selected: Boolean) {
     Canvas(Modifier.size(26.dp)) {
-        val w = size.width
-        val h = size.height
-        val line = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
-        val ink = if (selected) GraphoWheel.text else GraphoWheel.icon
-        if (area) {
-            val left = Path().apply {
-                moveTo(w * 0.08f, h * 0.6f)
-                cubicTo(w * 0.18f, h * 0.2f, w * 0.3f, h * 0.2f, w * 0.38f, h * 0.45f)
-            }
-            val right = Path().apply {
-                moveTo(w * 0.62f, h * 0.6f)
-                cubicTo(w * 0.7f, h * 0.85f, w * 0.82f, h * 0.8f, w * 0.92f, h * 0.4f)
-            }
-            drawPath(left, ink, style = line)
-            drawPath(right, ink, style = line)
-        } else {
-            val whole = Path().apply {
-                moveTo(w * 0.08f, h * 0.6f)
-                cubicTo(w * 0.18f, h * 0.2f, w * 0.32f, h * 0.2f, w * 0.5f, h * 0.52f)
-                cubicTo(w * 0.66f, h * 0.84f, w * 0.82f, h * 0.8f, w * 0.92f, h * 0.4f)
-            }
-            drawPath(whole, ink, style = line)
-        }
+        drawEraserModeGlyph(area, if (selected) GraphoWheel.text else GraphoWheel.icon)
     }
 }
