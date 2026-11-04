@@ -27,7 +27,8 @@ import kotlinx.coroutines.delay
  * An icon button in a hit slot, with a soft disc that shows on hover and press. [selected] shows the selection
  * fill and the toggled icon colour, never a solid white disc. [label] names it for assistive tech, and a long
  * press or a hover shows it as a tooltip on [tooltipSide] (null for none), the side away from the edge the
- * button sits on.
+ * button sits on. With [longPressClicks] a long press also counts as a tap, for buttons a pen often rests on a
+ * moment too long, where a press that only showed the tip would feel like a missed tap.
  */
 @Composable
 fun GraphoIconButton(
@@ -39,6 +40,7 @@ fun GraphoIconButton(
     selected: Boolean = false,
     tooltipSide: TooltipSide? = TooltipSide.Below,
     size: Dp = Grapho.metrics.sizeHitMin,
+    longPressClicks: Boolean = false,
     tint: Color = if (selected) Grapho.colors.actionToggleFgOn else Grapho.colors.actionQuietFg,
 ) {
     val c = Grapho.colors
@@ -59,6 +61,15 @@ fun GraphoIconButton(
         interaction.hovered -> c.hoverFill
         else -> Color.Transparent
     }
+    val showTip = tooltipSide != null
+    val longPress: (() -> Unit)? = if (longPressClicks || showTip) {
+        {
+            if (showTip) tip.show()
+            if (longPressClicks) onClick()
+        }
+    } else {
+        null
+    }
     val fill by animateColorAsState(disc, motionTween(GraphoMotion.motionDurationFastMs), label = "iconButtonFill")
     Box(
         modifier = modifier
@@ -66,7 +77,7 @@ fun GraphoIconButton(
             .pressable(
                 enabled = enabled,
                 interactionSource = interaction.source,
-                onLongClick = if (tooltipSide != null) tip::show else null,
+                onLongClick = longPress,
                 onClick = onClick,
             )
             .focusRing(interaction.focused, GraphoShapes.pill)

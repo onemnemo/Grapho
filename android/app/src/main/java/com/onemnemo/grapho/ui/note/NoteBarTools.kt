@@ -27,8 +27,8 @@ internal val BAR_RULE_SLOT = GraphoSpace.spaceMd
 
 /**
  * The tools on the bar, in order, with a quiet rule where the group changes. The one for the canvas's current tool
- * shows as selected. Image is not a canvas tool: it opens the picture choices under its own button
- * ([imageOpen] and [onImageOpen]). On a [vertical] bar the rule lies across the column, and each tip opens on
+ * shows as selected. Image is not a canvas tool: it opens the picture choices under its own button, and a second
+ * tap closes them ([imageOpen] and [onImageOpen]). On a [vertical] bar the rule lies across the column, and each tip opens on
  * [tip], away from the edge. [onShapesPlaced] and [onTextPlaced] hear where the Shapes and Text buttons are, so
  * their options cards open from them.
  */
@@ -53,9 +53,10 @@ internal fun NoteBarTools(
                 GraphoIconButton(
                     tool.icon,
                     stringResource(tool.label),
-                    onClick = { onImageOpen(true) },
+                    onClick = { onImageOpen(!imageOpen) },
                     selected = imageOpen,
                     tooltipSide = tip,
+                    longPressClicks = true,
                 )
                 InsertMenu(
                     expanded = imageOpen,
@@ -78,6 +79,7 @@ internal fun NoteBarTools(
                     onClick = { onTool(tool) },
                     selected = tool == active,
                     tooltipSide = tip,
+                    longPressClicks = true,
                 )
             }
         }
@@ -108,19 +110,25 @@ private fun GroupRule(vertical: Boolean) {
 }
 
 /**
- * Picks [tool] for the canvas. Picking the one that is already on opens the pen wheel at it, or puts the wheel
- * away when it is open. For Shapes and Text the second pick opens or closes their options instead, since the wheel
- * has nothing of its own for them.
+ * Picks [tool] for the canvas. A tool that was not on becomes the tool and closes any pane of the bar but Layers,
+ * so one tap always does one thing. Picking the one that is already on opens its pane, or closes it when it is
+ * open: the options of Shapes and Text, the pen wheel for the others.
  */
 internal fun pickBarTool(toolbar: ToolbarState, ui: NoteUiState, tool: NoteBarTool) {
     val mode = tool.mode ?: return
-    if (toolbar.mode != mode) {
-        toolbar.mode = mode
-    } else if (mode == ToolMode.SHAPE) {
-        ui.shapeOptionsOpen = !ui.shapeOptionsOpen
-    } else if (mode == ToolMode.TEXT) {
-        ui.textOptionsOpen = !ui.textOptionsOpen
-    } else {
-        ui.wheelOpen = !ui.wheelOpen
+    when {
+        toolbar.mode != mode -> {
+            toolbar.mode = mode
+            ui.closePanes()
+        }
+
+        mode == ToolMode.SHAPE -> ui.togglePane(BarPane.Shapes)
+
+        mode == ToolMode.TEXT -> ui.togglePane(BarPane.Text)
+
+        else -> {
+            ui.closePanes()
+            ui.wheelOpen = !ui.wheelOpen
+        }
     }
 }

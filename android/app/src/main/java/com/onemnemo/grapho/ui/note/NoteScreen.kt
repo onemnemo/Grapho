@@ -22,6 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -224,6 +226,16 @@ private fun NoteContent(
         if (toolbar.mode != ToolMode.TEXT) ui.textOptionsOpen = false
     }
 
+    // One thing open at a time: a pane of the bar puts the wheel away unless it is pinned, and the wheel coming up
+    // closes the pane.
+    LaunchedEffect(ui.pane) {
+        val pane = ui.pane
+        if (pane != null && pane != BarPane.Layers && !toolbar.wheelPinned) ui.wheelOpen = false
+    }
+    LaunchedEffect(ui.wheelOpen) {
+        if (ui.wheelOpen) ui.closePanes()
+    }
+
     // The wheel sets the text look on the toolbar; the box being typed into follows it.
     LaunchedEffect(toolbar.text) {
         val open = ui.textEdit ?: return@LaunchedEffect
@@ -268,7 +280,7 @@ private fun NoteContent(
     )
     val visibility = ui.barVisibility
     val autoHide = hooks.settings.autoHide
-    val barHeld = visibility.menuOpen || ui.insertOpen || ui.imageToolOpen || ui.layersOpen || titleEdit.editing
+    val barHeld = visibility.menuOpen || ui.pane != null || titleEdit.editing
     val barHidden = rememberBarHidden(visibility, autoHide, ui.readMode, barHeld)
     val insertBar = insertOnBar(windowWidth.value)
     val hoverBand = with(LocalDensity.current) { (geometry.travel + GraphoSpace.spaceLg).toPx() }
@@ -286,7 +298,7 @@ private fun NoteContent(
         null
     }
 
-    Box(Modifier.fillMaxSize().watchPenHover(ui.penHover)) {
+    Box(Modifier.fillMaxSize().watchPenHover(ui.penHover).closePanesOnTouch(ui)) {
         Box(Modifier.fillMaxSize().padding(geometry.reserve.toPadding())) {
             NoteCanvas(notebook, session, notices, toolbar, ui) { fingers ->
                 when (fingerGesture(fingers)?.let(hooks.settings::gestureAction)) {
@@ -321,7 +333,12 @@ private fun NoteContent(
             if (imageInserter.busy) BusyOverlay(stringResource(R.string.note_inserting_image))
             if (exporter.busy || sharer.busy) BusyOverlay(stringResource(R.string.note_exporting))
         }
-        BarSlide(barHidden, position, geometry.travel, Modifier.align(position.alignment())) {
+        BarSlide(
+            barHidden,
+            position,
+            geometry.travel,
+            Modifier.align(position.alignment()).onGloballyPositioned { ui.barBounds = it.boundsInWindow() },
+        ) {
             NoteBar(
                 style = barStyle,
                 title = info?.title.orEmpty(),
@@ -383,7 +400,9 @@ private fun NoteContent(
                         actions = actions,
                         vertical = position.vertical,
                         tip = tip,
-                        onMoreOpen = { visibility.menuOpen = it },
+                        moreOpen = ui.moreOpen,
+                        onMoreOpen = { ui.moreOpen = it },
+                        onMoreHeld = { visibility.menuOpen = it },
                         onLayersPlaced = { ui.layersAnchor = it },
                         imageTool = NoteBarTool.Image in barFit.tools,
                     )

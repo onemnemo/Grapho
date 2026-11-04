@@ -40,18 +40,21 @@ private val PLATE_SIZE = 28.dp
 /**
  * Commands for one trigger, opened under the parent it is declared in. A tap outside or Back calls
  * [onDismiss]. Fill it with [GraphoMenuItem], [GraphoMenuLabel] and [GraphoMenuDivider]. An item that opens
- * something else closes the menu first.
+ * something else closes the menu first. A menu that is not [modal] lets touches outside it through and does not
+ * close by itself: the screen that owns it closes it, so a tap on another control both closes it and works.
  */
 @Composable
 fun GraphoMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    modal: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     if (!expanded) return
     AnchoredPanel(
         onDismiss = onDismiss,
+        modal = modal,
         modifier = modifier
             .widthIn(min = GraphoSpace.sizeMenuMinWidth, max = GraphoSpace.sizeMenuMaxWidth)
             .width(IntrinsicSize.Max)

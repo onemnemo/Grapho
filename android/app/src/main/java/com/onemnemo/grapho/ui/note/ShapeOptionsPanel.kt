@@ -15,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.onemnemo.grapho.R
@@ -135,7 +137,9 @@ internal fun BoxScope.ShapeOptionsLayer(
         onChange = { toolbar.shape = it.coerced() },
         onClose = { ui.shapeOptionsOpen = false },
         placement = placement,
-        modifier = barPanelPlacement(placement, ui.shapesAnchor.takeIf { NoteBarTool.Shapes in barTools }, geometry),
+        modifier = barPanelPlacement(placement, ui.shapesAnchor.takeIf { NoteBarTool.Shapes in barTools }, geometry)
+            // After the placement, so these are the card's own bounds and not the box it is placed in.
+            .onGloballyPositioned { ui.cardBounds = it.boundsInWindow() },
     )
 }
 

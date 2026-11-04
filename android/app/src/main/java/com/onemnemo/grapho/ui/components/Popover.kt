@@ -82,9 +82,18 @@ fun GraphoPopover(
     )
 }
 
-/** The popup, its placement and its entrance, shared by [GraphoPopover] and the menu. */
+/**
+ * The popup, its placement and its entrance, shared by [GraphoPopover] and the menu. A [modal] panel takes every
+ * touch while it is up and closes on one outside it, which that touch spends. One that is not lets touches outside
+ * it reach the screen, and its owner closes it.
+ */
 @Composable
-internal fun AnchoredPanel(onDismiss: () -> Unit, modifier: Modifier, content: @Composable ColumnScope.() -> Unit) {
+internal fun AnchoredPanel(
+    onDismiss: () -> Unit,
+    modifier: Modifier,
+    modal: Boolean = true,
+    content: @Composable ColumnScope.() -> Unit,
+) {
     val density = LocalDensity.current
     val side = LocalPopupSide.current
     val positioner = remember(density, side) {
@@ -103,7 +112,11 @@ internal fun AnchoredPanel(onDismiss: () -> Unit, modifier: Modifier, content: @
     Popup(
         popupPositionProvider = positioner,
         onDismissRequest = onDismiss,
-        properties = PopupProperties(focusable = true),
+        properties = if (modal) {
+            PopupProperties(focusable = true)
+        } else {
+            PopupProperties(focusable = false, dismissOnBackPress = false, dismissOnClickOutside = false)
+        },
     ) {
         Column(
             modifier = Modifier
