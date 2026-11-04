@@ -306,10 +306,12 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
 
         override fun blocked(page: Int): Boolean = layerBlocked(page)
 
-        override fun editChanged(edit: TextEdit?) {
+        override fun editChanged(edit: TextEdit?, rerender: Boolean) {
             onTextEdit?.invoke(edit)
-            requestDry()
-            this@NoteCanvasView.redraw()
+            if (rerender) {
+                requestDry()
+                this@NoteCanvasView.redraw()
+            }
         }
 
         override fun documentEdited(page: Int) {

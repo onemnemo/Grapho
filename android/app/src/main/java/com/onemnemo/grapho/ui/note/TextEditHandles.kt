@@ -41,7 +41,7 @@ private val MARK_HALO = 1.5.dp
  */
 @Composable
 internal fun BoxScope.TextHandles(
-    scale: Float,
+    scale: () -> Float,
     accent: Color,
     halo: Color,
     onMove: (dx: Float, dy: Float) -> Unit,
@@ -60,7 +60,7 @@ internal fun BoxScope.TextHandles(
         moveLabel,
         accent,
         halo,
-    ) { move(it.x / units, it.y / units) }
+    ) { move(it.x / units(), it.y / units()) }
     Handle(
         Modifier.align(Alignment.CenterStart),
         DpSize(TEXT_HANDLE_SLOT, TEXT_HANDLE_SLOT),
@@ -69,7 +69,7 @@ internal fun BoxScope.TextHandles(
         sizeLabel,
         accent,
         halo,
-    ) { stretch(true, it.x / units) }
+    ) { stretch(true, it.x / units()) }
     Handle(
         Modifier.align(Alignment.CenterEnd),
         DpSize(TEXT_HANDLE_SLOT, TEXT_HANDLE_SLOT),
@@ -78,7 +78,7 @@ internal fun BoxScope.TextHandles(
         sizeLabel,
         accent,
         halo,
-    ) { stretch(false, it.x / units) }
+    ) { stretch(false, it.x / units()) }
 }
 
 /**
