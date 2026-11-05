@@ -8,6 +8,7 @@
 //! high and low halves). Errors that Kotlin should show are thrown as
 //! `java.io.IOException` with a readable message.
 
+mod crash;
 mod diagram;
 mod export;
 mod guide;

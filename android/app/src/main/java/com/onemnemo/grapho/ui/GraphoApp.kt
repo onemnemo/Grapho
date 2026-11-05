@@ -134,6 +134,7 @@ fun GraphoApp(store: NotebookStore, settings: AppSettings) {
                 },
             )
         }
+        CrashReportPrompt()
         NoticeHost(
             notices,
             Modifier.align(Alignment.BottomCenter).windowInsetsPadding(WindowInsets.safeDrawing),
