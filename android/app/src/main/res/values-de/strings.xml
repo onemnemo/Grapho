@@ -638,4 +638,16 @@
     <string name="shape_detection_suggest">Vorschlagen</string>
     <string name="shape_detection_hold">Beim Halten einrasten</string>
     <string name="shape_detection_off">Aus</string>
+    <string name="settings_backup">Sicherung</string>
+    <string name="backup_auto">Täglich sichern</string>
+    <string name="backup_auto_hint">Kopiert deine Bibliothek in den Ordner und behält die letzten 5.</string>
+    <string name="backup_folder">Sicherungsordner</string>
+    <string name="backup_folder_none">Nicht festgelegt</string>
+    <string name="backup_now">Jetzt sichern</string>
+    <string name="backup_last">Letzte Sicherung %1$s</string>
+    <string name="backup_never">Noch keine Sicherung</string>
+    <string name="backup_done">Sicherung gespeichert</string>
+    <string name="backup_nothing_new">Seit der letzten Sicherung hat sich nichts geändert</string>
+    <string name="backup_empty">Es gibt noch nichts zu sichern</string>
+    <string name="backup_failed">Die Sicherung konnte nicht geschrieben werden. Prüfe den Ordner.</string>
 </resources>

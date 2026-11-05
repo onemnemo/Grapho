@@ -26,9 +26,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.onemnemo.grapho.R
+import com.onemnemo.grapho.ui.NotebookStore
 import com.onemnemo.grapho.ui.components.GraphoIconButton
 import com.onemnemo.grapho.ui.components.GraphoSheet
 import com.onemnemo.grapho.ui.components.ModalLayer
+import com.onemnemo.grapho.ui.components.Notices
 import com.onemnemo.grapho.ui.components.SheetFrame
 import com.onemnemo.grapho.ui.theme.Grapho
 import com.onemnemo.grapho.ui.theme.GraphoSpace
@@ -46,6 +48,8 @@ private val PAGE_MAX_WIDTH = 680.dp
 @Composable
 fun SettingsOverlay(
     settings: AppSettings,
+    store: NotebookStore,
+    notices: Notices,
     onClose: () -> Unit,
     onLibraryChanged: () -> Unit,
     onCustomiseWheel: (() -> Unit)?,
@@ -53,7 +57,7 @@ fun SettingsOverlay(
     val stacked = settingsStacked(LocalConfiguration.current.screenWidthDp.toFloat())
     var place by remember { mutableStateOf(SettingsPlace.start(stacked)) }
     val back = place.back(stacked)
-    val pages = PageContext(settings, onLibraryChanged, onCustomiseWheel) { place = it }
+    val pages = PageContext(settings, store, notices, onLibraryChanged, onCustomiseWheel) { place = it }
     if (stacked) {
         ModalLayer(onDismiss = onClose, dismissOnScrim = false) { _, _ ->
             Surface(Modifier.fillMaxSize(), color = Grapho.colors.surfaceOverlay) {
@@ -91,6 +95,8 @@ fun SettingsOverlay(
 /** What the pages need from the overlay: the settings to change and how to leave a page for a pushed view. */
 private class PageContext(
     val settings: AppSettings,
+    val store: NotebookStore,
+    val notices: Notices,
     val onLibraryChanged: () -> Unit,
     val onCustomiseWheel: (() -> Unit)?,
     val goTo: (SettingsPlace) -> Unit,
@@ -185,7 +191,7 @@ private fun SectionPage(section: SettingsSection, pages: PageContext) {
 
         SettingsSection.Gestures -> GesturesPage(pages.settings)
 
-        SettingsSection.Library -> LibraryPage(pages.onLibraryChanged)
+        SettingsSection.Library -> LibraryPage(pages.store, pages.notices, pages.onLibraryChanged)
 
         SettingsSection.About -> AboutPage { pages.goTo(SettingsPlace(SettingsSection.About, it)) }
     }

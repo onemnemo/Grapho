@@ -285,6 +285,25 @@ class NotebookStore(context: Context) {
             }
         }
 
+    /** Writes every live folder and notebook as one library package to the document at [uri]. */
+    suspend fun exportWholeLibrary(uri: Uri): PackageReport = withContext(NotebookIo) {
+        val lib = storage.open()
+        val folders = lib.subfolders(null).map { it.id }
+        val items = lib.all().items.filter { it.folderId == null }.map { it.id }
+        val temp = File(appContext.cacheDir, "backup-${UUID.randomUUID()}${LibraryPackage.EXTENSION}")
+        try {
+            val report = try {
+                LibraryPackage.export(lib, folders, items, dir, temp, now())
+            } catch (e: LibraryException) {
+                throw StoreException(R.string.library_package_export_failed, e)
+            }
+            copyFileToUri(appContext, temp, uri)
+            report
+        } finally {
+            temp.delete()
+        }
+    }
+
     /** Makes a notebook from the PDF at [uri], one page per PDF page. The message of a failure is fit to show. */
     suspend fun importPdf(uri: Uri, folderId: String? = null): File = withContext(NotebookIo) {
         val name = displayName(appContext, uri)

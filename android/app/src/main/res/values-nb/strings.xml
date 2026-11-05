@@ -638,4 +638,16 @@
     <string name="shape_detection_suggest">Foreslå</string>
     <string name="shape_detection_hold">Juster ved hold</string>
     <string name="shape_detection_off">Av</string>
+    <string name="settings_backup">Sikkerhetskopi</string>
+    <string name="backup_auto">Sikkerhetskopier hver dag</string>
+    <string name="backup_auto_hint">Kopierer biblioteket til mappen og beholder de 5 siste.</string>
+    <string name="backup_folder">Mappe for sikkerhetskopi</string>
+    <string name="backup_folder_none">Ikke valgt</string>
+    <string name="backup_now">Sikkerhetskopier nå</string>
+    <string name="backup_last">Siste kopi %1$s</string>
+    <string name="backup_never">Ingen kopi ennå</string>
+    <string name="backup_done">Sikkerhetskopi lagret</string>
+    <string name="backup_nothing_new">Ingenting har endret seg siden sist</string>
+    <string name="backup_empty">Det er ingenting å sikkerhetskopiere ennå</string>
+    <string name="backup_failed">Kunne ikke skrive sikkerhetskopien. Sjekk mappen.</string>
 </resources>
