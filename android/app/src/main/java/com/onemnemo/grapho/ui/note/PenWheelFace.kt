@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -105,10 +107,19 @@ internal fun WheelFace(
     val latestTools by rememberUpdatedState(toolList)
     val latestState by rememberUpdatedState(state)
     // Opening the controls turns the ring to put the open tool at the page-facing centre, where its plate grows.
+    // Closing them turns it back, so every tool is where the user left it.
+    var offsetBefore by remember { mutableStateOf<Float?>(null) }
     LaunchedEffect(editing) {
-        if (!editing) return@LaunchedEffect
+        if (!editing) {
+            offsetBefore?.let { tools.glideTo(scope, it) }
+            offsetBefore = null
+            return@LaunchedEffect
+        }
         val open = latestTools.indexOfFirst { isModeTool(latestState, it.action) }
-        if (open >= 0) tools.glideTo(scope, centredOffset(geo.full, open, latestTools.size, tools.offset))
+        if (open >= 0) {
+            offsetBefore = tools.offset
+            tools.glideTo(scope, centredOffset(geo.full, open, latestTools.size, tools.offset))
+        }
     }
     val coreTap: () -> Unit = {
         if (hubColour != null) {
