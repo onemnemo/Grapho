@@ -250,7 +250,29 @@ class Notebook private constructor(private var handle: Long, val file: File) {
      * thread: the engine copies the document under its lock. Throws [java.io.IOException].
      */
     fun exportPdf(out: File, backgrounds: Boolean, pages: List<Int>?) {
-        NativeNotebook.nativeExportPdf(nativeHandle, out.path, backgrounds, pages?.toIntArray())
+        // Text is laid out here, with the fonts of the device, and handed over as outlines.
+        val count = if (info().infinite) 1 else info().pageIds.size
+        val ids = ArrayList<Long>()
+        val shapes = ArrayList<FloatArray>()
+        for (page in pages ?: (0 until count).toList()) {
+            for (layer in TextLayout.parse(NativeNotebook.nativePageTexts(nativeHandle, page))) {
+                for (box in layer) {
+                    val outline = TextOutlines.of(box)
+                    if (outline.isEmpty()) continue
+                    ids.add(box.id.hi)
+                    ids.add(box.id.lo)
+                    shapes.add(outline)
+                }
+            }
+        }
+        NativeNotebook.nativeExportPdf(
+            nativeHandle,
+            out.path,
+            backgrounds,
+            pages?.toIntArray(),
+            ids.toLongArray(),
+            shapes.toTypedArray(),
+        )
     }
 
     /** Inserts a blank page at [at] and returns its index, or -1. One undo step. */
