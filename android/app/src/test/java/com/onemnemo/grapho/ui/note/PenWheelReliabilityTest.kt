@@ -31,11 +31,7 @@ class PenWheelReliabilityTest {
 
     @Test
     fun `a fill armed from the highlighter keeps it lit`() {
-        val state = ToolbarState()
-        state.mode = ToolMode.HIGHLIGHTER
-        state.mode = ToolMode.FILL
-        assertEquals(ToolMode.HIGHLIGHTER, state.barMode())
-        state.mode = ToolMode.ERASER
-        assertEquals(ToolMode.ERASER, state.barMode())
+        assertEquals(ToolMode.HIGHLIGHTER, barModeOf(ToolMode.FILL, ToolMode.HIGHLIGHTER))
+        assertEquals(ToolMode.ERASER, barModeOf(ToolMode.ERASER, ToolMode.PEN))
     }
 }
