@@ -796,6 +796,11 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
         }
     }
 
+    /** Whether there is a step to undo, so a gesture can say when there is not. */
+    fun canUndo(): Boolean = !lasso.isLocked && notebook.info().canUndo
+
+    fun canRedo(): Boolean = !lasso.isLocked && notebook.info().canRedo
+
     fun undo() {
         if (lasso.isLocked) return
         lasso.clear()
@@ -1109,7 +1114,10 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
 
     private fun noteStylus(event: MotionEvent) {
         for (i in 0 until event.pointerCount) {
-            if (isStylus(event.getToolType(i))) lastStylusTime = event.eventTime
+            if (isStylus(event.getToolType(i))) {
+                lastStylusTime = event.eventTime
+                PenActivity.note(event.eventTime)
+            }
         }
     }
 
@@ -1216,7 +1224,6 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
     private fun onDown(event: MotionEvent) {
         stopFling()
         clearShapeOffer()
-        if (!erasesByPen(event)) onInteraction?.invoke()
         lasso.touching(true)
         crop?.touching(true)
         mode = Mode.NONE
@@ -1227,6 +1234,7 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
             mode = Mode.IGNORE
             return
         }
+        if (!erasesByPen(event)) onInteraction?.invoke()
         tapX = event.x
         tapY = event.y
         tapTime = event.eventTime

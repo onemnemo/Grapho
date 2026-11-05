@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -66,6 +68,7 @@ internal fun WheelTab(
     }
     val density = LocalDensity.current.density
     val latestOpen by rememberUpdatedState(onOpen)
+    val contact = remember { TabContact(density * 160f) }
     Box(
         modifier = Modifier
             .graphicsLayer {
@@ -88,7 +91,8 @@ internal fun WheelTab(
             .clip(shape)
             .background(GraphoWheel.body)
             .semantics { contentDescription = description }
-            .pointerInput(Unit) { detectTapGestures { latestOpen() } }
+            .pointerInput(Unit) { detectTapGestures { if (contact.wanted) latestOpen() } }
+            .pointerInteropFilter { contact.see(it); false }
             .hostDrag(host = host, onStart = onDragStart, onMove = onDragBy, onEnd = onDragEnd),
         contentAlignment = Alignment.Center,
     ) {
