@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.onemnemo.grapho.CrashReports
 import com.onemnemo.grapho.R
 import com.onemnemo.grapho.ui.components.ButtonKind
 import com.onemnemo.grapho.ui.components.ButtonSize
@@ -17,14 +16,17 @@ import com.onemnemo.grapho.ui.components.GraphoButton
 import com.onemnemo.grapho.ui.components.GraphoDialog
 import com.onemnemo.grapho.ui.theme.Grapho
 
+/** Reads and clears the report a crash left, which the app's root supplies. */
+class CrashReportSource(val pending: () -> String?, val clear: () -> Unit)
+
 /** Asks once after a crash whether to share the saved report. Dismissing it deletes the report. */
 @Composable
-fun CrashReportPrompt() {
+fun CrashReportPrompt(source: CrashReportSource) {
     val context = LocalContext.current
-    var report by remember { mutableStateOf(CrashReports.pending(context)) }
+    var report by remember { mutableStateOf(source.pending()) }
     val text = report ?: return
     val close = {
-        CrashReports.clear(context)
+        source.clear()
         report = null
     }
     GraphoDialog(

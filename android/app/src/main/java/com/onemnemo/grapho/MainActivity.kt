@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import com.onemnemo.grapho.ui.CrashReportSource
 import com.onemnemo.grapho.ui.GraphoApp
 import com.onemnemo.grapho.ui.NotebookStore
 import com.onemnemo.grapho.ui.settings.AppSettings
@@ -33,7 +34,14 @@ class MainActivity : ComponentActivity() {
             }
             GraphoTheme(appearance, reducedMotion) {
                 val store = remember { NotebookStore(applicationContext) }
-                GraphoApp(store, settings)
+                GraphoApp(
+                    store,
+                    settings,
+                    CrashReportSource(
+                        pending = { CrashReports.pending(applicationContext) },
+                        clear = { CrashReports.clear(applicationContext) },
+                    ),
+                )
             }
         }
     }

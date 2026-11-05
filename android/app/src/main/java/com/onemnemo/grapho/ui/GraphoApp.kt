@@ -41,7 +41,7 @@ import java.io.File
  * library, and from Settings returns to whichever it opened over.
  */
 @Composable
-fun GraphoApp(store: NotebookStore, settings: AppSettings) {
+fun GraphoApp(store: NotebookStore, settings: AppSettings, crashReport: CrashReportSource) {
     var openFile by remember { mutableStateOf<File?>(null) }
     var settingsOpen by remember { mutableStateOf(false) }
     // Bumped when Settings changes what the library keeps, so it reads its view again.
@@ -149,7 +149,7 @@ fun GraphoApp(store: NotebookStore, settings: AppSettings) {
                 },
             )
         }
-        CrashReportPrompt()
+        CrashReportPrompt(crashReport)
         NoticeHost(
             notices,
             Modifier.align(Alignment.BottomCenter).windowInsetsPadding(WindowInsets.safeDrawing),
