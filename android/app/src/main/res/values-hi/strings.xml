@@ -441,6 +441,8 @@
     <string name="pen_new_pen">पेन %1$d</string>
     <string name="pen_new_highlighter">हाइलाइटर %1$d</string>
 
+    <string name="note_nothing_to_undo">पूर्ववत करने के लिए कुछ नहीं</string>
+    <string name="note_nothing_to_redo">फिर से करने के लिए कुछ नहीं</string>
     <string name="wheel_tool_pen">पेन</string>
     <string name="wheel_tool_highlighter">हाइलाइटर</string>
     <string name="wheel_tool_eraser">रबर</string>

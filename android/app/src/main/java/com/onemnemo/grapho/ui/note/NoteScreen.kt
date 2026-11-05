@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -172,6 +173,11 @@ private fun NoteContent(
 ) {
     val context = LocalContext.current
     val onBack = hooks.onBack
+    val haptic = LocalHapticFeedback.current
+    // A two finger tap has no button to press, so it answers with a tick, or says there was nothing to do.
+    val stepFeedback = { done: Boolean, none: Int ->
+        if (done) haptic.tick() else notices.show(context.getString(none))
+    }
     val toolSettings = remember { ToolSettingsStore(context) }
     val toolbar = remember { ToolbarState().also { toolSettings.load(it) } }
     val penStore = rememberPenStore()
@@ -275,7 +281,7 @@ private fun NoteContent(
     val tip = position.tipSide
     val barFit = barFitFor(
         tools = hooks.settings.barTools,
-        mode = toolbar.mode,
+        mode = toolbar.barMode(),
         position = position,
         style = barStyle,
         wantTitle = hooks.settings.showTitle,
@@ -307,8 +313,16 @@ private fun NoteContent(
         Box(Modifier.fillMaxSize().padding(geometry.reserve.toPadding())) {
             NoteCanvas(notebook, session, notices, toolbar, ui) { fingers ->
                 when (fingerGesture(fingers)?.let(hooks.settings::gestureAction)) {
-                    GestureAction.Undo -> ui.view[0]?.undo()?.also { edited() }
-                    GestureAction.Redo -> ui.view[0]?.redo()?.also { edited() }
+                    GestureAction.Undo -> ui.view[0]?.let { v ->
+                        stepFeedback(v.canUndo(), R.string.note_nothing_to_undo)
+                        if (v.canUndo()) v.undo().also { edited() }
+                    }
+
+                    GestureAction.Redo -> ui.view[0]?.let { v ->
+                        stepFeedback(v.canRedo(), R.string.note_nothing_to_redo)
+                        if (v.canRedo()) v.redo().also { edited() }
+                    }
+
                     GestureAction.Off, null -> Unit
                 }
             }
@@ -369,7 +383,7 @@ private fun NoteContent(
                     if (!ui.readMode) {
                         NoteBarTools(
                             tools = barFit.tools,
-                            mode = toolbar.mode,
+                            mode = toolbar.barMode(),
                             onTool = { pickBarTool(toolbar, ui, it) },
                             imageOpen = ui.imageToolOpen,
                             onImageOpen = { ui.imageToolOpen = it },

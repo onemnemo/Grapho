@@ -452,6 +452,8 @@
     <string name="pen_new_pen">Stylo %1$d</string>
     <string name="pen_new_highlighter">Surligneur %1$d</string>
 
+    <string name="note_nothing_to_undo">Rien à annuler</string>
+    <string name="note_nothing_to_redo">Rien à rétablir</string>
     <string name="wheel_tool_pen">Stylo</string>
     <string name="wheel_tool_highlighter">Surligneur</string>
     <string name="wheel_tool_eraser">Gomme</string>
