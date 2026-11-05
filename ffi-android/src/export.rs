@@ -47,7 +47,7 @@ fn read_texts(
     let mut halves = vec![0i64; len];
     env.get_long_array_region(ids, 0, &mut halves)
         .map_err(fail)?;
-    for (i, pair) in halves.chunks_exact(2).enumerate() {
+    for (i, pair) in halves.as_chunks::<2>().0.iter().enumerate() {
         let item = env
             .get_object_array_element(shapes, i as i32)
             .map_err(fail)?;
