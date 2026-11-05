@@ -9,6 +9,7 @@ import androidx.compose.ui.input.pointer.PointerType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
+import com.onemnemo.grapho.note.PenActivity
 
 /** How often a pen resting over the bar's edge keeps a called back bar from leaving. */
 private const val HOVER_KEEP_MS = 500L
@@ -66,6 +67,7 @@ internal fun Modifier.watchPenHover(hover: PenHover): Modifier = this
                 val change = event.changes.firstOrNull() ?: continue
                 val hovering = event.type == PointerEventType.Move || event.type == PointerEventType.Enter
                 if (hovering && change.type == PointerType.Stylus && !change.pressed) {
+                    PenActivity.note()
                     hover.at(change.position.x + hover.bounds.left, change.position.y + hover.bounds.top)
                 }
             }
