@@ -40,6 +40,15 @@ internal const val SIZE_TO = -18f
 private const val OPACITY_FROM = 20f
 private const val OPACITY_TO = 84f
 
+/** A docked tool is only picked once it is drawn at least this solid. */
+internal const val MIN_HIT_FADE = 0.7f
+
+/** Whether a touch [r] dp from the centre is on the drawn band round [rimR], give or take [slack]. */
+internal fun onBand(r: Float, rimR: Float, slack: Float): Boolean = abs(r - rimR) <= slack
+
+private const val OPACITY_SLACK = 13f + 6f
+private const val SIZE_SLACK = 9f + 6f
+
 private enum class Zone { Spin, Tools, Size, Opacity, EraserSize, Option, Stem }
 
 /** Degrees between swatches: fixed on the docked rim, an even share of the circle on the full one. */
@@ -181,8 +190,10 @@ internal suspend fun PointerInputScope.rimGestures(
             sizeMode() && hasToolOptions(state.mode) ->
                 if (dotRow(state) != null && deg in (SIZE_FROM - 10f)..(SIZE_TO + 10f)) Zone.Option else return@awaitEachGesture
             !sizeMode() -> Zone.Spin
-            deg in (OPACITY_FROM - 6f)..(OPACITY_TO + 10f) -> Zone.Opacity
-            deg in (SIZE_FROM - 10f)..(SIZE_TO + 10f) -> Zone.Size
+            deg in (OPACITY_FROM - 6f)..(OPACITY_TO + 10f) ->
+                if (onBand(r, geo.rimR, OPACITY_SLACK)) Zone.Opacity else return@awaitEachGesture
+            deg in (SIZE_FROM - 10f)..(SIZE_TO + 10f) ->
+                if (onBand(r, geo.rimR, SIZE_SLACK)) Zone.Size else return@awaitEachGesture
             else -> return@awaitEachGesture
         }
         val spin = when (zone) {
@@ -308,7 +319,7 @@ private fun toolAt(geo: Geo, tools: SpinState, count: Int, dx: Float, dy: Float)
     var bestDistance = 26f
     for (i in 0 until count) {
         val a = toolAngle(geo.full, i, tools.offset, count)
-        if (toolFade(geo.full, a) < 0.4f) continue
+        if (toolFade(geo.full, a) < MIN_HIT_FADE) continue
         val p = polar(geo.toolR, geo.edge.toScreen(a))
         val d = hypot(dx - p.x, dy - p.y)
         if (d <= bestDistance) {
