@@ -4,7 +4,7 @@
 //! screen draws. With backgrounds on, PDF pages keep their original content
 //! (copied, not rendered) and other pages get their paper colour and
 //! pattern. With backgrounds off every page is white with only the ink.
-//! Images are embedded once and drawn under the strokes of their layer.
+//! Text boxes come in as outlines from the shell. Images are embedded once and drawn under the strokes of their layer.
 
 mod colour;
 mod content;
@@ -16,15 +16,16 @@ mod source;
 #[cfg(test)]
 mod tests;
 
+use std::collections::HashMap;
 use std::fmt;
 
 use lopdf::{dictionary, Document as Pdf, Object, StringFormat};
 
-use crate::document::Document;
+use crate::document::{Document, Id};
 use page::Builder;
 
 /// What to export.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ExportOptions {
     /// Indices of the pages to export, in any order and without repeats
     /// mattering: they come out in document order. `None` is every page.
@@ -33,6 +34,11 @@ pub struct ExportOptions {
     /// Keep the paper colour, the pattern and the original content of PDF
     /// pages. Off gives white pages with ink only.
     pub backgrounds: bool,
+    /// Text boxes drawn as filled outlines, by box id. Each entry is packed
+    /// polygons (`[n, x0, y0, ...]`) in page points, already turned and
+    /// placed, so the shell's own fonts and line breaks carry over. A box
+    /// without an entry is left out.
+    pub texts: HashMap<Id, Vec<f32>>,
 }
 
 impl Default for ExportOptions {
@@ -40,6 +46,7 @@ impl Default for ExportOptions {
         Self {
             pages: None,
             backgrounds: true,
+            texts: HashMap::new(),
         }
     }
 }
@@ -98,7 +105,7 @@ pub fn export_pdf(doc: &Document, options: &ExportOptions) -> Result<Vec<u8>, Ex
         return Err(ExportError::NoPages);
     }
 
-    let mut builder = Builder::new(doc, options.backgrounds);
+    let mut builder = Builder::new(doc, options.backgrounds, &options.texts);
     for index in picked {
         builder.add_page(index)?;
     }

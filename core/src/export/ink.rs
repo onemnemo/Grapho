@@ -1,12 +1,12 @@
 //! Turning a page's strokes into vector paths, ordered and grouped the way
 //! the screen draws them.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, HashMap};
 
 use super::colour::display_color;
 use super::content::Content;
 use super::image::{self, ImageInk};
-use crate::document::{ImageSource, Page, Tool};
+use crate::document::{Id, ImageSource, Page, Tool};
 use crate::{outline_styled, Rect};
 
 /// How far an outline may stray from the true shape, in points. The screen
@@ -26,6 +26,8 @@ pub(super) struct StrokeInk {
 pub(super) struct LayerInk {
     alpha: u8,
     images: Vec<ImageInk>,
+    /// Text boxes, drawn over the images and under the strokes.
+    texts: Vec<StrokeInk>,
     strokes: Vec<StrokeInk>,
 }
 
@@ -41,7 +43,11 @@ pub(super) struct PageInk {
 /// transparent layers are left out, and within a layer the images come
 /// first, then the fills, so both sit beneath its ink, as on screen. An
 /// image whose source is not in `sources` is left out.
-pub(super) fn collect(page: &Page, sources: &[ImageSource]) -> PageInk {
+pub(super) fn collect(
+    page: &Page,
+    sources: &[ImageSource],
+    outlines: &HashMap<Id, Vec<f32>>,
+) -> PageInk {
     let mut bounds = Rect::EMPTY;
     let mut layers = Vec::new();
     for layer in page.layers.iter().filter(|l| l.visible) {
@@ -64,6 +70,20 @@ pub(super) fn collect(page: &Page, sources: &[ImageSource]) -> PageInk {
                 source,
                 transform: i.transform,
                 crop: i.crop,
+            });
+        }
+        let mut texts = Vec::new();
+        for t in &layer.texts {
+            let Some(polys) = outlines.get(&t.id) else {
+                continue;
+            };
+            if t.color & 0xFF == 0 || polys.is_empty() {
+                continue;
+            }
+            bounds = bounds.union(&packed_bounds(polys));
+            texts.push(StrokeInk {
+                color: t.color,
+                polys: polys.clone(),
             });
         }
         let mut strokes = Vec::with_capacity(layer.strokes.len());
@@ -99,15 +119,34 @@ pub(super) fn collect(page: &Page, sources: &[ImageSource]) -> PageInk {
                 polys,
             });
         }
-        if !strokes.is_empty() || !images.is_empty() {
+        if !strokes.is_empty() || !images.is_empty() || !texts.is_empty() {
             layers.push(LayerInk {
                 alpha,
                 images,
+                texts,
                 strokes,
             });
         }
     }
     PageInk { layers, bounds }
+}
+
+/// The box around some packed polygons.
+fn packed_bounds(packed: &[f32]) -> Rect {
+    let mut b = Rect::EMPTY;
+    let mut i = 0;
+    while i < packed.len() {
+        let count = packed[i] as usize;
+        i += 1;
+        let Some(points) = packed.get(i..i + 2 * count) else {
+            break;
+        };
+        for p in points.as_chunks::<2>().0 {
+            b.add_circle(p[0], p[1], 0.0);
+        }
+        i += 2 * count;
+    }
+    b
 }
 
 /// A faded layer's content, drawn once as a transparency group.
@@ -147,12 +186,14 @@ impl PageInk {
         for layer in &self.layers {
             if layer.alpha == u8::MAX {
                 write_images(&mut out.content, &layer.images, &mut out.images);
+                write_strokes(&mut out.content, &layer.texts, paper, &mut out.alphas);
                 write_strokes(&mut out.content, &layer.strokes, paper, &mut out.alphas);
                 continue;
             }
             let mut inner = Content::new();
             let mut used = BTreeSet::new();
             write_images(&mut inner, &layer.images, &mut used);
+            write_strokes(&mut inner, &layer.texts, paper, &mut out.alphas);
             write_strokes(&mut inner, &layer.strokes, paper, &mut out.alphas);
             out.alphas.insert(layer.alpha);
             out.content.raw("q");
