@@ -73,3 +73,6 @@ enum class NoteBarTool(
             stored.split(',').mapNotNull { id -> entries.firstOrNull { it.id == id } }.distinct()
     }
 }
+
+/** The mode the bar shows as on: a flood fill armed from a pen keeps that pen lit. */
+internal fun ToolbarState.barMode(): ToolMode = if (mode == ToolMode.FILL) drawMode else mode

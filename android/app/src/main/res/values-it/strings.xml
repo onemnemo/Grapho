@@ -432,6 +432,8 @@
     <string name="pen_new_pen">Penna %1$d</string>
     <string name="pen_new_highlighter">Evidenziatore %1$d</string>
 
+    <string name="note_nothing_to_undo">Niente da annullare</string>
+    <string name="note_nothing_to_redo">Niente da ripristinare</string>
     <string name="wheel_tool_pen">Penna</string>
     <string name="wheel_tool_highlighter">Evidenziatore</string>
     <string name="wheel_tool_eraser">Gomma</string>

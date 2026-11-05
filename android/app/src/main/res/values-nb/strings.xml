@@ -421,6 +421,8 @@
     <string name="pen_new_pen">Penn %1$d</string>
     <string name="pen_new_highlighter">Markeringspenn %1$d</string>
 
+    <string name="note_nothing_to_undo">Ingenting å angre</string>
+    <string name="note_nothing_to_redo">Ingenting å gjøre om</string>
     <string name="wheel_tool_pen">Penn</string>
     <string name="wheel_tool_highlighter">Markeringspenn</string>
     <string name="wheel_tool_eraser">Viskelær</string>

@@ -421,6 +421,8 @@
     <string name="pen_new_pen">Penna %1$d</string>
     <string name="pen_new_highlighter">Överstrykningspenna %1$d</string>
 
+    <string name="note_nothing_to_undo">Inget att ångra</string>
+    <string name="note_nothing_to_redo">Inget att göra om</string>
     <string name="wheel_tool_pen">Penna</string>
     <string name="wheel_tool_highlighter">Överstrykningspenna</string>
     <string name="wheel_tool_eraser">Suddgummi</string>

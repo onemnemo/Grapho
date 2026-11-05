@@ -432,6 +432,8 @@
     <string name="pen_new_pen">Lápiz %1$d</string>
     <string name="pen_new_highlighter">Resaltador %1$d</string>
 
+    <string name="note_nothing_to_undo">Nada que deshacer</string>
+    <string name="note_nothing_to_redo">Nada que rehacer</string>
     <string name="wheel_tool_pen">Lápiz</string>
     <string name="wheel_tool_highlighter">Resaltador</string>
     <string name="wheel_tool_eraser">Goma</string>
