@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -36,6 +37,7 @@ internal const val TAB_H = 72f
  * The closed tab on [edge], [centre] dp along it, its rounded side facing the page. It sits in the
  * host at its origin and is placed by layer translation, so its drag can follow the finger in host px.
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun WheelTab(
     edge: DockEdge,
