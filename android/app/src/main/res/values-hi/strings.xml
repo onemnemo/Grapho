@@ -646,4 +646,8 @@
     <string name="backup_nothing_new">पिछले बैकअप के बाद कुछ नहीं बदला</string>
     <string name="backup_empty">अभी बैकअप के लिए कुछ नहीं है</string>
     <string name="backup_failed">बैकअप नहीं लिखा जा सका। फ़ोल्डर जाँचें।</string>
+    <string name="crash_title">Grapho अचानक बंद हो गया</string>
+    <string name="crash_text">Grapho ने गड़बड़ी की एक रिपोर्ट सहेजी है। जब तक आप साझा नहीं करते, यह इसी डिवाइस पर रहती है। इसमें कोई नोट या ड्रॉइंग नहीं है, केवल त्रुटि और आपके डिवाइस का मॉडल है।</string>
+    <string name="crash_share">रिपोर्ट साझा करें</string>
+    <string name="crash_subject">Grapho क्रैश रिपोर्ट</string>
 </resources>

@@ -646,4 +646,8 @@
     <string name="backup_nothing_new">Seit der letzten Sicherung hat sich nichts geändert</string>
     <string name="backup_empty">Es gibt noch nichts zu sichern</string>
     <string name="backup_failed">Die Sicherung konnte nicht geschrieben werden. Prüfe den Ordner.</string>
+    <string name="crash_title">Grapho wurde unerwartet beendet</string>
+    <string name="crash_text">Grapho hat einen Bericht über den Fehler gespeichert. Er bleibt auf diesem Gerät, solange du ihn nicht teilst. Er enthält keine Notizen oder Zeichnungen, nur den Fehler und dein Gerätemodell.</string>
+    <string name="crash_share">Bericht teilen</string>
+    <string name="crash_subject">Grapho-Absturzbericht</string>
 </resources>

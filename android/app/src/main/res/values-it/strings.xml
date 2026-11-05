@@ -657,4 +657,8 @@
     <string name="backup_nothing_new">Non è cambiato nulla dall\'ultimo backup</string>
     <string name="backup_empty">Non c\'è ancora nulla da salvare</string>
     <string name="backup_failed">Impossibile scrivere il backup. Controlla la cartella.</string>
+    <string name="crash_title">Grapho si è chiuso in modo imprevisto</string>
+    <string name="crash_text">Grapho ha salvato un rapporto su cosa è andato storto. Resta su questo dispositivo finché non lo condividi. Non contiene note o disegni, solo l\'errore e il modello del tuo dispositivo.</string>
+    <string name="crash_share">Condividi rapporto</string>
+    <string name="crash_subject">Rapporto di arresto anomalo di Grapho</string>
 </resources>

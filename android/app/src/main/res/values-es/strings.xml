@@ -657,4 +657,8 @@
     <string name="backup_nothing_new">No ha cambiado nada desde la última copia</string>
     <string name="backup_empty">Todavía no hay nada que copiar</string>
     <string name="backup_failed">No se pudo escribir la copia. Revisa la carpeta.</string>
+    <string name="crash_title">Grapho se cerró inesperadamente</string>
+    <string name="crash_text">Grapho guardó un informe de lo que falló. Se queda en este dispositivo a menos que lo compartas. No incluye notas ni dibujos, solo el error y el modelo de tu dispositivo.</string>
+    <string name="crash_share">Compartir informe</string>
+    <string name="crash_subject">Informe de fallo de Grapho</string>
 </resources>
