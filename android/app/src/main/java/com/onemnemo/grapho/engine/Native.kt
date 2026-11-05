@@ -208,7 +208,14 @@ object NativeNotebook {
      */
     @Throws(IOException::class)
     @JvmStatic
-    external fun nativeExportPdf(handle: Long, outPath: String, backgrounds: Boolean, pages: IntArray?)
+    external fun nativeExportPdf(
+        handle: Long,
+        outPath: String,
+        backgrounds: Boolean,
+        pages: IntArray?,
+        textIds: LongArray?,
+        textShapes: Array<FloatArray>?,
+    )
 
     /** [area] erases only the part the eraser passes over; otherwise whole strokes go. */
     @JvmStatic external fun nativeBeginErase(handle: Long, page: Int, area: Boolean)

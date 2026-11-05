@@ -11,7 +11,7 @@ use super::image::{self, embed};
 use super::ink::{collect, InkContent};
 use super::source::{SourcePage, Sources};
 use super::{new_pdf, paper, ExportError};
-use crate::document::{Document, Page};
+use crate::document::{Document, Id, Page};
 
 /// Space around the ink of an infinite canvas, in points.
 const MARGIN: f32 = 24.0;
@@ -30,10 +30,12 @@ pub(super) struct Builder<'a> {
     /// The XObject of each embedded image, by index in the note's list, so
     /// a picture used on several pages is written once.
     images: HashMap<usize, ObjectId>,
+    /// Outlines of the text boxes, see `ExportOptions::texts`.
+    texts: &'a HashMap<Id, Vec<f32>>,
 }
 
 impl<'a> Builder<'a> {
-    pub fn new(doc: &'a Document, backgrounds: bool) -> Self {
+    pub fn new(doc: &'a Document, backgrounds: bool, texts: &'a HashMap<Id, Vec<f32>>) -> Self {
         let (pdf, pages_id) = new_pdf();
         Self {
             doc,
@@ -43,6 +45,7 @@ impl<'a> Builder<'a> {
             kids: Vec::new(),
             sources: Sources::new(doc),
             images: HashMap::new(),
+            texts,
         }
     }
 
@@ -81,7 +84,7 @@ impl<'a> Builder<'a> {
 
     /// A page on its own paper (or white), with the ink over it.
     fn plain(&mut self, index: usize, page: &Page) -> Result<ObjectId, ExportError> {
-        let ink = collect(page, &self.doc.images);
+        let ink = collect(page, &self.doc.images, self.texts);
         let background = self.doc.canvas.background();
         let (w, h, origin) = match self.doc.page_size(index) {
             Some((w, h)) => (w, h, (0.0, 0.0)),
@@ -124,7 +127,7 @@ impl<'a> Builder<'a> {
 
     /// A source PDF page kept as it was, with the ink drawn over it.
     fn over_source(&mut self, page: &Page, source: SourcePage) -> Result<ObjectId, ExportError> {
-        let ink = collect(page, &self.doc.images);
+        let ink = collect(page, &self.doc.images, self.texts);
         let rendered = ink.render(WHITE);
         let (x0, y0, x1, y1) = source.geometry.area;
         let turns = source.geometry.turns;

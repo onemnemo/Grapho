@@ -5,6 +5,7 @@ mod background;
 mod image;
 mod paper;
 mod sample;
+mod texts;
 
 use lopdf::content::Content as Ops;
 use lopdf::{Dictionary, Document as Pdf, Object, ObjectId};
