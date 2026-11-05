@@ -158,6 +158,26 @@
     <string name="library_import">Import</string>
     <string name="library_import_file">Notebook file</string>
     <string name="library_imported">Imported</string>
+    <string name="library_importing">Importing</string>
+    <string name="library_package_imported">Imported %1$s</string>
+    <string name="library_package_exported">Exported %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Grapho library %1$s</string>
+    <string name="library_package_nothing">There\'s nothing to export.</string>
+    <string name="library_package_export_failed">Couldn\'t export the library file.</string>
+    <string name="library_package_newer">This library file needs a newer version of Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d notebook</item>
+        <item quantity="other">%d notebooks</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d folder</item>
+        <item quantity="other">%d folders</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d notebook couldn\'t be read and was left out</item>
+        <item quantity="other">%d notebooks couldn\'t be read and were left out</item>
+    </plurals>
     <string name="library_import_failed">Couldn\'t import that file.</string>
     <string name="library_export_failed">Couldn\'t export the notebook.</string>
     <string name="library_create_failed">Couldn\'t create the notebook.</string>
@@ -633,4 +653,16 @@
     <string name="crash_text">Grapho saved a report about what went wrong. It stays on this device unless you share it. It has no notes or drawings in it, only the error and your device model.</string>
     <string name="crash_share">Share report</string>
     <string name="crash_subject">Grapho crash report</string>
+    <string name="settings_backup">Backup</string>
+    <string name="backup_auto">Back up every day</string>
+    <string name="backup_auto_hint">Copies your library to the folder and keeps the last 5.</string>
+    <string name="backup_folder">Backup folder</string>
+    <string name="backup_folder_none">Not set</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_last">Last backup %1$s</string>
+    <string name="backup_never">No backup yet</string>
+    <string name="backup_done">Backup saved</string>
+    <string name="backup_nothing_new">Nothing has changed since the last backup</string>
+    <string name="backup_empty">There\'s nothing to back up yet</string>
+    <string name="backup_failed">Couldn\'t write the backup. Check the folder.</string>
 </resources>

@@ -153,6 +153,26 @@
     <string name="library_import">Importera</string>
     <string name="library_import_file">Anteckningsboksfil</string>
     <string name="library_imported">Importerad</string>
+    <string name="library_importing">Importerar</string>
+    <string name="library_package_imported">Importerade %1$s</string>
+    <string name="library_package_exported">Exporterade %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Grapho-bibliotek %1$s</string>
+    <string name="library_package_nothing">Det finns inget att exportera.</string>
+    <string name="library_package_export_failed">Det gick inte att exportera biblioteksfilen.</string>
+    <string name="library_package_newer">Den här biblioteksfilen kräver en nyare version av Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d anteckningsbok</item>
+        <item quantity="other">%d anteckningsböcker</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d mapp</item>
+        <item quantity="other">%d mappar</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d anteckningsbok kunde inte läsas och utelämnades</item>
+        <item quantity="other">%d anteckningsböcker kunde inte läsas och utelämnades</item>
+    </plurals>
     <string name="library_import_failed">Det gick inte att importera filen.</string>
     <string name="library_export_failed">Det gick inte att exportera anteckningsboken.</string>
     <string name="library_create_failed">Det gick inte att skapa anteckningsboken.</string>
@@ -614,4 +634,16 @@
     <string name="shape_detection_suggest">Föreslå</string>
     <string name="shape_detection_hold">Justera vid håll</string>
     <string name="shape_detection_off">Av</string>
+    <string name="settings_backup">Säkerhetskopia</string>
+    <string name="backup_auto">Säkerhetskopiera varje dag</string>
+    <string name="backup_auto_hint">Kopierar ditt bibliotek till mappen och sparar de 5 senaste.</string>
+    <string name="backup_folder">Mapp för säkerhetskopior</string>
+    <string name="backup_folder_none">Inte vald</string>
+    <string name="backup_now">Säkerhetskopiera nu</string>
+    <string name="backup_last">Senaste kopia %1$s</string>
+    <string name="backup_never">Ingen kopia än</string>
+    <string name="backup_done">Säkerhetskopian sparades</string>
+    <string name="backup_nothing_new">Inget har ändrats sedan senaste kopian</string>
+    <string name="backup_empty">Det finns inget att säkerhetskopiera än</string>
+    <string name="backup_failed">Kunde inte skriva säkerhetskopian. Kontrollera mappen.</string>
 </resources>

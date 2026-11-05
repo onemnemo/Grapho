@@ -156,6 +156,26 @@
     <string name="library_import">Importer</string>
     <string name="library_import_file">Fichier de cahier</string>
     <string name="library_imported">Importé</string>
+    <string name="library_importing">Importation</string>
+    <string name="library_package_imported">Importé : %1$s</string>
+    <string name="library_package_exported">Exporté : %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Bibliothèque Grapho %1$s</string>
+    <string name="library_package_nothing">Il n\'y a rien à exporter.</string>
+    <string name="library_package_export_failed">Impossible d\'exporter le fichier de bibliothèque.</string>
+    <string name="library_package_newer">Ce fichier de bibliothèque nécessite une version plus récente de Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d carnet</item>
+        <item quantity="other">%d carnets</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d dossier</item>
+        <item quantity="other">%d dossiers</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d carnet illisible a été ignoré</item>
+        <item quantity="other">%d carnets illisibles ont été ignorés</item>
+    </plurals>
     <string name="library_import_failed">Impossible d\'importer ce fichier.</string>
     <string name="library_export_failed">Impossible d\'exporter le cahier.</string>
     <string name="library_create_failed">Impossible de créer le cahier.</string>
@@ -625,4 +645,16 @@
     <string name="shape_detection_suggest">Suggérer</string>
     <string name="shape_detection_hold">Aimanter au maintien</string>
     <string name="shape_detection_off">Désactivée</string>
+    <string name="settings_backup">Sauvegarde</string>
+    <string name="backup_auto">Sauvegarder chaque jour</string>
+    <string name="backup_auto_hint">Copie ta bibliothèque dans le dossier et garde les 5 dernières.</string>
+    <string name="backup_folder">Dossier de sauvegarde</string>
+    <string name="backup_folder_none">Non défini</string>
+    <string name="backup_now">Sauvegarder maintenant</string>
+    <string name="backup_last">Dernière sauvegarde %1$s</string>
+    <string name="backup_never">Aucune sauvegarde</string>
+    <string name="backup_done">Sauvegarde enregistrée</string>
+    <string name="backup_nothing_new">Rien n\'a changé depuis la dernière sauvegarde</string>
+    <string name="backup_empty">Il n\'y a encore rien à sauvegarder</string>
+    <string name="backup_failed">Impossible d\'écrire la sauvegarde. Vérifie le dossier.</string>
 </resources>

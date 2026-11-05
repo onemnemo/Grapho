@@ -48,6 +48,9 @@ object LibraryErrors {
     const val INTO_SELF = "into_self"
     const val INTO_DESCENDANT = "into_descendant"
     const val EMPTY_NAME = "empty_name"
+    const val NOT_PACKAGE = "not_package"
+    const val UNSUPPORTED_VERSION = "unsupported_version"
+    const val EMPTY = "empty"
 
     /** The code at the start of a message such as `not_found: no such folder or item`, or empty if there is none. */
     fun kindOf(message: String?): String {

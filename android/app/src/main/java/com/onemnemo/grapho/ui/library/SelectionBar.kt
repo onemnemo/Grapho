@@ -38,7 +38,7 @@ private const val IDLE_ALPHA = 0.35f
 
 /**
  * The floating bar at the bottom while choosing. Move to is the one solid action and opens the list of places.
- * Star and Export are icons; Export only shows for a single pick, because a file is written one at a time.
+ * Star and Export are icons. Export writes one notebook as it is, and any other choice as one library package.
  * Delete is red and acts at once, with Undo in its toast.
  */
 @Composable

@@ -156,6 +156,26 @@
     <string name="library_import">Importar</string>
     <string name="library_import_file">Archivo de cuaderno</string>
     <string name="library_imported">Importado</string>
+    <string name="library_importing">Importando</string>
+    <string name="library_package_imported">Se importó: %1$s</string>
+    <string name="library_package_exported">Se exportó: %1$s</string>
+    <string name="library_package_counts">%1$s, %2$s</string>
+    <string name="library_package_name">Biblioteca de Grapho %1$s</string>
+    <string name="library_package_nothing">No hay nada que exportar.</string>
+    <string name="library_package_export_failed">No se pudo exportar el archivo de biblioteca.</string>
+    <string name="library_package_newer">Este archivo de biblioteca necesita una versión más reciente de Grapho.</string>
+    <plurals name="library_package_notebooks">
+        <item quantity="one">%d cuaderno</item>
+        <item quantity="other">%d cuadernos</item>
+    </plurals>
+    <plurals name="library_package_folders">
+        <item quantity="one">%d carpeta</item>
+        <item quantity="other">%d carpetas</item>
+    </plurals>
+    <plurals name="library_package_skipped">
+        <item quantity="one">%d cuaderno no se pudo leer y se omitió</item>
+        <item quantity="other">%d cuadernos no se pudieron leer y se omitieron</item>
+    </plurals>
     <string name="library_import_failed">No se pudo importar ese archivo.</string>
     <string name="library_export_failed">No se pudo exportar el cuaderno.</string>
     <string name="library_create_failed">No se pudo crear el cuaderno.</string>
@@ -625,4 +645,16 @@
     <string name="shape_detection_suggest">Sugerir</string>
     <string name="shape_detection_hold">Ajustar al mantener</string>
     <string name="shape_detection_off">Desactivada</string>
+    <string name="settings_backup">Copia de seguridad</string>
+    <string name="backup_auto">Copiar cada día</string>
+    <string name="backup_auto_hint">Copia tu biblioteca en la carpeta y conserva las últimas 5.</string>
+    <string name="backup_folder">Carpeta de copias</string>
+    <string name="backup_folder_none">Sin definir</string>
+    <string name="backup_now">Copiar ahora</string>
+    <string name="backup_last">Última copia %1$s</string>
+    <string name="backup_never">Aún no hay copias</string>
+    <string name="backup_done">Copia guardada</string>
+    <string name="backup_nothing_new">No ha cambiado nada desde la última copia</string>
+    <string name="backup_empty">Todavía no hay nada que copiar</string>
+    <string name="backup_failed">No se pudo escribir la copia. Revisa la carpeta.</string>
 </resources>
