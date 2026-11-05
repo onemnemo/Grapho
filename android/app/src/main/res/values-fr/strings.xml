@@ -643,4 +643,16 @@
     <string name="shape_detection_suggest">Suggérer</string>
     <string name="shape_detection_hold">Aimanter au maintien</string>
     <string name="shape_detection_off">Désactivée</string>
+    <string name="settings_backup">Sauvegarde</string>
+    <string name="backup_auto">Sauvegarder chaque jour</string>
+    <string name="backup_auto_hint">Copie ta bibliothèque dans le dossier et garde les 5 dernières.</string>
+    <string name="backup_folder">Dossier de sauvegarde</string>
+    <string name="backup_folder_none">Non défini</string>
+    <string name="backup_now">Sauvegarder maintenant</string>
+    <string name="backup_last">Dernière sauvegarde %1$s</string>
+    <string name="backup_never">Aucune sauvegarde</string>
+    <string name="backup_done">Sauvegarde enregistrée</string>
+    <string name="backup_nothing_new">Rien n\'a changé depuis la dernière sauvegarde</string>
+    <string name="backup_empty">Il n\'y a encore rien à sauvegarder</string>
+    <string name="backup_failed">Impossible d\'écrire la sauvegarde. Vérifie le dossier.</string>
 </resources>

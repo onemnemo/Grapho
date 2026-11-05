@@ -647,4 +647,16 @@
     <string name="shape_detection_suggest">Suggest</string>
     <string name="shape_detection_hold">Snap on hold</string>
     <string name="shape_detection_off">Off</string>
+    <string name="settings_backup">Backup</string>
+    <string name="backup_auto">Back up every day</string>
+    <string name="backup_auto_hint">Copies your library to the folder and keeps the last 5.</string>
+    <string name="backup_folder">Backup folder</string>
+    <string name="backup_folder_none">Not set</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_last">Last backup %1$s</string>
+    <string name="backup_never">No backup yet</string>
+    <string name="backup_done">Backup saved</string>
+    <string name="backup_nothing_new">Nothing has changed since the last backup</string>
+    <string name="backup_empty">There\'s nothing to back up yet</string>
+    <string name="backup_failed">Couldn\'t write the backup. Check the folder.</string>
 </resources>

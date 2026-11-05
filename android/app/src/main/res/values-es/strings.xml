@@ -643,4 +643,16 @@
     <string name="shape_detection_suggest">Sugerir</string>
     <string name="shape_detection_hold">Ajustar al mantener</string>
     <string name="shape_detection_off">Desactivada</string>
+    <string name="settings_backup">Copia de seguridad</string>
+    <string name="backup_auto">Copiar cada día</string>
+    <string name="backup_auto_hint">Copia tu biblioteca en la carpeta y conserva las últimas 5.</string>
+    <string name="backup_folder">Carpeta de copias</string>
+    <string name="backup_folder_none">Sin definir</string>
+    <string name="backup_now">Copiar ahora</string>
+    <string name="backup_last">Última copia %1$s</string>
+    <string name="backup_never">Aún no hay copias</string>
+    <string name="backup_done">Copia guardada</string>
+    <string name="backup_nothing_new">No ha cambiado nada desde la última copia</string>
+    <string name="backup_empty">Todavía no hay nada que copiar</string>
+    <string name="backup_failed">No se pudo escribir la copia. Revisa la carpeta.</string>
 </resources>
