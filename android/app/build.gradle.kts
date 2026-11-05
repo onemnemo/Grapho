@@ -13,8 +13,9 @@ android {
         // Front-buffered rendering needs Android 10.
         minSdk = 29
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        // The release workflow overrides these with -PversionCode / -PversionName.
+        versionCode = (findProperty("versionCode") as String?)?.toInt() ?: 1
+        versionName = (findProperty("versionName") as String?) ?: "0.1.0"
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
         }
@@ -30,6 +31,16 @@ android {
             keyAlias = "spike"
             keyPassword = "grapho-spike"
         }
+        // Store key, only present when the release workflow provides it.
+        val releaseStore = System.getenv("GRAPHO_RELEASE_STORE_FILE")
+        if (releaseStore != null) {
+            create("release") {
+                storeFile = file(releaseStore)
+                storePassword = System.getenv("GRAPHO_RELEASE_STORE_PASSWORD")
+                keyAlias = System.getenv("GRAPHO_RELEASE_KEY_ALIAS")
+                keyPassword = System.getenv("GRAPHO_RELEASE_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
@@ -38,7 +49,7 @@ android {
         }
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("test")
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("test")
         }
     }
 
