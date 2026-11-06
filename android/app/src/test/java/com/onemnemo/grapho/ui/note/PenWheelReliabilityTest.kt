@@ -24,9 +24,9 @@ class PenWheelReliabilityTest {
     @Test
     fun `a palm or a finger right after the pen is not a tap on the tab`() {
         assertTrue(tabTouchWanted(8f, false, 2000L))
-        assertFalse(tabTouchWanted(20f, false, 2000L))
+        assertFalse(tabTouchWanted(30f, false, 2000L))
         assertFalse(tabTouchWanted(8f, true, 2000L))
-        assertFalse(tabTouchWanted(8f, false, 100L))
+        assertFalse(tabTouchWanted(8f, false, 50L))
     }
 
     @Test

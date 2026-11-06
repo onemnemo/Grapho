@@ -4,10 +4,10 @@ import com.onemnemo.grapho.note.PenActivity
 import android.view.MotionEvent
 
 /** A touch wider than this is a palm or the side of a hand, never a fingertip, in millimetres. */
-internal const val TAB_MAX_CONTACT_MM = 12f
+internal const val TAB_MAX_CONTACT_MM = 25f
 
 /** A touch this soon after the pen was near the screen is most likely a resting palm, in milliseconds. */
-internal const val TAB_PEN_QUIET_MS = 400L
+internal const val TAB_PEN_QUIET_MS = 150L
 
 private const val MM_PER_INCH = 25.4f
 
