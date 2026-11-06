@@ -649,4 +649,8 @@
     <string name="shape_detection_suggest">Suggérer</string>
     <string name="shape_detection_hold">Aimanter au maintien</string>
     <string name="shape_detection_off">Désactivée</string>
+    <string name="crash_title">Grapho s\'est fermé de façon inattendue</string>
+    <string name="crash_text">Grapho a enregistré un rapport sur le problème. Il reste sur cet appareil sauf si tu le partages. Il ne contient ni notes ni dessins, seulement l\'erreur et le modèle de l\'appareil.</string>
+    <string name="crash_share">Partager le rapport</string>
+    <string name="crash_subject">Rapport de plantage de Grapho</string>
 </resources>
