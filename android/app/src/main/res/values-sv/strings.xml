@@ -652,4 +652,8 @@
     <string name="backup_nothing_new">Inget har ändrats sedan senaste kopian</string>
     <string name="backup_empty">Det finns inget att säkerhetskopiera än</string>
     <string name="backup_failed">Kunde inte skriva säkerhetskopian. Kontrollera mappen.</string>
+    <string name="crash_title">Grapho stängdes oväntat</string>
+    <string name="crash_text">Grapho sparade en rapport om vad som gick fel. Den stannar på den här enheten om du inte delar den. Den innehåller inga anteckningar eller teckningar, bara felet och enhetsmodellen.</string>
+    <string name="crash_share">Dela rapport</string>
+    <string name="crash_subject">Kraschrapport från Grapho</string>
 </resources>

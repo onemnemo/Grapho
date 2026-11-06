@@ -652,4 +652,8 @@
     <string name="backup_nothing_new">Ingenting har endret seg siden sist</string>
     <string name="backup_empty">Det er ingenting å sikkerhetskopiere ennå</string>
     <string name="backup_failed">Kunne ikke skrive sikkerhetskopien. Sjekk mappen.</string>
+    <string name="crash_title">Grapho lukket seg uventet</string>
+    <string name="crash_text">Grapho har lagret en rapport om hva som gikk galt. Den blir på denne enheten med mindre du deler den. Den har ingen notater eller tegninger, bare feilen og enhetsmodellen.</string>
+    <string name="crash_share">Del rapport</string>
+    <string name="crash_subject">Krasjrapport fra Grapho</string>
 </resources>

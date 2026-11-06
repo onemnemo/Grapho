@@ -669,4 +669,8 @@
     <string name="backup_nothing_new">Nothing has changed since the last backup</string>
     <string name="backup_empty">There\'s nothing to back up yet</string>
     <string name="backup_failed">Couldn\'t write the backup. Check the folder.</string>
+    <string name="crash_title">Grapho closed unexpectedly</string>
+    <string name="crash_text">Grapho saved a report about what went wrong. It stays on this device unless you share it. It has no notes or drawings in it, only the error and your device model.</string>
+    <string name="crash_share">Share report</string>
+    <string name="crash_subject">Grapho crash report</string>
 </resources>
