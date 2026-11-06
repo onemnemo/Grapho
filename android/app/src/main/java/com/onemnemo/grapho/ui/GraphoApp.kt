@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -18,7 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.onemnemo.grapho.R
+import com.onemnemo.grapho.ui.backup.LibraryBackup
 import com.onemnemo.grapho.ui.components.LoadingScreen
 import com.onemnemo.grapho.ui.components.NoticeHost
 import com.onemnemo.grapho.ui.components.Notices
@@ -55,6 +60,18 @@ fun GraphoApp(store: NotebookStore, settings: AppSettings) {
     val notices = remember { Notices() }
     val context = LocalContext.current
     val appScope = rememberCoroutineScope()
+
+    // The daily backup goes when the app opens and again when it leaves the screen.
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(lifecycle) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START || event == Lifecycle.Event.ON_STOP) {
+                LibraryBackup.runIfDue(context, store)
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer) }
+    }
 
     LaunchedEffect(reloadKey) {
         try {
@@ -122,6 +139,8 @@ fun GraphoApp(store: NotebookStore, settings: AppSettings) {
         if (settingsOpen) {
             SettingsOverlay(
                 settings = settings,
+                store = store,
+                notices = notices,
                 onClose = { settingsOpen = false },
                 onLibraryChanged = { libraryRevision++ },
                 onCustomiseWheel = if (file == null) {

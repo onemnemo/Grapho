@@ -640,4 +640,16 @@
     <string name="shape_detection_suggest">Föreslå</string>
     <string name="shape_detection_hold">Justera vid håll</string>
     <string name="shape_detection_off">Av</string>
+    <string name="settings_backup">Säkerhetskopia</string>
+    <string name="backup_auto">Säkerhetskopiera varje dag</string>
+    <string name="backup_auto_hint">Kopierar ditt bibliotek till mappen och sparar de 5 senaste.</string>
+    <string name="backup_folder">Mapp för säkerhetskopior</string>
+    <string name="backup_folder_none">Inte vald</string>
+    <string name="backup_now">Säkerhetskopiera nu</string>
+    <string name="backup_last">Senaste kopia %1$s</string>
+    <string name="backup_never">Ingen kopia än</string>
+    <string name="backup_done">Säkerhetskopian sparades</string>
+    <string name="backup_nothing_new">Inget har ändrats sedan senaste kopian</string>
+    <string name="backup_empty">Det finns inget att säkerhetskopiera än</string>
+    <string name="backup_failed">Kunde inte skriva säkerhetskopian. Kontrollera mappen.</string>
 </resources>

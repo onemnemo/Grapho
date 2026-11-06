@@ -640,4 +640,16 @@
     <string name="shape_detection_suggest">सुझाएँ</string>
     <string name="shape_detection_hold">रुकने पर सुधारें</string>
     <string name="shape_detection_off">बंद</string>
+    <string name="settings_backup">बैकअप</string>
+    <string name="backup_auto">हर दिन बैकअप लें</string>
+    <string name="backup_auto_hint">आपकी लाइब्रेरी को फ़ोल्डर में कॉपी करता है और आखिरी 5 रखता है।</string>
+    <string name="backup_folder">बैकअप फ़ोल्डर</string>
+    <string name="backup_folder_none">सेट नहीं है</string>
+    <string name="backup_now">अभी बैकअप लें</string>
+    <string name="backup_last">आखिरी बैकअप %1$s</string>
+    <string name="backup_never">अभी कोई बैकअप नहीं</string>
+    <string name="backup_done">बैकअप सेव हो गया</string>
+    <string name="backup_nothing_new">पिछले बैकअप के बाद कुछ नहीं बदला</string>
+    <string name="backup_empty">अभी बैकअप के लिए कुछ नहीं है</string>
+    <string name="backup_failed">बैकअप नहीं लिखा जा सका। फ़ोल्डर जाँचें।</string>
 </resources>

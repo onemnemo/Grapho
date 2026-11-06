@@ -651,4 +651,16 @@
     <string name="shape_detection_suggest">Suggerisci</string>
     <string name="shape_detection_hold">Correggi tenendo premuto</string>
     <string name="shape_detection_off">Disattivato</string>
+    <string name="settings_backup">Backup</string>
+    <string name="backup_auto">Backup ogni giorno</string>
+    <string name="backup_auto_hint">Copia la tua libreria nella cartella e tiene gli ultimi 5.</string>
+    <string name="backup_folder">Cartella di backup</string>
+    <string name="backup_folder_none">Non impostata</string>
+    <string name="backup_now">Esegui backup ora</string>
+    <string name="backup_last">Ultimo backup %1$s</string>
+    <string name="backup_never">Nessun backup</string>
+    <string name="backup_done">Backup salvato</string>
+    <string name="backup_nothing_new">Non è cambiato nulla dall\'ultimo backup</string>
+    <string name="backup_empty">Non c\'è ancora nulla da salvare</string>
+    <string name="backup_failed">Impossibile scrivere il backup. Controlla la cartella.</string>
 </resources>
