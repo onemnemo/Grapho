@@ -7,8 +7,11 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import com.onemnemo.grapho.ui.GraphoApp
 import com.onemnemo.grapho.ui.NotebookStore
 import com.onemnemo.grapho.ui.settings.AppSettings
@@ -33,7 +36,10 @@ class MainActivity : ComponentActivity() {
             }
             GraphoTheme(appearance, reducedMotion) {
                 val store = remember { NotebookStore(applicationContext) }
-                GraphoApp(store, settings)
+                Box(Modifier.fillMaxSize()) {
+                    GraphoApp(store, settings)
+                    CrashReportPrompt()
+                }
             }
         }
     }

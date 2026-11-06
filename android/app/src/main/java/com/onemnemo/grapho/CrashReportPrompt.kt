@@ -1,4 +1,4 @@
-package com.onemnemo.grapho.ui
+package com.onemnemo.grapho
 
 import android.content.Intent
 import androidx.compose.material3.Text
@@ -9,8 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.onemnemo.grapho.CrashReports
-import com.onemnemo.grapho.R
 import com.onemnemo.grapho.ui.components.ButtonKind
 import com.onemnemo.grapho.ui.components.ButtonSize
 import com.onemnemo.grapho.ui.components.GraphoButton

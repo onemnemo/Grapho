@@ -623,4 +623,8 @@
     <string name="shape_detection_suggest">Suggerisci</string>
     <string name="shape_detection_hold">Correggi tenendo premuto</string>
     <string name="shape_detection_off">Disattivato</string>
+    <string name="crash_title">Grapho si è chiuso in modo imprevisto</string>
+    <string name="crash_text">Grapho ha salvato un rapporto su cosa è andato storto. Resta su questo dispositivo a meno che tu non lo condivida. Non contiene note o disegni, solo l\'errore e il modello del dispositivo.</string>
+    <string name="crash_share">Condividi rapporto</string>
+    <string name="crash_subject">Rapporto di arresto di Grapho</string>
 </resources>
