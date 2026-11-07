@@ -6,7 +6,7 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
-use super::Id;
+use super::{Id, RichText};
 
 /// The smallest and largest font size, in points.
 pub const MIN_TEXT_SIZE: f32 = 4.0;
@@ -80,6 +80,9 @@ pub struct TextBox {
     pub italic: bool,
     #[serde(default, skip_serializing_if = "is_false")]
     pub underline: bool,
+    /// Formatting laid over `text`. Empty for a plain box.
+    #[serde(default, skip_serializing_if = "RichText::is_empty")]
+    pub rich: RichText,
 }
 
 /// The look of a text box, apart from its words and place.
@@ -130,6 +133,7 @@ impl TextBox {
             bold: style.bold,
             italic: style.italic,
             underline: style.underline,
+            rich: RichText::default(),
         }
     }
 
@@ -210,6 +214,7 @@ impl TextBox {
         out.y = ny - height * 0.5;
         out.rotation = uy.atan2(ux);
         out.size = (self.size * scale).clamp(MIN_TEXT_SIZE, MAX_TEXT_SIZE);
+        out.rich = self.rich.scaled(scale);
         out
     }
 

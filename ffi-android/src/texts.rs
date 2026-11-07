@@ -6,7 +6,7 @@
 //! A panic anywhere inside is caught and thrown as `java.io.IOException`,
 //! never unwound into the JVM.
 
-use grapho_core::document::{Id, TextAlign, TextBox, TextStyle};
+use grapho_core::document::{Id, RichText, TextAlign, TextBox, TextStyle};
 use jni::objects::{JClass, JFloatArray, JLongArray, JString};
 use jni::sys::{jboolean, jfloat, jint, jlong, jlongArray, jstring, JNI_FALSE, JNI_TRUE};
 use jni::JNIEnv;
@@ -42,9 +42,17 @@ fn style_from(size: jfloat, argb: jint, align: jint, marks: Marks) -> TextStyle 
     }
 }
 
+/// The formatting as sent by the shell: JSON, or nothing for a plain box.
+/// Anything that doesn't read is taken as plain, so a bad string never loses
+/// the words.
+fn rich_from(json: &str) -> RichText {
+    serde_json::from_str(json).unwrap_or_default()
+}
+
 fn text_json(t: &TextBox) -> serde_json::Value {
     let [hi, lo] = split_id(t.id);
     json!({
+        "rich": t.rich,
         "hi": hi,
         "lo": lo,
         "x": t.x,
@@ -82,14 +90,16 @@ pub extern "system" fn Java_com_onemnemo_grapho_engine_NativeNotebook_nativeAddT
     bold: jboolean,
     italic: jboolean,
     underline: jboolean,
+    rich: JString,
 ) -> jlongArray {
     guarded(&mut env, std::ptr::null_mut(), |env| {
         let frame = <[f32; 4]>::try_from(read_floats(env, &frame).as_slice()).ok();
         let text = read_string(env, &text);
+        let rich = rich_from(&read_string(env, &rich));
         let style = style_from(size, argb, align, [bold, italic, underline]);
         let id = match (usize::try_from(page), frame) {
             (Ok(p), Some(frame)) => unsafe { notebook(handle) }
-                .add_text(p, frame, &text, style)
+                .add_rich_text(p, frame, &text, style, rich)
                 .ok(),
             _ => None,
         };
@@ -168,9 +178,11 @@ pub extern "system" fn Java_com_onemnemo_grapho_engine_NativeNotebook_nativeUpda
     bold: jboolean,
     italic: jboolean,
     underline: jboolean,
+    rich: JString,
 ) -> jboolean {
     guarded(&mut env, JNI_FALSE, |env| {
         let id = read_ids(env, &id).first().copied();
+        let rich = rich_from(&read_string(env, &rich));
         let frame = <[f32; 5]>::try_from(read_floats(env, &frame).as_slice()).ok();
         let text = read_string(env, &text);
         let style = style_from(size, argb, align, [bold, italic, underline]);
@@ -179,6 +191,7 @@ pub extern "system" fn Java_com_onemnemo_grapho_engine_NativeNotebook_nativeUpda
                 let mut next = TextBox::new(x, y, width, height, text, style);
                 next.id = id;
                 next.rotation = rotation;
+                next.rich = rich;
                 unsafe { notebook(handle) }.update_text(p, next) == Ok(true)
             }
             _ => false,
@@ -258,6 +271,20 @@ mod tests {
         assert_eq!(v["argb"].as_i64(), Some(i64::from(0xFFD6_2F2Fu32 as i32)));
         let [hi, lo] = split_id(t.id);
         assert_eq!((v["hi"].as_i64(), v["lo"].as_i64()), (Some(hi), Some(lo)));
+    }
+
+    #[test]
+    fn rich_text_crosses_as_json_and_bad_json_is_plain() {
+        let rich = rich_from(
+            r#"{"spans":[{"start":0,"end":3,"marks":3,"color":255}],"paras":[{"kind":"bullet"}]}"#,
+        );
+        assert_eq!(rich.spans[0].marks, 3);
+        assert_eq!(rich.paras[0].kind, grapho_core::document::ParaKind::Bullet);
+        assert!(rich_from("").is_empty());
+        assert!(rich_from("{{nope").is_empty());
+        let mut t = TextBox::new(0.0, 0.0, 10.0, 10.0, "abc", TextStyle::default());
+        t.rich = rich;
+        assert_eq!(text_json(&t)["rich"]["spans"][0]["end"], 3);
     }
 
     #[test]

@@ -409,3 +409,34 @@ fn a_saved_note_keeps_the_edited_boxes() {
     assert_eq!(&back, e.document());
     assert_eq!(back.pages[0].layers[0].texts[0].text, "Saved and changed");
 }
+
+#[test]
+fn formatting_is_kept_cut_to_the_words_and_undone_with_them() {
+    use crate::document::{mark, Para, ParaKind, RichText, Span};
+    let mut e = editor();
+    let rich = RichText {
+        spans: vec![Span {
+            start: 0,
+            end: 99,
+            marks: mark::BOLD,
+            ..Span::default()
+        }],
+        paras: vec![Para {
+            kind: ParaKind::Bullet,
+            ..Para::default()
+        }],
+    };
+    let id = e
+        .add_rich_text(0, [10.0, 10.0, 100.0, 30.0], "Hello", style(), rich)
+        .unwrap();
+    let made = e.text_box(0, id).unwrap();
+    assert_eq!(made.rich.spans[0].end, 5);
+    assert_eq!(made.rich.paras[0].kind, ParaKind::Bullet);
+    // Shortening the words cuts the formatting with them.
+    e.set_text(0, id, "Hi").unwrap();
+    assert_eq!(e.text_box(0, id).unwrap().rich.spans[0].end, 2);
+    e.undo();
+    assert_eq!(e.text_box(0, id).unwrap().rich.spans[0].end, 5);
+    e.undo();
+    assert!(e.text_box(0, id).is_none());
+}

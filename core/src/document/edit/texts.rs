@@ -5,8 +5,8 @@
 
 use super::{Editor, PlacedText, Step};
 use crate::document::{
-    Id, Page, TextBox, TextError, TextStyle, MAX_TEXT_CHARS, MAX_TEXT_SIZE, MIN_TEXT_SIDE,
-    MIN_TEXT_SIZE,
+    Id, Page, RichText, TextBox, TextError, TextStyle, MAX_TEXT_CHARS, MAX_TEXT_SIZE,
+    MIN_TEXT_SIDE, MIN_TEXT_SIZE,
 };
 
 /// Where a text box sits on a page.
@@ -29,9 +29,22 @@ impl Editor {
         text: &str,
         style: TextStyle,
     ) -> Result<Id, TextError> {
+        self.add_rich_text(page, frame, text, style, RichText::default())
+    }
+
+    /// Like `add_text`, with formatting laid over the words.
+    pub fn add_rich_text(
+        &mut self,
+        page: usize,
+        frame: [f32; 4],
+        text: &str,
+        style: TextStyle,
+        rich: RichText,
+    ) -> Result<Id, TextError> {
         self.end_erase();
         let [x, y, width, height] = frame;
-        let boxed = TextBox::new(x, y, width, height, text, style);
+        let mut boxed = TextBox::new(x, y, width, height, text, style);
+        boxed.rich = rich.normalised(text);
         if text.chars().count() > MAX_TEXT_CHARS {
             return Err(TextError::TooLong);
         }
@@ -126,6 +139,7 @@ impl Editor {
         }
         let mut new = new;
         new.size = new.size.clamp(MIN_TEXT_SIZE, MAX_TEXT_SIZE);
+        new.rich = std::mem::take(&mut new.rich).normalised(&new.text);
         if !new.is_sound() {
             return Err(TextError::BadBox);
         }
@@ -148,6 +162,7 @@ impl Editor {
         let mut new = old.clone();
         change(&mut new);
         new.id = id;
+        new.rich = std::mem::take(&mut new.rich).normalised(&new.text);
         if new == *old {
             return Ok(false);
         }
