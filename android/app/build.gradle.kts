@@ -6,13 +6,13 @@ plugins {
 
 android {
     namespace = "com.onemnemo.grapho"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "one.mnemo.grapho"
         // Front-buffered rendering needs Android 10.
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         // The release workflow overrides these with -PversionCode / -PversionName.
         versionCode = (findProperty("versionCode") as String?)?.toInt() ?: 1
         versionName = (findProperty("versionName") as String?) ?: "0.1.0"
@@ -49,6 +49,8 @@ android {
         }
         release {
             isMinifyEnabled = false
+            // Native symbols for crash reports in Play Console.
+            ndk { debugSymbolLevel = "SYMBOL_TABLE" }
             signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("test")
         }
     }
