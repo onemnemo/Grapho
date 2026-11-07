@@ -9,7 +9,9 @@ import kotlin.math.sin
  * A text box being typed into. [id] is null for a box that is not in the note yet; it is added when the edit ends.
  * The frame is in page-local units and [style] is what the box is drawn with, which the options card can change
  * while the box is open. [startText] and [startStyle] are what the box held when it opened, so an edit that changed
- * nothing is not saved, and so is [moved], which is true once the box was dragged or resized. [serial] tells one
+ * nothing is not saved, and so is [moved], which is true once the box was dragged or resized. [startRich] is the
+ * formatting then, [marks] the bold, italic and underline the field starts with because the box carried them as a
+ * whole, and [sized] whether the width was set by hand, which stops it growing to fit a big paste. [serial] tells one
  * edit from the next, so a field starts afresh for each.
  */
 data class TextEdit(
@@ -25,6 +27,9 @@ data class TextEdit(
     val style: TextSettings,
     val serial: Int,
     val moved: Boolean = false,
+    val startRich: RichText = RichText(),
+    val marks: Int = 0,
+    val sized: Boolean = false,
 )
 
 /** What the text editor needs from the canvas it lives in. */
@@ -59,6 +64,8 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
         private set
 
     private var draft = ""
+    private var source: (() -> RichText)? = null
+    private var lastRich = RichText()
     private var serial = 0
     private var hiddenBox: HiddenStrokes? = null
     private val scratch = FloatArray(2)
@@ -88,7 +95,18 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
             val width = TextSettings.DEFAULT_WIDTH
             val left = if (vp.infinite) localX else TextFrame.keptInside(localX, width, vp.pages.width(page))
             val height = style.size * TextLayouts.LINE_HEIGHT
-            begin(TextEdit(page, null, left, localY, width, height, 0f, "", style, style, ++serial), pageId, "")
+            lastRich = RichText()
+            val plain = asPlain(style)
+            begin(
+                TextEdit(
+                    page, null, left, localY, width, height, 0f, "", plain, plain, ++serial,
+                    marks = marksOf(
+                        style,
+                    ),
+                ),
+                pageId,
+                "",
+            )
         }
     }
 
@@ -110,12 +128,22 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
             box.height,
             box.rotation,
             box.text,
-            style,
-            style,
+            asPlain(style),
+            asPlain(style),
             ++serial,
+            startRich = box.rich,
+            marks = marksOf(style),
+            sized = true,
         )
+        lastRich = box.rich
         begin(frame, host.pageId(page) ?: return, box.text)
     }
+
+    // Bold, italic and underline are marks on the words from here on, so the box itself carries none.
+    private fun marksOf(style: TextSettings): Int = (if (style.bold) Marks.BOLD else 0) or
+        (if (style.italic) Marks.ITALIC else 0) or (if (style.underline) Marks.UNDERLINE else 0)
+
+    private fun asPlain(style: TextSettings) = style.copy(bold = false, italic = false, underline = false)
 
     private fun begin(next: TextEdit, pageId: String, text: String) {
         draft = text
@@ -127,6 +155,34 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
     /** What the field holds now, kept so the edit can end from anywhere. */
     fun typed(text: String) {
         if (edit != null) draft = text
+    }
+
+    /**
+     * Lets the editor ask the field for its formatting, which is only worked out when it is needed. [read] is null
+     * once the field is gone.
+     */
+    fun formatting(read: (() -> RichText)?) {
+        source = read
+    }
+
+    /** The formatting the field started with once it was made up, which an edit is compared to. */
+    fun baseline(rich: RichText) {
+        val current = edit ?: return
+        lastRich = rich
+        edit = current.copy(startRich = rich)
+    }
+
+    private fun currentRich(): RichText = source?.invoke()?.also { lastRich = it } ?: lastRich
+
+    /** A lot of text came in at once: a box that was not sized by hand gets as wide as the page allows. */
+    fun fitWidth() {
+        val current = edit ?: return
+        if (current.sized || current.rotation != 0f) return
+        val vp = host.currentViewport
+        val room = (if (vp.infinite) FALLBACK_PAGE else vp.pages.width(current.page)) - 2 * PAGE_MARGIN
+        if (room <= current.width) return
+        val height = heightOf(draft, current.style, room)
+        reframe(current.copy(x = PAGE_MARGIN, width = room, height = height, moved = true))
     }
 
     /** Draws and saves the open box with [style] from now on. */
@@ -165,7 +221,50 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
             fromLeft,
             scratch,
         )
-        reframe(current.copy(x = scratch[0], y = scratch[1], width = width, height = height, moved = true))
+        reframe(
+            current.copy(x = scratch[0], y = scratch[1], width = width, height = height, moved = true, sized = true),
+        )
+    }
+
+    /**
+     * Scales the open box from a corner by a drag of ([dx], [dy]) along its own axes, page-local units. The box and
+     * its text grow together, and the corner opposite the one dragged stays where it is: [fromLeft] and [fromTop]
+     * say which corner is held.
+     */
+    fun scale(fromLeft: Boolean, fromTop: Boolean, dx: Float, dy: Float) {
+        val current = edit ?: return
+        val along = (if (fromLeft) -dx else dx) + (if (fromTop) -dy else dy)
+        val factor = 1f + along / (current.width + current.height)
+        val size = (current.style.size * factor).roundToInt().coerceIn(TextSettings.MIN_SIZE, TextSettings.MAX_SIZE)
+        if (size == current.style.size) return
+        val ratio = size.toFloat() / current.style.size
+        val width = (current.width * ratio).coerceAtLeast(TextFrame.MIN_WIDTH)
+        val style = current.style.copy(size = size)
+        val height = heightOf(draft, style, width)
+        TextFrame.corner(current.x, current.y, current.width, current.height, current.rotation, scratch)
+        val shiftX = if (fromLeft) current.width - width else 0f
+        val shiftY = if (fromTop) current.height - height else 0f
+        val c = cos(current.rotation)
+        val s = sin(current.rotation)
+        TextFrame.placed(
+            scratch[0] + shiftX * c - shiftY * s,
+            scratch[1] + shiftX * s + shiftY * c,
+            width,
+            height,
+            current.rotation,
+            scratch,
+        )
+        val next = current.copy(
+            x = scratch[0],
+            y = scratch[1],
+            width = width,
+            height = height,
+            style = style,
+            moved = true,
+            sized = true,
+        )
+        edit = next
+        host.editChanged(next, rerender = false)
     }
 
     // The field over the box follows its frame on the next frame, see [placement]. Nothing else has to hear about a
@@ -181,21 +280,23 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
     fun commit() {
         val current = edit ?: return
         val text = draft
+        val rich = currentRich()
         edit = null
         hiddenBox = null
-        val changed = write(current, text)
+        source = null
+        val changed = write(current, text, rich)
         host.editChanged(null, rerender = true)
         if (changed) host.documentEdited(current.page)
     }
 
-    private fun write(current: TextEdit, text: String): Boolean {
+    private fun write(current: TextEdit, text: String, rich: RichText): Boolean {
         val handle = notebook.nativeHandle
         val style = current.style
         val id = current.id
         val blank = text.isBlank()
         if (id == null) {
             if (blank) return false
-            val height = heightOf(text, style, current.width)
+            val height = heightOf(text, style, current.width, rich)
             val frame = floatArrayOf(current.x, current.y, current.width, height)
             return NativeNotebook.nativeAddText(
                 handle,
@@ -208,12 +309,14 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
                 style.bold,
                 style.italic,
                 style.underline,
+                rich.toJson(),
             ).isNotEmpty()
         }
         val key = longArrayOf(id.hi, id.lo)
         if (blank) return NativeNotebook.nativeDeleteText(handle, current.page, key)
-        if (text == current.startText && style == current.startStyle && !current.moved) return false
-        val height = heightOf(text, style, current.width)
+        val same = text == current.startText && style == current.startStyle && rich == current.startRich
+        if (same && !current.moved) return false
+        val height = heightOf(text, style, current.width, rich)
         TextFrame.regrown(current.x, current.y, current.width, current.height, current.rotation, height, scratch)
         val frame = floatArrayOf(scratch[0], scratch[1], current.width, height, current.rotation)
         return NativeNotebook.nativeUpdateText(
@@ -228,11 +331,12 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
             style.bold,
             style.italic,
             style.underline,
+            rich.toJson(),
         )
     }
 
-    private fun heightOf(text: String, style: TextSettings, width: Float): Float =
-        TextLayouts.height(text, style, style.size.toFloat(), width)
+    private fun heightOf(text: String, style: TextSettings, width: Float, rich: RichText = currentRich()): Float =
+        TextLayouts.height(text, style, style.size.toFloat(), width, rich)
 
     /**
      * Where the open box sits in view pixels, for the field over it: its turned top left corner (`out[0]`,
@@ -249,5 +353,13 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
         out[3] = vp.scale
         out[4] = Math.toDegrees(current.rotation.toDouble()).toFloat()
         return true
+    }
+
+    private companion object {
+        /** A box that grows to fit a paste stays this far in from the edges of the page, in page-local units. */
+        const val PAGE_MARGIN = 36f
+
+        /** The width taken for a page that has none, which is an endless one. */
+        const val FALLBACK_PAGE = 600f
     }
 }

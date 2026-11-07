@@ -33,7 +33,14 @@ internal object TextLayouts {
      * The layout of [text] in a box [width] wide, with the font [size] in page-local units. Only the weight, slant,
      * underline and alignment of [look] count.
      */
-    fun build(text: String, look: TextSettings, size: Float, width: Float): StaticLayout {
+    fun build(
+        text: String,
+        look: TextSettings,
+        size: Float,
+        width: Float,
+        rich: RichText = RichText(),
+        paper: Int = PaperColors.WHITE.argb,
+    ): StaticLayout {
         val paint = TextPaint(TextPaint.ANTI_ALIAS_FLAG).apply {
             textSize = size
             isLinearText = true
@@ -46,15 +53,27 @@ internal object TextLayouts {
             TextAlignment.End -> Layout.Alignment.ALIGN_OPPOSITE
         }
         val wide = ceil(width).toInt().coerceAtLeast(1)
-        return StaticLayout.Builder.obtain(text, 0, text.length, paint, wide)
+        val shown: CharSequence = if (rich.isEmpty) {
+            text
+        } else {
+            RichSpans.build(
+                text,
+                rich,
+                size,
+                size,
+                paper,
+                editing = false,
+            )
+        }
+        return StaticLayout.Builder.obtain(shown, 0, shown.length, paint, wide)
             .setAlignment(alignment)
             .setIncludePad(false)
             .build()
     }
 
     /** The height the lines of [text] need in a box [width] wide: at least one line, so an empty box can be clicked. */
-    fun height(text: String, look: TextSettings, size: Float, width: Float): Float =
-        maxOf(build(text, look, size, width).height.toFloat(), size * LINE_HEIGHT)
+    fun height(text: String, look: TextSettings, size: Float, width: Float, rich: RichText = RichText()): Float =
+        maxOf(build(text, look, size, width, rich).height.toFloat(), size * LINE_HEIGHT)
 }
 
 /**
@@ -72,12 +91,19 @@ internal class TextPainter {
      * as ink does.
      */
     fun draw(canvas: Canvas, box: SceneText, paper: Int, alpha: Int = LAYER_OPAQUE) {
+        if (paper != layoutPaper) {
+            layouts.clear()
+            layoutPaper = paper
+        }
         val layout = layouts.getOrPut(box) {
-            TextLayouts.build(box.text, TextLayouts.lookOf(box), box.size, box.width)
+            TextLayouts.build(box.text, TextLayouts.lookOf(box), box.size, box.width, box.rich, paper)
         }
         val colour = displayColor(box.argb, paper)
         layout.paint.color = colour
-        layout.paint.alpha = (Color.alpha(colour) * alpha / LAYER_OPAQUE.toFloat()).roundToInt()
+        // Colours picked for stretches of the text ignore the paint's opacity, so a faded layer fades the whole box.
+        val faded = !box.rich.isEmpty && alpha < LAYER_OPAQUE
+        layout.paint.alpha =
+            if (faded) Color.alpha(colour) else (Color.alpha(colour) * alpha / LAYER_OPAQUE.toFloat()).roundToInt()
         canvas.save()
         canvas.rotate(
             Math.toDegrees(box.rotation.toDouble()).toFloat(),
@@ -85,9 +111,13 @@ internal class TextPainter {
             box.y + box.height / 2f,
         )
         canvas.translate(box.x, box.y)
+        if (faded) canvas.saveLayerAlpha(0f, 0f, box.width, layout.height.toFloat(), alpha)
         layout.draw(canvas)
+        if (faded) canvas.restore()
         canvas.restore()
     }
+
+    private var layoutPaper = 0
 
     private companion object {
         const val MAX_LAYOUTS = 128
