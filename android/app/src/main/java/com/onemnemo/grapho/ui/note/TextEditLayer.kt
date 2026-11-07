@@ -31,8 +31,10 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.onemnemo.grapho.R
+import com.onemnemo.grapho.note.FormatState
 import com.onemnemo.grapho.note.NoteCanvasView
 import com.onemnemo.grapho.note.PaperColors
+import com.onemnemo.grapho.note.RichText
 import com.onemnemo.grapho.note.TextEdit
 import com.onemnemo.grapho.note.TextSettings
 import com.onemnemo.grapho.note.displayColor
@@ -96,10 +98,14 @@ internal fun TextEditLayer(ui: NoteUiState, toolbar: ToolbarState, insets: EdgeI
                 palette = toolbar.palette,
                 recent = toolbar.recent,
                 onChange = { applyTextStyle(ui, toolbar, it) },
-                onCustomColour = { applyTextColour(ui, toolbar, it) },
+                onAddRecent = { toolbar.addRecent(it) },
                 onTyped = { ui.view[0]?.textTyped(it) },
+                onFormatting = { ui.view[0]?.textFormatting(it) },
+                onBaseline = { ui.view[0]?.textBaseline(it) },
+                onFit = { ui.view[0]?.fitTextWidth() },
                 onMove = { dx, dy -> ui.view[0]?.moveText(dx, dy) },
                 onStretch = { fromLeft, delta -> ui.view[0]?.stretchText(fromLeft, delta) },
+                onScale = { left, top, dx, dy -> ui.view[0]?.scaleText(left, top, dx, dy) },
                 onDone = { ui.view[0]?.commitText() },
             )
         }
@@ -115,10 +121,14 @@ private fun TextEditField(
     palette: List<Int>,
     recent: List<Int>,
     onChange: (TextSettings) -> Unit,
-    onCustomColour: (Int) -> Unit,
+    onAddRecent: (Int) -> Unit,
     onTyped: (String) -> Unit,
+    onFormatting: ((() -> RichText)?) -> Unit,
+    onBaseline: (RichText) -> Unit,
+    onFit: () -> Unit,
     onMove: (dx: Float, dy: Float) -> Unit,
     onStretch: (fromLeft: Boolean, delta: Float) -> Unit,
+    onScale: (fromLeft: Boolean, fromTop: Boolean, dx: Float, dy: Float) -> Unit,
     onDone: () -> Unit,
 ) {
     val density = LocalDensity.current
@@ -129,6 +139,10 @@ private fun TextEditField(
     val accent = ring.toArgb()
     val slot = with(density) { TEXT_HANDLE_SLOT.roundToPx() }
     val typed by rememberUpdatedState(onTyped)
+    val fit by rememberUpdatedState(onFit)
+    val format = remember { mutableStateOf(FormatState()) }
+    val current by rememberUpdatedState(style)
+    val change by rememberUpdatedState(onChange)
     val move by rememberUpdatedState(onMove)
     val field = remember { arrayOfNulls<TextBoxInput>(1) }
     val heightPx = remember { mutableIntStateOf(0) }
@@ -144,10 +158,21 @@ private fun TextEditField(
     Box(Modifier.pinnedBox(spot, slot)) {
         AndroidView(
             factory = { context ->
-                TextBoxInput(context, edit.startText).also { input ->
+                TextBoxInput(
+                    context,
+                    edit.startText,
+                    edit.startRich,
+                    style.size.toFloat(),
+                    paper,
+                    edit.marks,
+                ).also { input ->
                     field[0] = input
                     input.contentDescription = label
                     input.onTyped = { typed(it) }
+                    input.onFormat = { format.value = it }
+                    input.onBigInsert = { fit() }
+                    onFormatting { input.snapshot() }
+                    onBaseline(input.snapshot())
                     input.onDrag = { dx, dy -> move(dx, dy) }
                     spot.value?.let { input.follow(it.scale, it.degrees) }
                     input.applyLook(style, ink, accent)
@@ -161,11 +186,13 @@ private fun TextEditField(
                 .border(GraphoSpace.borderWidthHairline, ring),
             update = { it.applyLook(style, ink, accent) },
             onRelease = {
+                val last = it.snapshot()
+                onFormatting { last }
                 it.release()
                 field[0] = null
             },
         )
-        TextHandles({ spot.value?.scale ?: 1f }, onMove, onStretch)
+        TextHandles({ spot.value?.scale ?: 1f }, onMove, onStretch, onScale)
     }
     val margins = with(density) {
         EdgeInsets(insets.left.dp.toPx(), insets.top.dp.toPx(), insets.right.dp.toPx(), insets.bottom.dp.toPx())
@@ -173,16 +200,37 @@ private fun TextEditField(
     val gap = with(density) { GraphoSpace.spaceMd.toPx() }
     val handleGap = with(density) { (TEXT_HANDLE_SLOT + GraphoSpace.spaceXs).toPx() }
     val doneRoom = with(density) { DONE_ROOM.toPx() }
+    val actions = remember {
+        TextFormatActions(
+            onMark = { field[0]?.toggleMark(it) },
+            onKind = { field[0]?.setKind(it) },
+            onIndent = { field[0]?.indent(it) },
+            onHighlight = { on -> field[0]?.setHighlight(if (on) HIGHLIGHT_COLOUR else null) },
+            onSize = { delta ->
+                val input = field[0]
+                val box = current.size
+                val now = format.value.size?.let { (it * box).roundToInt() } ?: box
+                val next = (now + delta).coerceIn(TextSettings.MIN_SIZE, TextSettings.MAX_SIZE)
+                if (input == null || input.isBlank) change(current.copy(size = next)) else input.setSize(next.toFloat())
+            },
+            onColour = { argb ->
+                onAddRecent(argb)
+                val input = field[0]
+                if (input == null || input.isBlank) change(current.copy(argb = argb)) else input.setColour(argb)
+            },
+        )
+    }
     TextFormatBar(
         style = style,
+        format = format.value,
         rect = box,
         gap = handleGap,
         belowRoom = doneRoom,
         margins = margins,
         palette = palette,
         recent = recent,
+        actions = actions,
         onChange = onChange,
-        onCustomColour = onCustomColour,
     )
     Row(
         Modifier

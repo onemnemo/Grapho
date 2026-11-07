@@ -382,7 +382,7 @@ object NativeNotebook {
     /**
      * Places a text box on the page's active layer as one undo step. [frame] is `[x, y, width, height]` in page points,
      * [size] the font size in points, [argb] the colour, [align] 0 start, 1 centre or 2 end, then the [bold], [italic]
-     * and [underline] flags. Returns the id as [hi, lo], or an empty array if the frame or size is not valid or the
+     * and [underline] flags and the formatting as [rich] JSON, empty for a plain box. Returns the id as [hi, lo], or an empty array if the frame or size is not valid or the
      * layer is hidden or locked.
      */
     @JvmStatic
@@ -397,6 +397,7 @@ object NativeNotebook {
         bold: Boolean,
         italic: Boolean,
         underline: Boolean,
+        rich: String,
     ): LongArray
 
     /** The topmost text box under a page point on a visible, unlocked layer, as [hi, lo], or empty. */
@@ -405,7 +406,7 @@ object NativeNotebook {
     /**
      * The text boxes of a page, per layer, with the same layer list and order as [nativeLayerStrokeIds]. JSON:
      * `[[{"hi":L,"lo":L,"x":F,"y":F,"w":F,"h":F,"rot":F,"text":"s","size":F,"argb":I,"align":I,"bold":B,"italic":B,
-     * "underline":B}, ...], ...]`, one inner array per layer, boxes in drawing order. Read it with `TextLayout.parse`.
+     * "underline":B,"rich":{"spans":[],"paras":[]}}, ...], ...]`, one inner array per layer, boxes in drawing order. Read it with `TextLayout.parse`.
      */
     @JvmStatic external fun nativePageTexts(handle: Long, page: Int): String
 
@@ -426,6 +427,7 @@ object NativeNotebook {
         bold: Boolean,
         italic: Boolean,
         underline: Boolean,
+        rich: String,
     ): Boolean
 
     /** Removes a text box as one undo step. Returns false if it is gone or on a locked layer. */

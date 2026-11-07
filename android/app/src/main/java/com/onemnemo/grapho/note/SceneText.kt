@@ -20,7 +20,7 @@ enum class TextAlignment(val code: Int) {
 
 /**
  * A text box placed on a layer, ready to draw. The frame is the box before it is turned, in page-local units, and
- * [rotation] the clockwise turn about its centre in radians. [argb] is an Android colour. Never changed after
+ * [rotation] the clockwise turn about its centre in radians. [argb] is an Android colour and [rich] the formatting laid over the words. Never changed after
  * creation.
  */
 data class SceneText(
@@ -37,6 +37,7 @@ data class SceneText(
     val bold: Boolean,
     val italic: Boolean,
     val underline: Boolean,
+    val rich: RichText = RichText(),
 ) {
     /** The box the text covers on the page once turned, in page-local units. */
     val bounds: RectF = RectF(x, y, x + width, y + height).also {
@@ -72,6 +73,7 @@ internal object TextLayout {
                         bold = o.getBoolean("bold"),
                         italic = o.optBoolean("italic", false),
                         underline = o.optBoolean("underline", false),
+                        rich = RichText.parse(o.optJSONObject("rich")),
                     )
                 }
             }

@@ -907,6 +907,15 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
     /** Remembers what the field over the open text box holds. */
     fun textTyped(text: String) = textEditor.typed(text)
 
+    /** Lets the editor read the open field's formatting when the box is saved. Null once the field is gone. */
+    internal fun textFormatting(read: (() -> RichText)?) = textEditor.formatting(read)
+
+    /** Tells the editor what the open field's formatting was when it started. */
+    internal fun textBaseline(rich: RichText) = textEditor.baseline(rich)
+
+    /** Makes the open text box as wide as the page allows, after a big paste. */
+    fun fitTextWidth() = textEditor.fitWidth()
+
     /** Ends the text edit in progress, if any, writing the box to the note. */
     fun commitText() = textEditor.commit()
 
@@ -918,6 +927,10 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
 
     /** Drags a side of the open text box. See [TextEditor.stretch]. */
     fun stretchText(fromLeft: Boolean, delta: Float) = textEditor.stretch(fromLeft, delta)
+
+    /** Scales the open text box from a corner. See [TextEditor.scale]. */
+    fun scaleText(fromLeft: Boolean, fromTop: Boolean, dx: Float, dy: Float) =
+        textEditor.scale(fromLeft, fromTop, dx, dy)
 
     /** The paper colour of the note, which text colours are adapted to. */
     val paperColor: Int get() = info.background.color
