@@ -13,6 +13,7 @@ mod image;
 mod lasso;
 mod model;
 mod pdf;
+mod rich;
 mod strokes_file;
 mod text;
 
@@ -26,6 +27,7 @@ pub use image::{
 };
 pub use model::*;
 pub use pdf::PdfImport;
+pub use rich::{mark, Para, ParaKind, RichText, Span, MAX_INDENT};
 pub use text::{
     TextAlign, TextBox, TextError, TextStyle, MAX_TEXT_CHARS, MAX_TEXT_SIZE, MIN_TEXT_SIDE,
     MIN_TEXT_SIZE,
