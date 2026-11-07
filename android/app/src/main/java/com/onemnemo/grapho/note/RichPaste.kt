@@ -32,7 +32,7 @@ internal object RichPaste {
     private const val INDENT_SPACES = 2
     private const val OPAQUE = 0xFF000000.toInt()
     private val NUMBERED = Regex("^\\d{1,3}[.)] +")
-    private val BULLETS = listOf("- ", "* ", "• ", "– ")
+    private val BULLETS = listOf("- ", "* ", "\u2022 ", "\u2013 ")
     private val HEADINGS = listOf("# ", "## ", "### ")
 
     /** A mark found on a stretch of the text, in UTF-16 offsets. */
