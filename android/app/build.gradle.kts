@@ -9,7 +9,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.onemnemo.grapho"
+        applicationId = "one.mnemo.grapho"
         // Front-buffered rendering needs Android 10.
         minSdk = 29
         targetSdk = 35
