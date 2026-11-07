@@ -40,8 +40,8 @@ internal class HeadingLook(private val scale: Float) : MetricAffectingSpan() {
 
     private fun change(paint: TextPaint) {
         paint.textSize *= scale
-        val style = (paint.typeface?.style ?: Typeface.NORMAL) or Typeface.BOLD
-        paint.typeface = Typeface.create(paint.typeface, style)
+        val italic = paint.typeface?.isItalic == true
+        paint.typeface = Typeface.create(paint.typeface, if (italic) Typeface.BOLD_ITALIC else Typeface.BOLD)
     }
 }
 
