@@ -17,6 +17,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.ViewConfiguration
+import androidx.annotation.AnyThread
 import androidx.graphics.lowlatency.CanvasFrontBufferedRenderer
 import androidx.input.motionprediction.MotionEventPredictor
 import com.onemnemo.grapho.engine.NativeNotebook
@@ -616,6 +617,7 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
     // since the last wet frame would then leave the rest of the stroke missing until the pen lifts.
     private var frontCleared = false
 
+    @AnyThread
     private fun takePending(): Pair<WetFrame, Rect>? = synchronized(lock) {
         renderQueued = false
         val frame = latest ?: return null
