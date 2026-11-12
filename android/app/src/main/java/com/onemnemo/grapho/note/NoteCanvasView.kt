@@ -1612,9 +1612,10 @@ class NoteCanvasView(context: Context, val notebook: Notebook) :
         onPageInView?.invoke(page)
     }
 
-    // A finger flick keeps the view gliding only when zoomed far out, where the person is browsing. Closer in the
-    // view stops where the fingers let go, so writing and editing stay exact.
-    private fun momentumOn(): Boolean = viewport.zoom <= FLING_ZOOM
+    // A finger flick keeps the view gliding only when zoomed far out in a paged note, where the person is browsing
+    // pages. Infinite canvases never glide since there are no pages to flip through, and closer in the view stops
+    // where the fingers let go so writing and editing stay exact.
+    private fun momentumOn(): Boolean = !viewport.infinite && viewport.zoom <= FLING_ZOOM
 
     private fun trackVelocity(event: MotionEvent, dx: Float, dy: Float) {
         val dt = (event.eventTime - lastMoveTime).coerceAtLeast(1L) / 1000f
