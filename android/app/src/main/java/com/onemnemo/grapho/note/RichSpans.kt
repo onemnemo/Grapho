@@ -29,6 +29,9 @@ internal class InkSpan(val argb: Int, shown: Int) : ForegroundColorSpan(shown)
 /** A marker colour behind a stretch of text. */
 internal class MarkerSpan(val argb: Int) : BackgroundColorSpan(argb)
 
+/** A typeface picked for a stretch of text, by its number in [Fonts]. */
+internal class FontSpan(val id: Int) : TypefaceSpan(Fonts.family(id))
+
 /** A font size for a stretch of text, as a [ratio] of the size of the box. */
 internal class SizeSpan(val ratio: Float) : RelativeSizeSpan(ratio)
 
@@ -242,7 +245,7 @@ internal object RichSpans {
 
         span is StrikethroughSpan -> Marks.STRIKE
 
-        span is TypefaceSpan && span.family == "monospace" -> Marks.CODE
+        span is TypefaceSpan && span !is FontSpan && span.family == "monospace" -> Marks.CODE
 
         span is SuperscriptSpan -> Marks.SUPER
 
@@ -251,8 +254,8 @@ internal object RichSpans {
         else -> 0
     }
 
-    fun isMarkSpan(span: Any, flags: Int): Boolean =
-        flags and SPAN_COMPOSING == 0 && (bitOf(span) != 0 || span is InkSpan || span is MarkerSpan || span is SizeSpan)
+    fun isMarkSpan(span: Any, flags: Int): Boolean = flags and SPAN_COMPOSING == 0 &&
+        (bitOf(span) != 0 || span is InkSpan || span is MarkerSpan || span is SizeSpan || span is FontSpan)
 
     /**
      * The words and formatting as spans, ready for a layout or a field. [boxSize] is the size of the box in points and
@@ -285,6 +288,7 @@ internal object RichSpans {
             s.color?.let { out.setSpan(InkSpan(it, displayColor(it, paper)), a, b, flags) }
             s.highlight?.let { out.setSpan(MarkerSpan(it), a, b, flags) }
             s.size?.let { out.setSpan(SizeSpan(it / boxSize), a, b, flags) }
+            s.font?.let { out.setSpan(FontSpan(it), a, b, flags) }
         }
         for ((i, line) in lineRanges(out).withIndex()) {
             val p = rich.para(i)
@@ -334,6 +338,7 @@ internal object RichSpans {
             var colour: Int? = null
             var highlight: Int? = null
             var size: Float? = null
+            var font: Int? = null
             for (m in marks) {
                 if (text.getSpanStart(m) > a || text.getSpanEnd(m) < b) continue
                 bits = bits or bitOf(m)
@@ -341,10 +346,11 @@ internal object RichSpans {
                     is InkSpan -> colour = m.argb
                     is MarkerSpan -> highlight = m.argb
                     is SizeSpan -> size = m.ratio * boxSize
+                    is FontSpan -> font = m.id
                 }
             }
-            if (bits == 0 && colour == null && highlight == null && size == null) continue
-            spans.add(RichSpan(offsets.point(a), offsets.point(b), bits, colour, highlight, size))
+            if (bits == 0 && colour == null && highlight == null && size == null && font == null) continue
+            spans.add(RichSpan(offsets.point(a), offsets.point(b), bits, colour, highlight, size, font))
         }
         val byStart = text.getSpans(0, text.length, ParaSpan::class.java).associateBy { text.getSpanStart(it) }
         val paras = lineRanges(text).map { line ->

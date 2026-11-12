@@ -649,6 +649,16 @@
     <string name="text_heading2">Heading 2</string>
     <string name="text_heading3">Heading 3</string>
     <string name="text_scale_handle">Scale text box</string>
+    <string name="text_tab_text">Text</string>
+    <string name="text_tab_paragraph">Paragraph</string>
+    <string name="text_font">Font</string>
+    <string name="text_font_sans">Sans</string>
+    <string name="text_font_serif">Serif</string>
+    <string name="text_font_mono">Mono</string>
+    <string name="text_font_condensed">Narrow</string>
+    <string name="text_font_rounded">Rounded</string>
+    <string name="text_font_hand">Handwriting</string>
+    <string name="text_para_body">Text</string>
     <string name="text_italic">Italic</string>
     <string name="text_underline">Underline</string>
     <string name="text_style">Style</string>

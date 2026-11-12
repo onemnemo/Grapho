@@ -66,6 +66,7 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
     private var draft = ""
     private var source: (() -> RichText)? = null
     private var lastRich = RichText()
+    private var sizeAcc = 0f
     private var serial = 0
     private var hiddenBox: HiddenStrokes? = null
     private val scratch = FloatArray(2)
@@ -209,7 +210,8 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
     fun stretch(fromLeft: Boolean, delta: Float) {
         val current = edit ?: return
         val width = TextFrame.draggedWidth(current.width, fromLeft, delta)
-        val height = heightOf(draft, current.style, width)
+        // The field works out how tall it needs to be, and the box is measured again when it closes.
+        val height = current.height
         TextFrame.resized(
             current.x,
             current.y,
@@ -235,12 +237,15 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
         val current = edit ?: return
         val along = (if (fromLeft) -dx else dx) + (if (fromTop) -dy else dy)
         val factor = 1f + along / (current.width + current.height)
-        val size = (current.style.size * factor).roundToInt().coerceIn(TextSettings.MIN_SIZE, TextSettings.MAX_SIZE)
-        if (size == current.style.size) return
-        val ratio = size.toFloat() / current.style.size
+        // The size is a whole number but a drag step is a fraction of one, so the size is kept as a fraction here
+        // until the edit moves on to something else.
+        if (sizeAcc.roundToInt() != current.style.size) sizeAcc = current.style.size.toFloat()
+        val before = sizeAcc
+        sizeAcc = (before * factor).coerceIn(TextSettings.MIN_SIZE.toFloat(), TextSettings.MAX_SIZE.toFloat())
+        val ratio = sizeAcc / before
         val width = (current.width * ratio).coerceAtLeast(TextFrame.MIN_WIDTH)
-        val style = current.style.copy(size = size)
-        val height = heightOf(draft, style, width)
+        val height = current.height * ratio
+        val style = current.style.copy(size = sizeAcc.roundToInt())
         TextFrame.corner(current.x, current.y, current.width, current.height, current.rotation, scratch)
         val shiftX = if (fromLeft) current.width - width else 0f
         val shiftY = if (fromTop) current.height - height else 0f
@@ -264,7 +269,7 @@ internal class TextEditor(private val notebook: Notebook, private val host: Text
             sized = true,
         )
         edit = next
-        host.editChanged(next, rerender = false)
+        if (style != current.style) host.editChanged(next, rerender = false)
     }
 
     // The field over the box follows its frame on the next frame, see [placement]. Nothing else has to hear about a

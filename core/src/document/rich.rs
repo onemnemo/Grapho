@@ -38,7 +38,13 @@ pub struct Span {
     /// Font size in points.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<f32>,
+    /// A typeface for this stretch, as the shell numbers its typefaces.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub font: Option<u8>,
 }
+
+/// The most typefaces the shells offer. A number past it reads as the first.
+pub const MAX_FONT: u8 = 15;
 
 impl Span {
     fn plain(&self) -> bool {
@@ -51,6 +57,7 @@ impl Span {
             && self.color == other.color
             && self.highlight == other.highlight
             && self.size == other.size
+            && self.font == other.font
     }
 }
 
@@ -120,11 +127,14 @@ pub struct RichText {
     pub spans: Vec<Span>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub paras: Vec<Para>,
+    /// The typeface of the whole box, as the shell numbers its typefaces. 0 is the first.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub font: u8,
 }
 
 impl RichText {
     pub fn is_empty(&self) -> bool {
-        self.spans.is_empty() && self.paras.is_empty()
+        self.spans.is_empty() && self.paras.is_empty() && self.font == 0
     }
 
     /// The same formatting made fit for `text`: spans cut to its length,
@@ -141,6 +151,7 @@ impl RichText {
                 .size
                 .filter(|v| v.is_finite())
                 .map(|v| v.clamp(MIN_TEXT_SIZE, MAX_TEXT_SIZE));
+            s.font = s.font.filter(|f| *f <= MAX_FONT);
             s.start < s.end && !s.plain()
         });
         self.spans.sort_by_key(|s| (s.start, s.end));
@@ -160,6 +171,9 @@ impl RichText {
             }
         }
         self.spans = out;
+        if self.font > MAX_FONT {
+            self.font = 0;
+        }
         self.paras.truncate(lines);
         for p in &mut self.paras {
             p.indent = p.indent.min(MAX_INDENT);
@@ -233,6 +247,7 @@ mod tests {
                 span(0, 4, 0),
             ],
             paras: vec![Para::default(); 9],
+            ..RichText::default()
         }
         .normalised("hello\nworld");
         assert_eq!(rich.spans.len(), 2);
@@ -265,8 +280,10 @@ mod tests {
                     ..Para::default()
                 },
             ],
+            font: 99,
         }
         .normalised("a\nb");
+        assert_eq!(rich.font, 0);
         assert_eq!(rich.paras.len(), 2);
         assert_eq!(rich.paras[1].indent, MAX_INDENT);
         assert!(!rich.paras[1].checked);
@@ -282,6 +299,7 @@ mod tests {
         let rich = RichText {
             spans: vec![],
             paras: vec![num(0), num(1), num(1), num(0), Para::default(), num(0)],
+            ..RichText::default()
         };
         assert_eq!(rich.number_at(0), 1);
         assert_eq!(rich.number_at(1), 1);
@@ -297,6 +315,7 @@ mod tests {
         let rich = RichText {
             spans: vec![s, span(2, 4, mark::ITALIC)],
             paras: vec![],
+            ..RichText::default()
         }
         .scaled(2.0);
         assert_eq!(rich.spans[0].size, Some(20.0));

@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.graphics.text.LineBreaker
+import android.os.Build
 import android.text.Editable
 import android.text.Html
 import android.text.InputFilter
@@ -34,6 +35,7 @@ import com.onemnemo.grapho.note.RichPaste
 import com.onemnemo.grapho.note.RichSpans
 import com.onemnemo.grapho.note.RichText
 import com.onemnemo.grapho.note.TextAlignment
+import com.onemnemo.grapho.note.TextLayouts
 import com.onemnemo.grapho.note.TextSettings
 import com.onemnemo.grapho.note.displayColor
 import kotlin.math.cos
@@ -73,6 +75,9 @@ internal class TextBoxInput(
     private val slop = ViewConfiguration.get(context).scaledTouchSlop
     private val longPress = ViewConfiguration.getLongPressTimeout()
     private var fontSize = 0f
+    private var boxFont = startRich.font
+    private var appliedFace: Pair<Int, Int>? = null
+    private var lastLook: TextSettings? = null
     private var ready = false
     private var fixing = false
     private var changeStart = 0
@@ -129,6 +134,10 @@ internal class TextBoxInput(
                 }
             },
         )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // The pen only starts writing inside the field, so it can still grab the handles round it.
+            setHandwritingBoundsOffsets(0f, 0f, 0f, 0f)
+        }
         ready = true
         reportFormat()
     }
@@ -166,7 +175,7 @@ internal class TextBoxInput(
     private fun range(): Pair<Int, Int> = minOf(selectionStart, selectionEnd) to maxOf(selectionStart, selectionEnd)
 
     /** The formatting held by the text now, ready to save. */
-    fun snapshot(): RichText = RichSpans.read(text, fontSize)
+    fun snapshot(): RichText = RichSpans.read(text, fontSize).copy(font = boxFont)
 
     /** Whether the field holds nothing yet. */
     val isBlank: Boolean get() = text.isEmpty()
@@ -196,6 +205,19 @@ internal class TextBoxInput(
     fun setSize(points: Float?) {
         val (a, b) = range()
         RichEdit.size(text, points, fontSize, a, b)
+        reportFormat()
+    }
+
+    /** Sets the typeface of the selection, or of the whole box when nothing is selected. */
+    fun setFont(id: Int) {
+        val (a, b) = range()
+        if (a != b) {
+            RichEdit.font(text, id, a, b)
+        } else {
+            boxFont = id
+            RichEdit.font(text, null, 0, text.length)
+            applyFace()
+        }
         reportFormat()
     }
 
@@ -287,15 +309,24 @@ internal class TextBoxInput(
         return true
     }
 
-    /** Draws the text with [style] in [ink], with the cursor and selection in [accent]. */
-    fun applyLook(style: TextSettings, ink: Int, accent: Int) {
+    // The box's typeface with the weight and slant of the last look, set again only when one of them changed.
+    private fun applyFace() {
+        val look = lastLook ?: return
         val weight = when {
-            style.bold && style.italic -> Typeface.BOLD_ITALIC
-            style.bold -> Typeface.BOLD
-            style.italic -> Typeface.ITALIC
+            look.bold && look.italic -> Typeface.BOLD_ITALIC
+            look.bold -> Typeface.BOLD
+            look.italic -> Typeface.ITALIC
             else -> Typeface.NORMAL
         }
-        if (typeface?.style != weight) typeface = Typeface.create(Typeface.DEFAULT, weight)
+        if (appliedFace == boxFont to weight) return
+        appliedFace = boxFont to weight
+        typeface = TextLayouts.faceOf(boxFont, look)
+    }
+
+    /** Draws the text with [style] in [ink], with the cursor and selection in [accent]. */
+    fun applyLook(style: TextSettings, ink: Int, accent: Int) {
+        lastLook = style
+        applyFace()
         paintFlags = if (style.underline) {
             paintFlags or Paint.UNDERLINE_TEXT_FLAG
         } else {

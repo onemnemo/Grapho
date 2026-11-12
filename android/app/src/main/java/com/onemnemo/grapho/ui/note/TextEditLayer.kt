@@ -213,6 +213,7 @@ private fun TextEditField(
                 val next = (now + delta).coerceIn(TextSettings.MIN_SIZE, TextSettings.MAX_SIZE)
                 if (input == null || input.isBlank) change(current.copy(size = next)) else input.setSize(next.toFloat())
             },
+            onFont = { field[0]?.setFont(it) },
             onColour = { argb ->
                 onAddRecent(argb)
                 val input = field[0]

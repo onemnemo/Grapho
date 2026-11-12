@@ -13,6 +13,8 @@ internal data class FormatState(
     val colour: Int? = null,
     val highlight: Int? = null,
     val size: Float? = null,
+    val font: Int? = null,
+    val boxFont: Int = 0,
     val kind: Int = ParaKinds.BODY,
     val hasSelection: Boolean = false,
 )
@@ -69,6 +71,7 @@ internal object RichEdit {
             colour = single(e, a, b, InkSpan::class.java) { it.argb } as Int?,
             highlight = single(e, a, b, MarkerSpan::class.java) { it.argb } as Int?,
             size = single(e, a, b, SizeSpan::class.java) { it.ratio } as Float?,
+            font = single(e, a, b, FontSpan::class.java) { it.id } as Int?,
             kind = kind,
             hasSelection = a != b,
         )
@@ -140,12 +143,17 @@ internal object RichEdit {
     fun size(e: Editable, points: Float?, boxSize: Float, a: Int, b: Int) =
         valued(e, a, b, { it is SizeSpan }, { points?.let { p -> SizeSpan(p / boxSize) } })
 
+    /** Sets the typeface of the selection, or of what is typed next, or takes it off with null. */
+    fun font(e: Editable, id: Int?, a: Int, b: Int) =
+        valued(e, a, b, { it is FontSpan }, { id?.let { f -> FontSpan(f) } })
+
     private fun valued(e: Editable, a: Int, b: Int, test: (Any) -> Boolean, make: () -> Any?) {
         cut(e, a, b, test) { old ->
             when (old) {
                 is InkSpan -> InkSpan(old.argb, old.foregroundColor)
                 is MarkerSpan -> MarkerSpan(old.argb)
                 is SizeSpan -> SizeSpan(old.ratio)
+                is FontSpan -> FontSpan(old.id)
                 else -> old
             }
         }

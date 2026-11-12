@@ -37,6 +37,14 @@ object ParaKinds {
     const val MAX_INDENT = 6
 }
 
+/** The typefaces a box can use. The numbers are what the file keeps, so the order only ever grows. */
+object Fonts {
+    /** The system family names, by number. */
+    val FAMILIES = listOf("sans-serif", "serif", "monospace", "sans-serif-condensed", "casual", "cursive")
+
+    fun family(id: Int): String = FAMILIES.getOrElse(id) { FAMILIES[0] }
+}
+
 /**
  * A stretch of the text, in characters, with its own look. [color] and [highlight] are Android colours, [size] is in
  * points. What is left out comes from the box.
@@ -48,6 +56,7 @@ data class RichSpan(
     val color: Int? = null,
     val highlight: Int? = null,
     val size: Float? = null,
+    val font: Int? = null,
 )
 
 /** One line of the text between line breaks. */
@@ -57,8 +66,12 @@ data class RichPara(val kind: Int = ParaKinds.BODY, val indent: Int = 0, val che
  * The formatting of a text box, as the engine keeps it: stretches of the text that look different and what kind of
  * line each line is. A line past the end of [paras] is a plain one.
  */
-data class RichText(val spans: List<RichSpan> = emptyList(), val paras: List<RichPara> = emptyList()) {
-    val isEmpty: Boolean get() = spans.isEmpty() && paras.isEmpty()
+data class RichText(
+    val spans: List<RichSpan> = emptyList(),
+    val paras: List<RichPara> = emptyList(),
+    val font: Int = 0,
+) {
+    val isEmpty: Boolean get() = spans.isEmpty() && paras.isEmpty() && font == 0
 
     fun para(line: Int): RichPara = paras.getOrNull(line) ?: RichPara()
 
@@ -91,12 +104,14 @@ data class RichText(val spans: List<RichSpan> = emptyList(), val paras: List<Ric
                                 s.color?.let { put("color", rgba(it)) }
                                 s.highlight?.let { put("highlight", rgba(it)) }
                                 s.size?.let { put("size", it.toDouble()) }
+                                s.font?.let { put("font", it) }
                             },
                         )
                     }
                 },
             )
         }
+        if (font != 0) o.put("font", font)
         if (paras.isNotEmpty()) {
             o.put(
                 "paras",
@@ -133,6 +148,7 @@ data class RichText(val spans: List<RichSpan> = emptyList(), val paras: List<Ric
                             color = if (s.has("color")) argb(s.getLong("color")) else null,
                             highlight = if (s.has("highlight")) argb(s.getLong("highlight")) else null,
                             size = if (s.has("size")) s.getDouble("size").toFloat() else null,
+                            font = if (s.has("font")) s.getInt("font") else null,
                         )
                     },
                     paras = List(paras?.length() ?: 0) { i ->
@@ -143,6 +159,7 @@ data class RichText(val spans: List<RichSpan> = emptyList(), val paras: List<Ric
                             checked = p.optBoolean("checked", false),
                         )
                     },
+                    font = o.optInt("font", 0),
                 )
             } catch (_: JSONException) {
                 RichText()

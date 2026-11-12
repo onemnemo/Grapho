@@ -1,6 +1,9 @@
 package com.onemnemo.grapho.ui.note
 
 import android.graphics.RectF
+import android.graphics.Typeface
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +30,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.onemnemo.grapho.R
+import com.onemnemo.grapho.note.Fonts
 import com.onemnemo.grapho.note.FormatState
 import com.onemnemo.grapho.note.Marks
 import com.onemnemo.grapho.note.ParaKinds
@@ -127,19 +132,33 @@ internal class TextFormatActions(
     val onHighlight: (Boolean) -> Unit,
     val onSize: (Int) -> Unit,
     val onColour: (Int) -> Unit,
+    val onFont: (Int) -> Unit,
 )
 
 /** The marker colour the highlight button puts on text. */
 internal const val HIGHLIGHT_COLOUR = 0xFFFFF176.toInt()
 
+private enum class BarTab { Text, Paragraph }
+
+private enum class BarPanel { Font, Colour }
+
+private val FONT_NAMES = listOf(
+    R.string.text_font_sans,
+    R.string.text_font_serif,
+    R.string.text_font_mono,
+    R.string.text_font_condensed,
+    R.string.text_font_rounded,
+    R.string.text_font_hand,
+)
+
 /**
- * The card over the open text box with the choices people expect there. The top row has size, bold, italic,
- * underline, strikethrough, highlight, alignment and colour; the row under it has headings, lists, a quote, indent
- * and code. The buttons light up from [format], which says what the selection or cursor looks like, and act on the
- * selection, or on what is typed next at a cursor. The bar follows [rect], the box in view pixels, [gap] clear of it
- * (and [belowRoom] more when it has to go under the box), and stays inside [margins]. It is drawn in the page's own
- * layer and takes no focus, so the keyboard stays up while it is used. Alignment is the one choice that is for the
- * whole box, and goes to [onChange] with the whole new look of the box.
+ * The card over the open text box. It has two tabs so only one short row shows at a time: Text has the font, size,
+ * bold, italic, underline, strikethrough, highlight, code and colour, and Paragraph has the headings, quote, lists,
+ * indent and alignment. The buttons light up from [format], which says what the selection or cursor looks like, and
+ * act on the selection, or on what is typed next at a cursor. The font acts on the whole box when nothing is
+ * selected. The card follows [rect], the box in view pixels, [gap] clear of it (and [belowRoom] more when it has to go
+ * under the box), and stays inside [margins]. It is drawn in the page's own layer and takes no focus, so the keyboard
+ * stays up while it is used. Alignment is for the whole box and goes to [onChange] with the whole new look of the box.
  */
 @Composable
 internal fun TextFormatBar(
@@ -154,7 +173,8 @@ internal fun TextFormatBar(
     actions: TextFormatActions,
     onChange: (TextSettings) -> Unit,
 ) {
-    var colourOpen by remember { mutableStateOf(false) }
+    var tab by remember { mutableStateOf(BarTab.Text) }
+    var panel by remember { mutableStateOf<BarPanel?>(null) }
     val size = format.size?.let { (it * style.size).roundToInt() } ?: style.size
     val colour = format.colour ?: style.argb
     Column(
@@ -165,76 +185,29 @@ internal fun TextFormatBar(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            GraphoIconButton(
-                R.drawable.ic_minus,
-                stringResource(R.string.text_smaller),
-                onClick = { actions.onSize(-SIZE_STEP) },
-                enabled = size > TextSettings.MIN_SIZE,
-            )
-            Text(
-                size.toString(),
-                style = Grapho.type.label,
-                color = Grapho.colors.textDefault,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.width(28.dp),
-            )
-            GraphoIconButton(
-                R.drawable.ic_plus,
-                stringResource(R.string.text_larger),
-                onClick = { actions.onSize(SIZE_STEP) },
-                enabled = size < TextSettings.MAX_SIZE,
-            )
-            MarkButton(R.drawable.ic_bold, R.string.text_bold, format.marks and Marks.BOLD != 0) {
-                actions.onMark(Marks.BOLD)
+            FormatChip(stringResource(R.string.text_tab_text), null, tab == BarTab.Text) { tab = BarTab.Text }
+            FormatChip(stringResource(R.string.text_tab_paragraph), null, tab == BarTab.Paragraph) {
+                tab = BarTab.Paragraph
+                panel = null
             }
-            MarkButton(R.drawable.ic_italic, R.string.text_italic, format.marks and Marks.ITALIC != 0) {
-                actions.onMark(Marks.ITALIC)
-            }
-            MarkButton(R.drawable.ic_underline, R.string.text_underline, format.marks and Marks.UNDERLINE != 0) {
-                actions.onMark(Marks.UNDERLINE)
-            }
-            FormatChip("S\u0336", stringResource(R.string.text_strike), format.marks and Marks.STRIKE != 0) {
-                actions.onMark(Marks.STRIKE)
-            }
-            FormatChip("Hi", stringResource(R.string.text_highlight), format.highlight != null) {
-                actions.onHighlight(format.highlight == null)
-            }
-            GraphoIconButton(
-                ALIGN_ICONS.getValue(style.align),
-                stringResource(alignName(style.align)),
-                onClick = { onChange(style.copy(align = nextAlignment(style.align))) },
-            )
-            ColorSwatch(
-                color = Color(colour),
-                selected = colourOpen,
-                ringColor = Grapho.colors.selectionIndicator,
-                label = stringResource(R.string.text_colour),
-                onClick = { colourOpen = !colourOpen },
-            )
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            for ((kind, label, name) in HEADINGS) {
-                FormatChip(label, stringResource(name), format.kind == kind) { actions.onKind(kind) }
-            }
-            FormatChip("\u2022", stringResource(R.string.text_bullets), format.kind == ParaKinds.BULLET) {
-                actions.onKind(ParaKinds.BULLET)
-            }
-            FormatChip("1.", stringResource(R.string.text_numbers), format.kind == ParaKinds.NUMBERED) {
-                actions.onKind(ParaKinds.NUMBERED)
-            }
-            FormatChip("\u2611", stringResource(R.string.text_checklist), format.kind == ParaKinds.CHECK) {
-                actions.onKind(ParaKinds.CHECK)
-            }
-            FormatChip("\u275D", stringResource(R.string.text_quote), format.kind == ParaKinds.QUOTE) {
-                actions.onKind(ParaKinds.QUOTE)
-            }
-            FormatChip("\u21E4", stringResource(R.string.text_outdent), false) { actions.onIndent(-1) }
-            FormatChip("\u21E5", stringResource(R.string.text_indent), false) { actions.onIndent(1) }
-            FormatChip("</>", stringResource(R.string.text_code), format.marks and Marks.CODE != 0) {
-                actions.onMark(Marks.CODE)
+            Spacer(Modifier.width(GraphoSpace.spaceMd))
+            if (tab == BarTab.Text) {
+                TextTab(style, format, size, colour, panel, actions) { panel = if (panel == it) null else it }
+            } else {
+                ParagraphTab(style, format, actions, onChange)
             }
         }
-        if (colourOpen) {
+        if (tab == BarTab.Text && panel == BarPanel.Font) {
+            Row(Modifier.horizontalScroll(rememberScrollState())) {
+                for ((id, name) in FONT_NAMES.withIndex()) {
+                    val family = FontFamily(Typeface.create(Fonts.family(id), Typeface.NORMAL))
+                    FormatChip(stringResource(name), null, (format.font ?: format.boxFont) == id, family) {
+                        actions.onFont(id)
+                    }
+                }
+            }
+        }
+        if (tab == BarTab.Text && panel == BarPanel.Colour) {
             Column(Modifier.widthIn(max = PALETTE_MAX_WIDTH), verticalArrangement = Arrangement.Center) {
                 ColourRow(
                     current = colour,
@@ -248,31 +221,127 @@ internal fun TextFormatBar(
     }
 }
 
-private val HEADINGS = listOf(
-    Triple(ParaKinds.HEADING1, "H1", R.string.text_heading1),
-    Triple(ParaKinds.HEADING2, "H2", R.string.text_heading2),
-    Triple(ParaKinds.HEADING3, "H3", R.string.text_heading3),
-)
-
-/** A small text button for the bar, lit when [on]. */
 @Composable
-private fun FormatChip(label: String, description: String, on: Boolean, onClick: () -> Unit) {
+private fun TextTab(
+    style: TextSettings,
+    format: FormatState,
+    size: Int,
+    colour: Int,
+    panel: BarPanel?,
+    actions: TextFormatActions,
+    onPanel: (BarPanel) -> Unit,
+) {
+    GraphoIconButton(
+        R.drawable.ic_font,
+        stringResource(R.string.text_font),
+        onClick = { onPanel(BarPanel.Font) },
+        selected = panel == BarPanel.Font,
+    )
+    GraphoIconButton(
+        R.drawable.ic_minus,
+        stringResource(R.string.text_smaller),
+        onClick = { actions.onSize(-SIZE_STEP) },
+        enabled = size > TextSettings.MIN_SIZE,
+    )
+    Text(
+        size.toString(),
+        style = Grapho.type.label,
+        color = Grapho.colors.textDefault,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.width(28.dp),
+    )
+    GraphoIconButton(
+        R.drawable.ic_plus,
+        stringResource(R.string.text_larger),
+        onClick = { actions.onSize(SIZE_STEP) },
+        enabled = size < TextSettings.MAX_SIZE,
+    )
+    MarkIcon(R.drawable.ic_bold, R.string.text_bold, format.marks, Marks.BOLD, actions)
+    MarkIcon(R.drawable.ic_italic, R.string.text_italic, format.marks, Marks.ITALIC, actions)
+    MarkIcon(R.drawable.ic_underline, R.string.text_underline, format.marks, Marks.UNDERLINE, actions)
+    MarkIcon(R.drawable.ic_strike, R.string.text_strike, format.marks, Marks.STRIKE, actions)
+    GraphoIconButton(
+        R.drawable.ic_highlight,
+        stringResource(R.string.text_highlight),
+        onClick = { actions.onHighlight(format.highlight == null) },
+        selected = format.highlight != null,
+    )
+    MarkIcon(R.drawable.ic_code, R.string.text_code, format.marks, Marks.CODE, actions)
+    ColorSwatch(
+        color = Color(colour),
+        selected = panel == BarPanel.Colour,
+        ringColor = Grapho.colors.selectionIndicator,
+        label = stringResource(R.string.text_colour),
+        onClick = { onPanel(BarPanel.Colour) },
+    )
+}
+
+@Composable
+private fun ParagraphTab(
+    style: TextSettings,
+    format: FormatState,
+    actions: TextFormatActions,
+    onChange: (TextSettings) -> Unit,
+) {
+    val kinds = listOf(
+        Triple(ParaKinds.BODY, "T", R.string.text_para_body),
+        Triple(ParaKinds.HEADING1, "H1", R.string.text_heading1),
+        Triple(ParaKinds.HEADING2, "H2", R.string.text_heading2),
+        Triple(ParaKinds.HEADING3, "H3", R.string.text_heading3),
+    )
+    for ((kind, label, name) in kinds) {
+        FormatChip(label, stringResource(name), format.kind == kind) { actions.onKind(kind) }
+    }
+    KindIcon(R.drawable.ic_quote, R.string.text_quote, format.kind, ParaKinds.QUOTE, actions)
+    KindIcon(R.drawable.ic_bullets, R.string.text_bullets, format.kind, ParaKinds.BULLET, actions)
+    KindIcon(R.drawable.ic_numbers, R.string.text_numbers, format.kind, ParaKinds.NUMBERED, actions)
+    KindIcon(R.drawable.ic_checklist, R.string.text_checklist, format.kind, ParaKinds.CHECK, actions)
+    GraphoIconButton(R.drawable.ic_outdent, stringResource(R.string.text_outdent), onClick = { actions.onIndent(-1) })
+    GraphoIconButton(R.drawable.ic_indent, stringResource(R.string.text_indent), onClick = { actions.onIndent(1) })
+    GraphoIconButton(
+        ALIGN_ICONS.getValue(style.align),
+        stringResource(alignName(style.align)),
+        onClick = { onChange(style.copy(align = nextAlignment(style.align))) },
+    )
+}
+
+@Composable
+private fun MarkIcon(@DrawableRes icon: Int, @StringRes name: Int, marks: Int, bit: Int, actions: TextFormatActions) {
+    GraphoIconButton(icon, stringResource(name), onClick = { actions.onMark(bit) }, selected = marks and bit != 0)
+}
+
+@Composable
+private fun KindIcon(@DrawableRes icon: Int, @StringRes name: Int, now: Int, kind: Int, actions: TextFormatActions) {
+    GraphoIconButton(icon, stringResource(name), onClick = { actions.onKind(kind) }, selected = now == kind)
+}
+
+/** A text button for the bar, lit when [on], at least as big as a touch needs. [description] names it, or [label] does. */
+@Composable
+private fun FormatChip(
+    label: String,
+    description: String?,
+    on: Boolean,
+    family: FontFamily? = null,
+    onClick: () -> Unit,
+) {
     val c = Grapho.colors
     Box(
         Modifier
-            .size(Grapho.metrics.sizeHitMin)
+            .height(Grapho.metrics.sizeHitMin)
+            .widthIn(min = Grapho.metrics.sizeHitMin)
             .clip(GraphoShapes.pill)
             .background(if (on) c.selectionFill else Color.Transparent)
             .clickable(onClick = onClick)
+            .padding(horizontal = GraphoSpace.spaceXs)
             .semantics {
-                contentDescription = description
+                contentDescription = description ?: label
                 selected = on
             },
         contentAlignment = Alignment.Center,
     ) {
         Text(
             label,
-            style = Grapho.type.label,
+            style = Grapho.type.label.copy(fontFamily = family ?: Grapho.type.label.fontFamily),
             color = if (on) c.actionToggleFgOn else c.actionQuietFg,
             textAlign = TextAlign.Center,
         )

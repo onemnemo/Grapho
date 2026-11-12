@@ -14,6 +14,9 @@ internal object TextLayouts {
     /** A line of text is this many times its size tall, about what the default font needs. */
     const val LINE_HEIGHT = 1.25f
 
+    /** The typeface of a box with the weight and slant its look asks for. */
+    fun faceOf(font: Int, look: TextSettings): Typeface = Typeface.create(Fonts.family(font), style(look))
+
     private fun style(look: TextSettings): Int = when {
         look.bold && look.italic -> Typeface.BOLD_ITALIC
         look.bold -> Typeface.BOLD
@@ -45,7 +48,7 @@ internal object TextLayouts {
             textSize = size
             isLinearText = true
             isUnderlineText = look.underline
-            typeface = Typeface.create(Typeface.DEFAULT, style(look))
+            typeface = faceOf(rich.font, look)
         }
         val alignment = when (look.align) {
             TextAlignment.Start -> Layout.Alignment.ALIGN_NORMAL

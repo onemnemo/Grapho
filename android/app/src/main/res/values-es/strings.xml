@@ -643,6 +643,16 @@
     <string name="text_heading2">Título 2</string>
     <string name="text_heading3">Título 3</string>
     <string name="text_scale_handle">Escalar cuadro de texto</string>
+    <string name="text_tab_text">Texto</string>
+    <string name="text_tab_paragraph">Párrafo</string>
+    <string name="text_font">Fuente</string>
+    <string name="text_font_sans">Sans</string>
+    <string name="text_font_serif">Serif</string>
+    <string name="text_font_mono">Mono</string>
+    <string name="text_font_condensed">Estrecha</string>
+    <string name="text_font_rounded">Redondeada</string>
+    <string name="text_font_hand">Manuscrita</string>
+    <string name="text_para_body">Texto</string>
     <string name="text_italic">Cursiva</string>
     <string name="text_underline">Subrayado</string>
     <string name="text_style">Estilo</string>

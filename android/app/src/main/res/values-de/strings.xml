@@ -632,6 +632,16 @@
     <string name="text_heading2">Überschrift 2</string>
     <string name="text_heading3">Überschrift 3</string>
     <string name="text_scale_handle">Textfeld skalieren</string>
+    <string name="text_tab_text">Text</string>
+    <string name="text_tab_paragraph">Absatz</string>
+    <string name="text_font">Schrift</string>
+    <string name="text_font_sans">Sans</string>
+    <string name="text_font_serif">Serif</string>
+    <string name="text_font_mono">Mono</string>
+    <string name="text_font_condensed">Schmal</string>
+    <string name="text_font_rounded">Rund</string>
+    <string name="text_font_hand">Handschrift</string>
+    <string name="text_para_body">Text</string>
     <string name="text_italic">Kursiv</string>
     <string name="text_underline">Unterstrichen</string>
     <string name="text_style">Stil</string>

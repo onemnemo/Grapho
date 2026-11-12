@@ -632,6 +632,16 @@
     <string name="text_heading2">Rubrik 2</string>
     <string name="text_heading3">Rubrik 3</string>
     <string name="text_scale_handle">Skala textruta</string>
+    <string name="text_tab_text">Text</string>
+    <string name="text_tab_paragraph">Stycke</string>
+    <string name="text_font">Typsnitt</string>
+    <string name="text_font_sans">Sans</string>
+    <string name="text_font_serif">Serif</string>
+    <string name="text_font_mono">Mono</string>
+    <string name="text_font_condensed">Smal</string>
+    <string name="text_font_rounded">Rundad</string>
+    <string name="text_font_hand">Handskrift</string>
+    <string name="text_para_body">Text</string>
     <string name="text_italic">Kursiv</string>
     <string name="text_underline">Understruken</string>
     <string name="text_style">Stil</string>

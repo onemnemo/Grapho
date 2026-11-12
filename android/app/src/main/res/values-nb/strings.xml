@@ -632,6 +632,16 @@
     <string name="text_heading2">Overskrift 2</string>
     <string name="text_heading3">Overskrift 3</string>
     <string name="text_scale_handle">Skaler tekstboks</string>
+    <string name="text_tab_text">Tekst</string>
+    <string name="text_tab_paragraph">Avsnitt</string>
+    <string name="text_font">Skrift</string>
+    <string name="text_font_sans">Sans</string>
+    <string name="text_font_serif">Serif</string>
+    <string name="text_font_mono">Mono</string>
+    <string name="text_font_condensed">Smal</string>
+    <string name="text_font_rounded">Avrundet</string>
+    <string name="text_font_hand">Håndskrift</string>
+    <string name="text_para_body">Tekst</string>
     <string name="text_italic">Kursiv</string>
     <string name="text_underline">Understreket</string>
     <string name="text_style">Stil</string>

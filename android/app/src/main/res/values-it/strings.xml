@@ -643,6 +643,16 @@
     <string name="text_heading2">Titolo 2</string>
     <string name="text_heading3">Titolo 3</string>
     <string name="text_scale_handle">Ridimensiona casella di testo</string>
+    <string name="text_tab_text">Testo</string>
+    <string name="text_tab_paragraph">Paragrafo</string>
+    <string name="text_font">Carattere</string>
+    <string name="text_font_sans">Sans</string>
+    <string name="text_font_serif">Serif</string>
+    <string name="text_font_mono">Mono</string>
+    <string name="text_font_condensed">Stretto</string>
+    <string name="text_font_rounded">Arrotondato</string>
+    <string name="text_font_hand">Corsivo a mano</string>
+    <string name="text_para_body">Testo</string>
     <string name="text_italic">Corsivo</string>
     <string name="text_underline">Sottolineato</string>
     <string name="text_style">Stile</string>

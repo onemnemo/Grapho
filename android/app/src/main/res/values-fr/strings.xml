@@ -643,6 +643,16 @@
     <string name="text_heading2">Titre 2</string>
     <string name="text_heading3">Titre 3</string>
     <string name="text_scale_handle">Redimensionner la zone de texte</string>
+    <string name="text_tab_text">Texte</string>
+    <string name="text_tab_paragraph">Paragraphe</string>
+    <string name="text_font">Police</string>
+    <string name="text_font_sans">Sans</string>
+    <string name="text_font_serif">Serif</string>
+    <string name="text_font_mono">Mono</string>
+    <string name="text_font_condensed">Étroite</string>
+    <string name="text_font_rounded">Arrondie</string>
+    <string name="text_font_hand">Manuscrite</string>
+    <string name="text_para_body">Texte</string>
     <string name="text_italic">Italique</string>
     <string name="text_underline">Souligné</string>
     <string name="text_style">Style</string>

@@ -425,6 +425,7 @@ fn formatting_is_kept_cut_to_the_words_and_undone_with_them() {
             kind: ParaKind::Bullet,
             ..Para::default()
         }],
+        font: 0,
     };
     let id = e
         .add_rich_text(0, [10.0, 10.0, 100.0, 30.0], "Hello", style(), rich)
